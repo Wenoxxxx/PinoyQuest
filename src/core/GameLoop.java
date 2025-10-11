@@ -31,7 +31,7 @@ public class GameLoop implements Runnable {
         long lastTime = System.nanoTime();
         long currentTime;
 
-
+        // DELTA METHOD
         // WHILE LOOP: RUNS AS LONG AS THE GAME IS ACTIVE
         while (thread != null) {
             currentTime = System.nanoTime();
