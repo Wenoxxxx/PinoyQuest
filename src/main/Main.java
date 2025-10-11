@@ -16,12 +16,15 @@ public class Main {
         mainFrame.setResizable(false);
 
         GamePanel gamePanel = new GamePanel();
-        
+        mainFrame.add(gamePanel);
+        mainFrame.pack();
 
-        
+        mainFrame.setLocationRelativeTo(null);
+        mainFrame.setVisible(true);
 
-        
 
+        // START THE SEPARATE GAME LOOP
+        // gamePanel.startGame();
 
 
     }
