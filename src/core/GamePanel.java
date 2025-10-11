@@ -62,10 +62,27 @@ public class GamePanel extends JPanel{
 
     // UPDATES GAME LOGIC EVERY FRAME
     public void update(){
-        if (keyHandler.upPressed) playerY -= playerSpeed;
-        if (keyHandler.downPressed) playerY += playerSpeed;
-        if (keyHandler.leftPressed) playerX -= playerSpeed;
-        if (keyHandler.rightPressed) playerX += playerSpeed;
+        // if (keyHandler.upPressed) playerY -= playerSpeed;
+        // if (keyHandler.downPressed) playerY += playerSpeed;
+        // if (keyHandler.leftPressed) playerX -= playerSpeed;
+        // if (keyHandler.rightPressed) playerX += playerSpeed;
+
+        int dx = 0;
+        int dy = 0;
+
+        if (keyHandler.upPressed) dy -= 1;
+        if (keyHandler.downPressed) dy += 1;
+        if (keyHandler.leftPressed) dx -= 1;
+        if (keyHandler.rightPressed) dx += 1;
+
+        // If moving diagonally, normalize speed
+        if (dx != 0 && dy != 0) {
+            playerX += dx * (playerSpeed / Math.sqrt(2));
+            playerY += dy * (playerSpeed / Math.sqrt(2));
+        } else {
+            playerX += dx * playerSpeed;
+            playerY += dy * playerSpeed;
+        }
     }
 
 
