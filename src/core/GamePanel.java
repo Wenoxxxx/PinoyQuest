@@ -2,8 +2,7 @@ package src.core;
 
 import javax.swing.JPanel;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.event.*;
+
 
 public class GamePanel extends JPanel{
     
@@ -20,12 +19,6 @@ public class GamePanel extends JPanel{
 
 
 
-    // SYSTEM
-    Thread gameThread;
-    int FPS = 60;
-
-
-
     // [TEST] PLAYER POSITION
     int playerX = 100;
     int playerY = 100;
@@ -37,8 +30,11 @@ public class GamePanel extends JPanel{
     KeyHandler keyHandler = new KeyHandler();
 
 
+
     // GAME LOOP OBJECT
     private GameLoop gameLoop;
+
+
 
     // CONSTRUCTOR
     public GamePanel (){
@@ -57,6 +53,37 @@ public class GamePanel extends JPanel{
 
 
 
+    // STARTING GAME BY RUNNING GAME LOOP
+    public void startGame(){
+        gameLoop.start();
+    }
+
+
+
+    // UPDATES GAME LOGIC EVERY FRAME
+    public void update(){
+        if (keyHandler.upPressed) playerY -= playerSpeed;
+        if (keyHandler.downPressed) playerY += playerSpeed;
+        if (keyHandler.leftPressed) playerX -= playerSpeed;
+        if (keyHandler.rightPressed) playerX += playerSpeed;
+    }
+
+
+
+    // DRAWS EVERYTHING OM SCREEN EVERY FRAME
+    @Override
+    public void paintComponent(Graphics g){
+
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+
+        // TEMPORARY CHARACTER 
+        g2.setColor(Color.WHITE);
+        g2.fillRect(playerX, playerY, tileSize, tileSize);
+
+        g2.dispose();
+
+    }
 
 
 }
