@@ -33,6 +33,7 @@ public class GameLoop implements Runnable {
 
         // DELTA METHOD
         // WHILE LOOP: RUNS AS LONG AS THE GAME IS ACTIVE
+        int indicator = 1;//Running indicator
         while (thread != null) {
             currentTime = System.nanoTime();
             delta += (currentTime - lastTime) / drawInterval;
@@ -45,6 +46,10 @@ public class GameLoop implements Runnable {
                 delta --;
             }
 
+            
+            //INDICATOR
+            indicator++;
+            System.out.println("PINOY QUEST: RUNNING "+ indicator);
 
         }
 

@@ -60,7 +60,7 @@ public class GamePanel extends JPanel{
 
 
 
-    // UPDATES GAME LOGIC EVERY FRAME
+    // UPDATES GAME LOGIC EVERY FRAME [MOVEMENT SPEED]
     public void update(){
         // if (keyHandler.upPressed) playerY -= playerSpeed;
         // if (keyHandler.downPressed) playerY += playerSpeed;
