@@ -17,7 +17,6 @@ public class Main {
         mainFrame.setResizable(true);//SET FALSE FOR FULL SCREEN
         mainFrame.setUndecorated(false);
         
-        
         // PUTS THE GAME SCREEN INSIDE THE WINDOW
         GamePanel gamePanel = new GamePanel();
         mainFrame.add(gamePanel);
