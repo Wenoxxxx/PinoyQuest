@@ -8,7 +8,7 @@ public class Entity {
     public int x, y;
     public int speed;
 
-    public BufferedImage up1, down1, left1, right1;
+    public BufferedImage up1,up2,up3,up4,up5,up6, down1, left1, right1;
     public String direction;
 
     // UPDATE ENTITY BEHAVIOR (TO BE OVERIDDEN)

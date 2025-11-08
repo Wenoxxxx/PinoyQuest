@@ -46,10 +46,10 @@ public class GameLoop implements Runnable {
                 delta --;
             }
 
-            
+
             //INDICATOR
-            indicator++;
-            System.out.println("PINOY QUEST: RUNNING "+ indicator);
+            // indicator++;
+            // System.out.println("PINOY QUEST: RUNNING "+ indicator);
 
         }
 

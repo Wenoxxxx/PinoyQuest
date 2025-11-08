@@ -2,6 +2,7 @@ package src.core;
 
 import javax.swing.JPanel;
 import java.awt.*;
+import src.entity.Player;
 
 
 public class GamePanel extends JPanel{
@@ -19,17 +20,17 @@ public class GamePanel extends JPanel{
 
 
 
-    // [TEST] PLAYER POSITION
-    int playerX = 100;
-    int playerY = 100;
-    int playerSpeed = 4;
-
-
+    // // [TEST] PLAYER POSITION
+    // int playerX = 100;
+    // int playerY = 100;
+    // int playerSpeed = 4;
+    
     
     // KEY INPUT (imported from KeyHandler.java)
     KeyHandler keyHandler = new KeyHandler();
-
-
+    
+    // PLAYER OBJECT
+    public Player player = new Player(this,keyHandler);    
 
     // GAME LOOP OBJECT
     private GameLoop gameLoop;
@@ -67,22 +68,24 @@ public class GamePanel extends JPanel{
         // if (keyHandler.leftPressed) playerX -= playerSpeed;
         // if (keyHandler.rightPressed) playerX += playerSpeed;
 
-        int dx = 0;
-        int dy = 0;
+        // int dx = 0;
+        // int dy = 0;
 
-        if (keyHandler.upPressed) dy -= 1;
-        if (keyHandler.downPressed) dy += 1;
-        if (keyHandler.leftPressed) dx -= 1;
-        if (keyHandler.rightPressed) dx += 1;
+        // if (keyHandler.upPressed) dy -= 1;
+        // if (keyHandler.downPressed) dy += 1;
+        // if (keyHandler.leftPressed) dx -= 1;
+        // if (keyHandler.rightPressed) dx += 1;
 
-        // If moving diagonally, normalize speed
-        if (dx != 0 && dy != 0) {
-            playerX += dx * (playerSpeed / Math.sqrt(2));
-            playerY += dy * (playerSpeed / Math.sqrt(2));
-        } else {
-            playerX += dx * playerSpeed;
-            playerY += dy * playerSpeed;
-        }
+        // // If moving diagonally, normalize speed
+        // if (dx != 0 && dy != 0) {
+        //     playerX += dx * (playerSpeed / Math.sqrt(2));
+        //     playerY += dy * (playerSpeed / Math.sqrt(2));
+        // } else {
+        //     playerX += dx * playerSpeed;
+        //     playerY += dy * playerSpeed;
+        // }
+
+        player.update();
     }
 
 
@@ -94,9 +97,11 @@ public class GamePanel extends JPanel{
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        // TEMPORARY CHARACTER 
-        g2.setColor(Color.WHITE);
-        g2.fillRect(playerX, playerY, tileSize, tileSize);
+        // // TEMPORARY CHARACTER 
+        // g2.setColor(Color.WHITE);
+        // g2.fillRect(playerX, playerY, tileSize, tileSize);
+
+        player.draw(g2);
 
         g2.dispose();
 

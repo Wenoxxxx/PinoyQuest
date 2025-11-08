@@ -16,15 +16,6 @@
 │   ├── NPC.java
 │   └── Enemy.java
 │
-├── 📁 sprite/
-│   ├── player/
-│   │   ├── idle.png
-│   │   ├── walk_up.png
-│   │   ├── walk_down.png
-│   │   └── walk_side.png
-│   ├── enemies/
-│   ├── tiles/
-│   └── objects/
 │
 ├── 📁 map/
 │   ├── MapLoader.java
@@ -35,3 +26,14 @@
     ├── SpriteLoader.java
     ├── CollisionChecker.java
     └── Constants.java
+📁 assets/
+│
+├── 📁 sprite/
+│   ├──📁player/
+│   │   ├── idle.png
+│   │   ├── walk_up.png
+│   │   ├── walk_down.png
+│   │   └── walk_side.png
+│   ├── enemies/
+│   ├── tiles/
+│   └── objects/
