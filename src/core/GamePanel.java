@@ -45,17 +45,12 @@ public class GamePanel extends JPanel {
 
     // CONSTRUCTOR
     public GamePanel() {
-
-        // BASIC SETUP
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));// setting the size of game window
-        this.setBackground(Color.BLACK);// Background color of the panel
-        this.setDoubleBuffered(true); // Enable double buffering to prevent flickering
-        this.addKeyListener(keyHandler); // Add the keyboard listener (so it detects key presses)
-        this.setFocusable(true); // Makes sure the panel can receive keyboard input
-
-        // INITIALIZING GAME LOOP
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        this.setBackground(Color.BLACK);
+        this.setDoubleBuffered(true);
+        this.addKeyListener(keyHandler);
+        this.setFocusable(true);
         gameLoop = new GameLoop(this);
-
     }
 
     // STARTING GAME BY RUNNING GAME LOOP
@@ -102,17 +97,6 @@ public class GamePanel extends JPanel {
         cameraX += (targetCameraX - cameraX) * smoothing;
         cameraY += (targetCameraY - cameraY) * smoothing;
 
-        /*
-         * // Clamp camera to world boundaries
-         * if (cameraX < 0)
-         * cameraX = 0;
-         * if (cameraY < 0)
-         * cameraY = 0;
-         * if (cameraX > worldWidth - screenWidth)
-         * cameraX = worldWidth - screenWidth;
-         * if (cameraY > worldHeight - screenHeight)
-         * cameraY = worldHeight - screenHeight;
-         */
     }
 
     // DRAWS EVERYTHING OM SCREEN EVERY FRAME

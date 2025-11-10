@@ -262,28 +262,39 @@ public class Player extends Entity {
         }
 
         if (image != null) {
-
-            /*
-             * int spriteWidth = gamePanel.tileSize * 4;
-             * int spriteHeight = gamePanel.tileSize * 4;
-             * int offsetY = spriteHeight / 4;
-             * 
-             * // Draw player at center of screen
-             * int worldX = gamePanel.screenWidth / 2 - spriteWidth / 2;
-             * int worldY = gamePanel.screenHeight / 2 - spriteHeight / 2 - offsetY;
-             * 
-             * g2.drawImage(image, worldX, worldY, spriteWidth, spriteHeight, null);
-             */
-
             int spriteWidth = gamePanel.tileSize * 4;
             int spriteHeight = gamePanel.tileSize * 4;
-            g2.drawImage(
-                    image,
-                    worldX - spriteWidth / 2, // shift left
-                    worldY - spriteHeight / 2, // shift up
-                    spriteWidth,
-                    spriteHeight,
-                    null);
+
+            // Apply camera offset
+            int screenX = worldX - gamePanel.cameraX - spriteWidth / 1;
+            int screenY = worldY - gamePanel.cameraY - spriteHeight / 1;
+
+            g2.drawImage(image, screenX, screenY, spriteWidth, spriteHeight, null);
         }
     }
+
+    /*
+     * int spriteWidth = gamePanel.tileSize * 4;
+     * int spriteHeight = gamePanel.tileSize * 4;
+     * int offsetY = spriteHeight / 4;
+     * 
+     * // Draw player at center of screen
+     * int worldX = gamePanel.screenWidth / 2 - spriteWidth / 2;
+     * int worldY = gamePanel.screenHeight / 2 - spriteHeight / 2 - offsetY;
+     * 
+     * g2.drawImage(image, worldX, worldY, spriteWidth, spriteHeight, null);
+     */
+
+    /*
+     * int spriteWidth = gamePanel.tileSize / 4;
+     * int spriteHeight = gamePanel.tileSize * 4;
+     * g2.drawImage(
+     * image,
+     * worldX - spriteWidth / 2, // shift left
+     * worldY - spriteHeight / 2, // shift up
+     * spriteWidth,
+     * spriteHeight,
+     * null);
+     * }
+     */
 }
