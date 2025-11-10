@@ -38,6 +38,27 @@ public class Main {
         Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         mainFrame.setIconImage(scaledImage);
 
+        
+        //RUNNING INDICATOR
+        boolean[] isRunning = {true}; // Use array so it can be modified inside lambda
+
+        Thread indicator = new Thread(() -> {
+            while (isRunning[0]) {
+                System.out.println("PINOYQUEST: RUNNING");
+                try { Thread.sleep(1000); } catch (Exception ignored) {}
+            }
+            System.out.println("PINOYQUEST: GAME ENDED");
+        });
+
+        // Add shutdown hook: runs when JFrame closes or Ctrl+C is pressed
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            isRunning[0] = false;
+            try { Thread.sleep(200); } catch (Exception ignored) {} // short wait for clean exit
+            System.out.println("PINOYQUEST: GAME ENDED");
+        }));
+
+        indicator.start();
+
     }
 
 }
