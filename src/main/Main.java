@@ -4,6 +4,7 @@ import src.core.GamePanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class Main {
 
@@ -26,6 +27,16 @@ public class Main {
 
         // START THE SEPARATE GAME LOOP THREAD
         gamePanel.startGame();
+
+        // ICON IMAGE
+        String projectRoot = System.getProperty("user.dir");
+        String iconPath = projectRoot + File.separator + "assets"
+                        + File.separator + "gameIcon"
+                        + File.separator + "icon.png";
+
+        ImageIcon icon = new ImageIcon(iconPath);
+        Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        mainFrame.setIconImage(scaledImage);
 
     }
 
