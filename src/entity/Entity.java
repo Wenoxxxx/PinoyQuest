@@ -13,11 +13,13 @@ public class Entity {
     public String direction;
 
     // UPDATE ENTITY BEHAVIOR (TO BE OVERIDDEN)
-    public void update() {
-    }
+    public void update(){}
+
 
     // DRAW ENTITY SPRITE (TO BE OVERIDDEN)
-    public void draw(Graphics2D g2) {
-    }
+    public void draw(Graphics2D g2){}
+
+
+    
 
 }

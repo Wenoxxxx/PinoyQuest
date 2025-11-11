@@ -14,8 +14,6 @@ public class Player extends Entity {
     GamePanel gamePanel;
     KeyHandler keyHandler;
 
-    // public final int screenX;
-    // public final int screenY;
 
     // WALKING ANIMATION ARRAYS (6 frames)
     public BufferedImage[] upFrames;
@@ -148,8 +146,7 @@ public class Player extends Entity {
         lastDirection = direction;
     }
 
-    // LOADING IMAGE HELPER (FROM FILE SYSTEM) [NOTE: Tungod kay ang assets folder
-    // kay naas gawas sa src]
+    // LOADING IMAGE HELPER (FROM FILE SYSTEM)
     private BufferedImage loadImageFromFile(String path) {
         try {
             File file = new File(path);
@@ -164,7 +161,7 @@ public class Player extends Entity {
             return null;
         }
     }
-
+    
     // LOAD ALL PLAYER SPRITES
     public void loadPlayerImages() {
 
@@ -180,7 +177,7 @@ public class Player extends Entity {
 
         // Get project root directory and construct base path
         String projectRoot = System.getProperty("user.dir");
-        String basePath = projectRoot + File.separator + "assets" + File.separator + "sprites" + File.separator
+        String basePath = projectRoot + File.separator + "src" + File.separator + "assets" + File.separator + "sprites" + File.separator
                 + "player" + File.separator;
 
         // Load walking frames
@@ -231,39 +228,55 @@ public class Player extends Entity {
             // Show walking animation when moving
             switch (direction) {
                 case "up":
-                    image = upFrames[frameIndex];
+                    if (upFrames != null && frameIndex >= 0 && frameIndex < upFrames.length) {
+                        image = upFrames[frameIndex];
+                    }
                     break;
                 case "down":
-                    image = downFrames[frameIndex];
+                    if (downFrames != null && frameIndex >= 0 && frameIndex < downFrames.length) {
+                        image = downFrames[frameIndex];
+                    }
                     break;
                 case "left":
-                    image = leftFrames[frameIndex];
+                    if (leftFrames != null && frameIndex >= 0 && frameIndex < leftFrames.length) {
+                        image = leftFrames[frameIndex];
+                    }
                     break;
                 case "right":
-                    image = rightFrames[frameIndex];
+                    if (rightFrames != null && frameIndex >= 0 && frameIndex < rightFrames.length) {
+                        image = rightFrames[frameIndex];
+                    }
                     break;
             }
         } else {
             // Show idle animation when not moving (instant transition)
             switch (direction) {
                 case "up":
-                    image = idleUpFrames[frameIndex];
+                    if (idleUpFrames != null && frameIndex >= 0 && frameIndex < idleUpFrames.length) {
+                        image = idleUpFrames[frameIndex];
+                    }
                     break;
                 case "down":
-                    image = idleDownFrames[frameIndex];
+                    if (idleDownFrames != null && frameIndex >= 0 && frameIndex < idleDownFrames.length) {
+                        image = idleDownFrames[frameIndex];
+                    }
                     break;
                 case "left":
-                    image = idleLeftFrames[frameIndex];
+                    if (idleLeftFrames != null && frameIndex >= 0 && frameIndex < idleLeftFrames.length) {
+                        image = idleLeftFrames[frameIndex];
+                    }
                     break;
                 case "right":
-                    image = idleRightFrames[frameIndex];
+                    if (idleRightFrames != null && frameIndex >= 0 && frameIndex < idleRightFrames.length) {
+                        image = idleRightFrames[frameIndex];
+                    }
                     break;
             }
         }
-
+        
         if (image != null) {
-            int spriteWidth = gamePanel.tileSize * 4;
-            int spriteHeight = gamePanel.tileSize * 4;
+            int spriteWidth = gamePanel.tileSize * 10;
+            int spriteHeight = gamePanel.tileSize * 10;
 
             // Apply camera offset
             int screenX = worldX - gamePanel.cameraX - spriteWidth / 1;
