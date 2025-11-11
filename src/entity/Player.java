@@ -275,6 +275,8 @@ public class Player extends Entity {
         }
         
         if (image != null) {
+
+            // PLAYER SIZE IN GAMEPANEL
             int spriteWidth = gamePanel.tileSize * 4;
             int spriteHeight = gamePanel.tileSize * 4;
 
