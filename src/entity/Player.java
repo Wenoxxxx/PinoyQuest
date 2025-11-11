@@ -275,8 +275,8 @@ public class Player extends Entity {
         }
         
         if (image != null) {
-            int spriteWidth = gamePanel.tileSize * 10;
-            int spriteHeight = gamePanel.tileSize * 10;
+            int spriteWidth = gamePanel.tileSize * 4;
+            int spriteHeight = gamePanel.tileSize * 4;
 
             // Apply camera offset
             int screenX = worldX - gamePanel.cameraX - spriteWidth / 1;
