@@ -1,0 +1,12 @@
+⏳  1. Default Map Design w/ Collision
+    2. Mob Sprite
+✅  3. Player Char tracking 
+    4. Mob Behavior[AI]
+    5. Level Map [2-3 Map max] w/ Collision
+    6. Game Logic Playthrough
+    7. Object/item Design and Implementation
+    8. Inventory
+    9. GAME UI [main menu, health bar, etc.]
+    10. GAME MUSIC
+
+⏳✅
