@@ -15,6 +15,7 @@ public class GamePanel extends JPanel {
     public final int maxScreenCol = 40; // change from 16
     public final int maxScreenRow = 22; // change from 12
 
+    // Default screen size (used as fallback)
     public final int screenWidth = tileSize * maxScreenCol; // 768 px
     public final int screenHeight = tileSize * maxScreenRow; // 576 px
 
@@ -23,12 +24,7 @@ public class GamePanel extends JPanel {
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
 
-    // // [TEST] PLAYER POSITION
-    // int playerX = 100;
-    // int playerY = 100;
-    // int playerSpeed = 4;
-
-    // for tiles
+    // TILES
     TileManager tileManager = new TileManager(this);
     // KEY INPUT (imported from KeyHandler.java)
     KeyHandler keyHandler = new KeyHandler();
@@ -39,13 +35,14 @@ public class GamePanel extends JPanel {
     // CAMERA POSITION
     public int cameraX;
     public int cameraY;
+    
 
     // GAME LOOP OBJECT
     private GameLoop gameLoop;
 
     // CONSTRUCTOR
     public GamePanel() {
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        // Don't set preferred size - let it fill the JFrame
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
@@ -60,44 +57,37 @@ public class GamePanel extends JPanel {
 
     // UPDATES GAME LOGIC EVERY FRAME [MOVEMENT SPEED]
     public void update() {
-        // if (keyHandler.upPressed) playerY -= playerSpeed;
-        // if (keyHandler.downPressed) playerY += playerSpeed;
-        // if (keyHandler.leftPressed) playerX -= playerSpeed;
-        // if (keyHandler.rightPressed) playerX += playerSpeed;
-
-        // int dx = 0;
-        // int dy = 0;
-
-        // if (keyHandler.upPressed) dy -= 1;
-        // if (keyHandler.downPressed) dy += 1;
-        // if (keyHandler.leftPressed) dx -= 1;
-        // if (keyHandler.rightPressed) dx += 1;
-
-        // // If moving diagonally, normalize speed
-        // if (dx != 0 && dy != 0) {
-        // playerX += dx * (playerSpeed / Math.sqrt(2));
-        // playerY += dy * (playerSpeed / Math.sqrt(2));
-        // } else {
-        // playerX += dx * playerSpeed;
-        // playerY += dy * playerSpeed;
-        // }
 
         player.update();
 
-        // Player size in pixels
-        int playerWidth = tileSize * 4;
-        int playerHeight = tileSize * 4;
+        // Player size
+        int playerWidth = tileSize * 2;
+        int playerHeight = tileSize * 2;
 
-        // Target camera position centered on player
-        int targetCameraX = player.worldX - (screenWidth / 2) + (playerWidth / 2);
-        int targetCameraY = player.worldY - (screenHeight / 2) + (playerHeight / 2);
+        // Get actual screen size from the panel
+        int screenW = getWidth();
+        int screenH = getHeight();
+        
+        // Use default size if panel not sized yet
+        if (screenW <= 0) {
+            screenW = screenWidth;
+        }
+        if (screenH <= 0) {
+            screenH = screenHeight;
+        }
 
-        // Smooth camera movement (LERP)
-        double smoothing = 0.1; // 0.1 = 10% per frame; smaller = smoother
+        // Center camera on player
+        int targetCameraX = player.worldX - (screenW / 2) + (playerWidth / 2);
+        int targetCameraY = player.worldY - (screenH / 2) + (playerHeight / 2);
+
+        // Smooth follow (LERP)
+        double smoothing = 0.1; // Adjust for speed (0.1 = smoother)
         cameraX += (targetCameraX - cameraX) * smoothing;
         cameraY += (targetCameraY - cameraY) * smoothing;
+        
+        
 
-    }
+    }   
 
     // DRAWS EVERYTHING OM SCREEN EVERY FRAME
     @Override
@@ -107,12 +97,8 @@ public class GamePanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
 
         // Draw Tiles
-
         tileManager.draw(g2);
 
-        // // TEMPORARY CHARACTER
-        // g2.setColor(Color.WHITE);
-        // g2.fillRect(playerX, playerY, tileSize, tileSize);
 
         player.draw(g2);
 
@@ -121,3 +107,7 @@ public class GamePanel extends JPanel {
     }
 
 }
+
+
+
+
