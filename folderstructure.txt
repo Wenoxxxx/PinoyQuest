@@ -2,8 +2,7 @@
 │
 ├── 📁 main/
 │   ├── Main.java
-│   ├── GamePanel.java
-│   └── GameWindow.java
+│  
 │
 ├── 📁 core/
 │   ├── GameLoop.java
@@ -26,6 +25,7 @@
     ├── SpriteLoader.java
     ├── CollisionChecker.java
     └── Constants.java
+    
 📁 assets/
 │
 ├── 📁 sprite/
