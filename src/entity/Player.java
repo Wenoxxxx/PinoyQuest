@@ -39,14 +39,17 @@ public class Player extends Entity {
     boolean wasMoving = false;
     String lastDirection = "down";
 
+    public int screenX;
+    public int screenY;
+
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
-
-        // screenX = gamePanel.screenWidth / 2;
-        // screenY = gamePanel.screenHeight / 2;
+        
         setDefaultValues();
         loadPlayerImages();
+
+
     }
 
     // INITIALIZATION OF PLAYER CHARACTER
@@ -175,10 +178,12 @@ public class Player extends Entity {
         idleLeftFrames = new BufferedImage[12];
         idleRightFrames = new BufferedImage[12];
 
-        // Get project root directory and construct base path
-        String projectRoot = System.getProperty("user.dir");
-        String basePath = projectRoot + File.separator + "src" + File.separator + "assets" + File.separator + "sprites" + File.separator
-                + "player" + File.separator;
+        // Relative base path for assets (no System.getProperty)
+        String basePath = 
+                "src" + File.separator + 
+                "assets" + File.separator + 
+                "sprites" + File.separator + 
+                "player" + File.separator;
 
         // Load walking frames
         for (int i = 0; i < 6; i++) {
@@ -224,92 +229,44 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 
-        if (moving) {
-            // Show walking animation when moving
-            switch (direction) {
-                case "up":
-                    if (upFrames != null && frameIndex >= 0 && frameIndex < upFrames.length) {
-                        image = upFrames[frameIndex];
-                    }
-                    break;
-                case "down":
-                    if (downFrames != null && frameIndex >= 0 && frameIndex < downFrames.length) {
-                        image = downFrames[frameIndex];
-                    }
-                    break;
-                case "left":
-                    if (leftFrames != null && frameIndex >= 0 && frameIndex < leftFrames.length) {
-                        image = leftFrames[frameIndex];
-                    }
-                    break;
-                case "right":
-                    if (rightFrames != null && frameIndex >= 0 && frameIndex < rightFrames.length) {
-                        image = rightFrames[frameIndex];
-                    }
-                    break;
-            }
-        } else {
-            // Show idle animation when not moving (instant transition)
-            switch (direction) {
-                case "up":
-                    if (idleUpFrames != null && frameIndex >= 0 && frameIndex < idleUpFrames.length) {
-                        image = idleUpFrames[frameIndex];
-                    }
-                    break;
-                case "down":
-                    if (idleDownFrames != null && frameIndex >= 0 && frameIndex < idleDownFrames.length) {
-                        image = idleDownFrames[frameIndex];
-                    }
-                    break;
-                case "left":
-                    if (idleLeftFrames != null && frameIndex >= 0 && frameIndex < idleLeftFrames.length) {
-                        image = idleLeftFrames[frameIndex];
-                    }
-                    break;
-                case "right":
-                    if (idleRightFrames != null && frameIndex >= 0 && frameIndex < idleRightFrames.length) {
-                        image = idleRightFrames[frameIndex];
-                    }
-                    break;
-            }
+    if (moving) {
+        switch (direction) {
+            case "up": image = upFrames[frameIndex]; break;
+            case "down": image = downFrames[frameIndex]; break;
+            case "left": image = leftFrames[frameIndex]; break;
+            case "right": image = rightFrames[frameIndex]; break;
         }
-        
-        if (image != null) {
-
-            // PLAYER SIZE IN GAMEPANEL
-            int spriteWidth = gamePanel.tileSize * 4;
-            int spriteHeight = gamePanel.tileSize * 4;
-
-            // Apply camera offset
-            int screenX = worldX - gamePanel.cameraX - spriteWidth / 1;
-            int screenY = worldY - gamePanel.cameraY - spriteHeight / 1;
-
-            g2.drawImage(image, screenX, screenY, spriteWidth, spriteHeight, null);
+    } else {
+        switch (direction) {
+            case "up": image = idleUpFrames[frameIndex]; break;
+            case "down": image = idleDownFrames[frameIndex]; break;
+            case "left": image = idleLeftFrames[frameIndex]; break;
+            case "right": image = idleRightFrames[frameIndex]; break;
         }
     }
 
-    /*
-     * int spriteWidth = gamePanel.tileSize * 4;
-     * int spriteHeight = gamePanel.tileSize * 4;
-     * int offsetY = spriteHeight / 4;
-     * 
-     * // Draw player at center of screen
-     * int worldX = gamePanel.screenWidth / 2 - spriteWidth / 2;
-     * int worldY = gamePanel.screenHeight / 2 - spriteHeight / 2 - offsetY;
-     * 
-     * g2.drawImage(image, worldX, worldY, spriteWidth, spriteHeight, null);
-     */
+        if (image != null) {
+        int spriteWidth = gamePanel.tileSize * 4;
+        int spriteHeight = gamePanel.tileSize * 4;
 
-    /*
-     * int spriteWidth = gamePanel.tileSize / 4;
-     * int spriteHeight = gamePanel.tileSize * 4;
-     * g2.drawImage(
-     * image,
-     * worldX - spriteWidth / 2, // shift left
-     * worldY - spriteHeight / 2, // shift up
-     * spriteWidth,
-     * spriteHeight,
-     * null);
-     * }
-     */
+        // Get actual screen size from the panel
+        int screenW = gamePanel.getWidth();
+        int screenH = gamePanel.getHeight();
+        
+        // Use default size if panel not sized yet
+        if (screenW <= 0) {
+            screenW = gamePanel.screenWidth;
+        }
+        if (screenH <= 0) {
+            screenH = gamePanel.screenHeight;
+        }
+
+        // Draw player in the center of the screen
+        int drawX = (screenW / 2) - (spriteWidth / 2);
+        int drawY = (screenH / 2) - (spriteHeight / 2);
+
+        g2.drawImage(image, drawX, drawY, spriteWidth, spriteHeight, null);
+    }
+    }
+
 }
