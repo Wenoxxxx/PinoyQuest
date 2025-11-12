@@ -18,25 +18,37 @@ public class Main {
 
         // PUTS THE GAME SCREEN INSIDE THE WINDOW
         GamePanel gamePanel = new GamePanel();
-        mainFrame.add(gamePanel);
-        mainFrame.pack();
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.add(gamePanel, BorderLayout.CENTER);
 
         // FULL SCREEN
         mainFrame.setVisible(true);
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
+        // ICON IMAGE (load before game starts)
+        String iconPath = 
+                "src" + File.separator + "assets"
+                + File.separator + "ui"
+                + File.separator + "gameIcon"
+                + File.separator + "icon.png";
+
+        File iconFile = new File(iconPath);
+        if (iconFile.exists()) {
+            try {
+                ImageIcon icon = new ImageIcon(iconPath);
+                if (icon.getImage() != null) {
+                    Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                    mainFrame.setIconImage(scaledImage);
+                }
+            } catch (Exception e) {
+                System.err.println("Failed to load icon: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Icon not found at: " + iconPath);
+        }
+
         // START THE SEPARATE GAME LOOP THREAD
         gamePanel.startGame();
-
-        // ICON IMAGE
-        String projectRoot = System.getProperty("user.dir");
-        String iconPath = projectRoot + File.separator + "assets"
-                        + File.separator + "gameIcon"
-                        + File.separator + "icon.png";
-
-        ImageIcon icon = new ImageIcon(iconPath);
-        Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-        mainFrame.setIconImage(scaledImage);
 
         
         //RUNNING INDICATOR
@@ -60,5 +72,5 @@ public class Main {
         indicator.start();
 
     }
-
+    
 }
