@@ -113,65 +113,47 @@ public class TileManager {
     }
 
     // MAP LOADER FROM TXT
-    public void loadMap(){
+    public void loadMap() {
         try {
-            // Try to load map from file
-            String mapPath = "src" + File.separator + "assets" + File.separator + "maps" + File.separator + "map.txt";
+            String mapPath = "src" + File.separator + "assets" + File.separator + "maps" + File.separator + "map1.txt";
             File mapFile = new File(mapPath);
-            
-            if (mapFile.exists()) {
-                InputStream is = getClass().getResourceAsStream("/src/assets/maps/map.txt");
-                if (is == null) {
-                    // Fallback to file system
-                    java.io.FileInputStream fis = new java.io.FileInputStream(mapFile);
-                    BufferedReader br = new BufferedReader(new InputStreamReader(fis));
 
-                    int row = 0;
-                    int col = 0;
-
-                    // IMPORT THE MAP TILE DESIGN FROM TXT TO A 1 LINE ARRAY
-                    while(col < gp.maxWorldCol && row < gp.maxWorldRow){
-                        String line = br.readLine();
-                        if (line == null) break;
-
-                        while(col < gp.maxWorldCol){
-                            String numbers[] = line.split(" ");
-                            if (col < numbers.length) {
-                                int num = Integer.parseInt(numbers[col]);
-                                mapTileNum[col][row] = num;
-                            }
-                            col++;
-                        }
-
-                        if(col == gp.maxWorldCol){
-                            col = 0;
-                            row++;
-                        }
-                    }
-                    br.close();
-                }
-            } else {
-                // No map file found - generate default map (all grass tiles)
+            if (!mapFile.exists()) {
                 System.out.println("Map file not found. Generating default map with grass tiles.");
                 for (int row = 0; row < gp.maxWorldRow; row++) {
                     for (int col = 0; col < gp.maxWorldCol; col++) {
-                        mapTileNum[col][row] = 0; // Default to grass
+                        mapTileNum[col][row] = 0; // Grass
+                    }
+                }
+                return;
+            }
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(new java.io.FileInputStream(mapFile)));
+                String line;
+                int row = 0;
+
+                while ((line = br.readLine()) != null && row < gp.maxWorldRow) {
+                    String[] numbers = line.split(" ");
+                    for (int col = 0; col < numbers.length && col < gp.maxWorldCol; col++) {
+                        mapTileNum[col][row] = Integer.parseInt(numbers[col]);
+                    }
+                    row++;
+                }
+
+                br.close();
+                System.out.println("Map loaded successfully!");
+        } catch (Exception e) {
+                System.err.println("Error loading map: " + e.getMessage());
+                e.printStackTrace();
+
+                // Fallback default map
+                for (int row = 0; row < gp.maxWorldRow; row++) {
+                    for (int col = 0; col < gp.maxWorldCol; col++) {
+                        mapTileNum[col][row] = 0; // Grass
                     }
                 }
             }
-
-        } catch (Exception e) {
-            System.err.println("Error loading map: " + e.getMessage());
-            e.printStackTrace();
-            // Generate default map on error
-            for (int row = 0; row < gp.maxWorldRow; row++) {
-                for (int col = 0; col < gp.maxWorldCol; col++) {
-                    mapTileNum[col][row] = 0; // Default to grass
-                }
-            }
-        }
-    }
-
+    }   
 
     public void draw(Graphics2D g2) {
 
