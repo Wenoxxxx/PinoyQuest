@@ -48,21 +48,42 @@ public class Player extends Entity {
         
         setDefaultValues();
         loadPlayerImages();
-
-
     }
 
     // INITIALIZATION OF PLAYER CHARACTER
     public void setDefaultValues() {
-        worldX = 770;
-        worldY = 400;
+        // worldX = 770;
+        // worldY = 400;
+        // speed = 3;
+        // direction = "down"; // default facing
+
+        // Set world position to map center
+        int centerCol = gamePanel.maxWorldCol / 2;
+        int centerRow = gamePanel.maxWorldRow / 2;
+        worldX = centerCol * gamePanel.tileSize;
+        worldY = centerRow * gamePanel.tileSize;
+
+        // Adjust camera so player is at screen center
+        gamePanel.cameraX = worldX - (gamePanel.screenWidth / 2);
+        gamePanel.cameraY = worldY - (gamePanel.screenHeight / 2);
+
+        // Default movement and facing
         speed = 3;
-        direction = "down"; // default facing
+        direction = "down";
+
+        int hitboxWidth = gamePanel.tileSize;
+        int hitboxHeight = gamePanel.tileSize;
+        int offsetX = (gamePanel.tileSize * 2 - hitboxWidth) / 2;
+        int offsetY = gamePanel.tileSize;
+        solidArea.setBounds(offsetX, offsetY, hitboxWidth, hitboxHeight);
+        solidAreaDefaultX = offsetX;
+        solidAreaDefaultY = offsetY;
     }
 
     public void update() {
         int dx = 0, dy = 0;
         moving = false;
+        boolean moved = false;
 
         if (keyHandler.upPressed) {
             dy -= 1;
@@ -85,16 +106,70 @@ public class Player extends Entity {
             moving = true;
         }
 
-        // Normalize diagonal movement to match cardinal movement speed
-        if (dx != 0 && dy != 0) {
-            // Diagonal movement: normalize by 1/sqrt(2) ≈ 0.707
-            double diagonalFactor = 1.0 / Math.sqrt(2.0);
-            worldX += (int) (dx * speed * diagonalFactor);
-            worldY += (int) (dy * speed * diagonalFactor);
-        } else {
-            // Cardinal movement: normal speed
-            worldX += dx * speed;
-            worldY += dy * speed;
+        int moveX = 0;
+        int moveY = 0;
+
+        if (dx != 0 || dy != 0) {
+            if (dx != 0 && dy != 0) {
+                double diagonalFactor = 1.0 / Math.sqrt(2.0);
+                moveX = (int) Math.round(dx * speed * diagonalFactor);
+                moveY = (int) Math.round(dy * speed * diagonalFactor);
+            } else {
+                moveX = dx * speed;
+                moveY = dy * speed;
+            }
+
+            if (moveX != 0 && moveY != 0) {
+                int nextX = worldX + moveX;
+                int nextY = worldY + moveY;
+
+                if (!gamePanel.collision.willCollide(this, nextX, nextY)) {
+                    worldX = nextX;
+                    worldY = nextY;
+                    moved = true;
+                } else {
+                    boolean movedX = false;
+                    boolean movedY = false;
+
+                    if (!gamePanel.collision.willCollide(this, worldX + moveX, worldY)) {
+                        worldX += moveX;
+                        moved = true;
+                        movedX = true;
+                    }
+
+                    if (!gamePanel.collision.willCollide(this, worldX, worldY + moveY)) {
+                        worldY += moveY;
+                        moved = true;
+                        movedY = true;
+                    }
+
+                    if (!movedX && !movedY) {
+                        moving = false;
+                    }
+                }
+            } else {
+                if (moveX != 0) {
+                    if (!gamePanel.collision.willCollide(this, worldX + moveX, worldY)) {
+                        worldX += moveX;
+                        moved = true;
+                    } else {
+                        moving = false;
+                    }
+                }
+
+                if (moveY != 0) {
+                    if (!gamePanel.collision.willCollide(this, worldX, worldY + moveY)) {
+                        worldY += moveY;
+                        moved = true;
+                    } else {
+                        moving = false;
+                    }
+                }
+            }
+        }
+
+        if (!moved) {
+            moving = false;
         }
 
         updateAnimation();
