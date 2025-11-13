@@ -19,13 +19,18 @@ public class GamePanel extends JPanel {
     public final int screenWidth = tileSize * maxScreenCol; // 768 px
     public final int screenHeight = tileSize * maxScreenRow; // 576 px
 
-    public final int maxWorldCol = 100; // example: number of tiles horizontally
-    public final int maxWorldRow = 100; // example: number of tiles vertically
+    // MAP WORLD SIZE --------------------------------------------------------------
+    public final int maxWorldCol = 31; // WIDTH  | example: number of tiles horizontally
+    public final int maxWorldRow = 21; // HEIGHT  | example: number of tiles vertically
+    // MAP WORLD SIZE --------------------------------------------------------------
+
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
 
     // TILES
     TileManager tileManager = new TileManager(this);
+    // COLLISION
+    public Collision collision = new Collision(this);
     // KEY INPUT (imported from KeyHandler.java)
     KeyHandler keyHandler = new KeyHandler();
 
@@ -55,6 +60,11 @@ public class GamePanel extends JPanel {
         gameLoop.start();
     }
 
+	// Expose tile collision in a safe way for entities in other packages
+	public boolean isTileBlocked(int col, int row) {
+		return tileManager.isBlocked(col, row);
+	}
+
     // UPDATES GAME LOGIC EVERY FRAME [MOVEMENT SPEED]
     public void update() {
 
@@ -81,7 +91,7 @@ public class GamePanel extends JPanel {
         int targetCameraY = player.worldY - (screenH / 2) + (playerHeight / 2);
 
         // Smooth follow (LERP)
-        double smoothing = 0.1; // Adjust for speed (0.1 = smoother)
+        double smoothing = .15; // Adjust for speed (0.1 = smoother)
         cameraX += (targetCameraX - cameraX) * smoothing;
         cameraY += (targetCameraY - cameraY) * smoothing;
         
@@ -98,7 +108,6 @@ public class GamePanel extends JPanel {
 
         // Draw Tiles
         tileManager.draw(g2);
-
 
         player.draw(g2);
 
