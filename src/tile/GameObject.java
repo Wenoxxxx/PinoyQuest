@@ -1,16 +1,24 @@
 package src.tile;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public class GameObject {
 
     public String name;
     public BufferedImage image;
-    public boolean collision;   // true = blocks player
 
-    public int worldX, worldY;  // pixel position
+    // true = blocks player, false = walkable / decorative
+    public boolean collision = false;
 
-    // For multi-tile objects (houses, big trees)
+    // world position in pixels (top-left of the sprite)
+    public int worldX, worldY;
+
+    // size in tiles (used for drawing & default hitbox)
     public int width = 1;
     public int height = 1;
+
+    // Collision hitbox (relative to worldX/worldY)
+    // ObjectManager will set the proper size in loadObjectTypes()
+    public Rectangle solidArea = new Rectangle(0, 0, 0, 0);
 }

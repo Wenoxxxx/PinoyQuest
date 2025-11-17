@@ -3,7 +3,7 @@ package src.tile;
 import src.core.GamePanel;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.*;   // includes Rectangle and Graphics2D
 import java.io.*;
 
 public class ObjectManager {
@@ -36,26 +36,51 @@ public class ObjectManager {
         System.out.println("Placed objects: " + placedObjectCount);
     }
 
-    // 1. Define object TYPES (0 = house, 1 = rock, ...)
+    // Define object TYPES (0 = house, 1 = rock, ...)
     private void loadObjectTypes() {
         try {
-            // HOUSE = type index 0
+            // ===== HOUSE = type index 0 =====
             GameObject house = new GameObject();
             house.name = "house";
             house.image = ImageIO.read(new File(OBJECT_DIR + "house2.png"));
-            house.collision = true;
-            house.width = 5;     // 4 tiles wide
-            house.height = 4;    // 3 tiles tall
+            house.collision = true;      // not walkable
+            house.width = 5;             // tiles wide
+            house.height = 4;            // tiles tall
+            // full-sprite hitbox (you can shrink this later if needed)
+            house.solidArea = new Rectangle(
+                    0,
+                    0,
+                    gp.tileSize * house.width,
+                    gp.tileSize * house.height
+            );
             objectTypes[objectTypeCount++] = house;
 
-            // ROCK = type index 1
+            // ===== ROCK = type index 1 =====
             GameObject rock = new GameObject();
             rock.name = "rock";
             rock.image = ImageIO.read(new File(OBJECT_DIR + "rock.png"));
-            rock.collision = true;
+            rock.collision = true;       // 🚫 not walkable
             rock.width = 1;
             rock.height = 1;
+            rock.solidArea = new Rectangle(
+                    0,
+                    0,
+                    gp.tileSize * rock.width,
+                    gp.tileSize * rock.height
+            );
             objectTypes[objectTypeCount++] = rock;
+
+            // Example: WALKABLE decoration
+            /*
+            GameObject flower = new GameObject();
+            flower.name = "flower";
+            flower.image = ImageIO.read(new File(OBJECT_DIR + "flower.png"));
+            flower.collision = false;    // ✅ walkable
+            flower.width = 1;
+            flower.height = 1;
+            flower.solidArea = new Rectangle(0, 0, gp.tileSize, gp.tileSize);
+            objectTypes[objectTypeCount++] = flower;
+            */
 
         } catch (IOException e) {
             System.out.println("ERROR: Cannot load object images.");
@@ -111,6 +136,17 @@ public class ObjectManager {
                         obj.width = baseType.width;
                         obj.height = baseType.height;
 
+                        // copy hitbox size/offset
+                        if (baseType.solidArea != null) {
+                            obj.solidArea = new Rectangle(baseType.solidArea);
+                        } else {
+                            obj.solidArea = new Rectangle(
+                                    0, 0,
+                                    gp.tileSize * obj.width,
+                                    gp.tileSize * obj.height
+                            );
+                        }
+
                         // This cell’s world coords line up with the TILE grid
                         obj.worldX = col * gp.tileSize;
                         obj.worldY = row * gp.tileSize;
@@ -164,5 +200,40 @@ public class ObjectManager {
                 );
             }
         }
+    }
+
+    // 4. Collision helper: used by GamePanel.isObjectBlocked → Collision.willCollide
+    public boolean isBlocked(int nextWorldX, int nextWorldY, Rectangle entityArea) {
+
+        if (entityArea == null) return false;
+
+        // Entity collision box at its next world position
+        Rectangle entityBox = new Rectangle(
+                nextWorldX + entityArea.x,
+                nextWorldY + entityArea.y,
+                entityArea.width,
+                entityArea.height
+        );
+
+        for (int i = 0; i < placedObjectCount; i++) {
+            GameObject obj = placedObjects[i];
+            if (obj == null || obj.image == null) continue;
+            if (!obj.collision) continue;                // only block if collision = true
+            if (obj.solidArea == null) continue;
+
+            // Object collision box in world coordinates
+            Rectangle objBox = new Rectangle(
+                    obj.worldX + obj.solidArea.x,
+                    obj.worldY + obj.solidArea.y,
+                    obj.solidArea.width,
+                    obj.solidArea.height
+            );
+
+            if (entityBox.intersects(objBox)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
