@@ -1,84 +1,81 @@
 package src.tile;
 
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import javax.imageio.*;
+import javax.imageio.ImageIO;
+
 import src.core.GamePanel;
 
 public class TileManager {
 
     GamePanel gp;
-    Tile[] tile; 
-    int mapTileNum[][];
+    public Tile[] tile;
+    public int[][] mapTileNum;
+
+    // how many tile types are actually registered
+    private int tileTypeCount = 0;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
-        tile = new Tile[10];
+        // Increase if you need more tile types later
+        tile = new Tile[32];
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage();
         loadMap();
     }
 
-
-    // LOAD TILE IMAGES
+    // LOAD TILE IMAGES (auto-assign tile IDs by order)
     public void getTileImage() {
         String basePath = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator;
 
         try {
-            // GRASS
-            tile[0] = new Tile();
-            File file0 = new File(basePath + "tile0_Grass.png");
-            if (file0.exists()) tile[0].image = ImageIO.read(file0);
-            tile[0].collision = false; // walkable tile
+            // [Tile ID 0] GRASS 
+            tile[tileTypeCount] = new Tile();
+            File grassFile = new File(basePath + "tile0_Grass.png");
+            if (grassFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(grassFile);
+            }
+            tile[tileTypeCount].collision = false; // walkable
+            System.out.println("TILE " + tileTypeCount + " = GRASS");
+            tileTypeCount++;
 
-            // PATH
-            tile[1] = new Tile();
-            File file1 = new File(basePath + "tile1_StraightPath.png");
-            if (file1.exists()) tile[1].image = ImageIO.read(file1);
-            tile[1].collision = false;
+            // [Tile ID 1] PATH HORIZONTAL 
+            tile[tileTypeCount] = new Tile();
+            File pathHFile = new File(basePath + "tile1_StraightPathHori.png");
+            if (pathHFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(pathHFile);
+            }
+            tile[tileTypeCount].collision = false;
+            System.out.println("TILE " + tileTypeCount + " = PATH_HORI");
+            tileTypeCount++;
 
-            // CORNER BL
-            tile[2] = new Tile();
-            File file2 = new File(basePath + "tile2_BottomLeftCorner.png");
-            if (file2.exists()) tile[2].image = ImageIO.read(file2);
-            tile[2].collision = true; // block movement
+            // [Tile ID 2] PATH VERTICAL 
+            tile[tileTypeCount] = new Tile();
+            File pathVFile = new File(basePath + "tile1_StraightPathVerti.png");
+            if (pathVFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(pathVFile);
+            }
+            tile[tileTypeCount].collision = false;
+            System.out.println("TILE " + tileTypeCount + " = PATH_VERT");
+            tileTypeCount++;
 
-            // CORNER BR
-            tile[3] = new Tile();
-            File file3 = new File(basePath + "tile3_BottomRightCorner.png");
-            if (file3.exists()) tile[3].image = ImageIO.read(file3);
-            tile[3].collision = true;
+            // [Tile ID 3] ROAD 
+            tile[tileTypeCount] = new Tile();
+            File roadFile = new File(basePath + "tile7_RockyRoad.png");
+            if (roadFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(roadFile);
+            }
+            tile[tileTypeCount].collision = false;
+            System.out.println("TILE " + tileTypeCount + " = ROAD");
+            tileTypeCount++;
 
-            // CORNER UL
-            tile[4] = new Tile();
-            File file4 = new File(basePath + "tile4_UpperLeftCorner.png");
-            if (file4.exists()) tile[4].image = ImageIO.read(file4);
-            tile[4].collision = true;
 
-            // CORNER UR
-            tile[5] = new Tile();
-            File file5 = new File(basePath + "tile5_UpperRightCorner.png");
-            if (file5.exists()) tile[5].image = ImageIO.read(file5);
-            tile[5].collision = true;
-
-            // Rocky Road w/ Grass – walkable
-            tile[6] = new Tile();
-            File file6 = new File(basePath + "tile6_RockyRoadwLilGrass.png");
-            if (file6.exists()) tile[6].image = ImageIO.read(file6);
-            tile[6].collision = false;
-
-            // Rocky Road – walkable
-            tile[7] = new Tile();
-            File file7 = new File(basePath + "tile7_RockyRoad.png");
-            if (file7.exists()) tile[7].image = ImageIO.read(file7);
-            tile[7].collision = false;
 
         } catch (IOException e) {
             System.err.println("Error loading tile images: " + e.getMessage());
@@ -102,13 +99,16 @@ public class TileManager {
                 return;
             }
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(new java.io.FileInputStream(mapFile)));
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new java.io.FileInputStream(mapFile))
+            );
 
             String line;
             int row = 0;
 
             while ((line = br.readLine()) != null && row < gp.maxWorldRow) {
-                String[] numbers = line.split(" ");
+                // Use \\s+ so multiple spaces or tabs are okay
+                String[] numbers = line.trim().split("\\s+");
                 for (int col = 0; col < numbers.length && col < gp.maxWorldCol; col++) {
                     mapTileNum[col][row] = Integer.parseInt(numbers[col]);
                 }
@@ -131,8 +131,7 @@ public class TileManager {
         }
     }
 
-
-    // NEW: CHECK IF TILE BLOCKS MOVEMENT
+    // CHECK IF TILE BLOCKS MOVEMENT
     public boolean isBlocked(int col, int row) {
 
         // out-of-bounds tiles = BLOCKED to prevent crashes
@@ -150,7 +149,6 @@ public class TileManager {
         return tile[tileNum].collision;
     }
 
-
     // DRAW TILES
     public void draw(Graphics2D g2) {
 
@@ -159,7 +157,8 @@ public class TileManager {
 
                 int tileNum = mapTileNum[worldCol][worldRow];
 
-                if (tileNum < 0 || tileNum >= tile.length || tile[tileNum] == null || tile[tileNum].image == null) {
+                if (tileNum < 0 || tileNum >= tile.length ||
+                    tile[tileNum] == null || tile[tileNum].image == null) {
                     tileNum = 0; // fallback to grass
                 }
 
