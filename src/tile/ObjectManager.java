@@ -40,42 +40,42 @@ public class ObjectManager {
     private void loadObjectTypes() {
         try {
             // ===== HOUSE = type index 0 =====
-            GameObject house = new GameObject();
-            house.name = "house";
-            house.image = ImageIO.read(new File(OBJECT_DIR + "house2.png"));
-            house.collision = true;      // not walkable
-            house.width = 5;             // tiles wide
-            house.height = 4;            // tiles tall
+            GameObject house1 = new GameObject();
+            house1.name = "house";
+            house1.image = ImageIO.read(new File(OBJECT_DIR + "house1.png"));
+            house1.collision = true;      // not walkable
+            house1.width = 5;             // tiles wide
+            house1.height = 4;            // tiles tall
             // full-sprite hitbox (you can shrink this later if needed)
-            house.solidArea = new Rectangle(
+            house1.solidArea = new Rectangle(
                     0,
                     0,
-                    gp.tileSize * house.width,
-                    gp.tileSize * house.height
+                    gp.tileSize * house1.width,
+                    gp.tileSize * house1.height
             );
-            objectTypes[objectTypeCount++] = house;
+            objectTypes[objectTypeCount++] = house1;
 
             // ===== ROCK = type index 1 =====
-            GameObject rock = new GameObject();
-            rock.name = "rock";
-            rock.image = ImageIO.read(new File(OBJECT_DIR + "rock.png"));
-            rock.collision = true;       // 🚫 not walkable
-            rock.width = 1;
-            rock.height = 1;
-            rock.solidArea = new Rectangle(
+            GameObject house2 = new GameObject();
+            house2.name = "house";
+            house2.image = ImageIO.read(new File(OBJECT_DIR + "house2.png"));
+            house2.collision = true;      // not walkable
+            house2.width = 5;             // tiles wide
+            house2.height = 4;            // tiles tall
+            house2.solidArea = new Rectangle(
                     0,
                     0,
-                    gp.tileSize * rock.width,
-                    gp.tileSize * rock.height
+                    gp.tileSize * house2.width,
+                    gp.tileSize * house2.height
             );
-            objectTypes[objectTypeCount++] = rock;
+            objectTypes[objectTypeCount++] = house2;
 
             // Example: WALKABLE decoration
             /*
             GameObject flower = new GameObject();
             flower.name = "flower";
             flower.image = ImageIO.read(new File(OBJECT_DIR + "flower.png"));
-            flower.collision = false;    // ✅ walkable
+            flower.collision = false;    // walkable
             flower.width = 1;
             flower.height = 1;
             flower.solidArea = new Rectangle(0, 0, gp.tileSize, gp.tileSize);
@@ -88,7 +88,7 @@ public class ObjectManager {
         }
     }
 
-    // 2. Load objects1.txt as a grid exactly like the tile map
+    // Load objects1.txt as a grid exactly like the tile map
     private void loadObjectMap(String fileName) {
         File mapFile = new File(MAP_DIR + fileName);
 
@@ -167,7 +167,7 @@ public class ObjectManager {
         }
     }
 
-    // 3. Draw objects using the same camera as TileManager
+    // Draw objects using the same camera as TileManager
     public void draw(Graphics2D g2) {
 
         int screenW = gp.getWidth() > 0 ? gp.getWidth() : gp.screenWidth;
@@ -202,7 +202,7 @@ public class ObjectManager {
         }
     }
 
-    // 4. Collision helper: used by GamePanel.isObjectBlocked → Collision.willCollide
+    //Collision helper: used by GamePanel.isObjectBlocked → Collision.willCollide
     public boolean isBlocked(int nextWorldX, int nextWorldY, Rectangle entityArea) {
 
         if (entityArea == null) return false;
