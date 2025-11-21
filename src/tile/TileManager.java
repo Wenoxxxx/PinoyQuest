@@ -35,6 +35,7 @@ public class TileManager {
         String basePath = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator;
 
         try {
+            
             // [Tile ID 0] GRASS 
             tile[tileTypeCount] = new Tile();
             File grassFile = new File(basePath + "tile0_Grass.png");
@@ -75,7 +76,17 @@ public class TileManager {
             System.out.println("TILE " + tileTypeCount + " = ROAD");
             tileTypeCount++;
 
+            // [Tile ID 4] BORDER
+            tile[tileTypeCount] = new Tile();
+            File borderFile = new File(basePath + "tile8_Border.png");
+            if (borderFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(borderFile);
+            }
+            tile[tileTypeCount].collision = true;
+            System.out.println("TILE " + tileTypeCount + " = ROAD");
+            tileTypeCount++;
 
+            
 
         } catch (IOException e) {
             System.err.println("Error loading tile images: " + e.getMessage());
