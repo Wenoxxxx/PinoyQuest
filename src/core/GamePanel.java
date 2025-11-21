@@ -23,11 +23,15 @@ public class GamePanel extends JPanel {
 
     // MAP WORLD SIZE --------------------------------------------------------------
     public final int maxWorldCol = 31; // WIDTH  | number of tiles horizontally
-    public final int maxWorldRow = 21; // [21 base] HEIGHT | number of tiles vertically
+    public final int maxWorldRow = 21; // HEIGHT | number of tiles vertically
     // MAP WORLD SIZE --------------------------------------------------------------
 
     public final int worldWidth = tileSize * maxWorldCol;
     public final int worldHeight = tileSize * maxWorldRow;
+
+    // === ACTIVE MAP INDEX ===
+    // 0 = map1.txt, 1 = map2.txt (more if you extend TileManager.MAP_COUNT)
+    public int currentMap = 0;
 
     // TILES
     public TileManager tileManager;
@@ -60,8 +64,15 @@ public class GamePanel extends JPanel {
 
         gameLoop = new GameLoop(this);
 
+        // order: tiles → objects → player already exists
         tileManager = new TileManager(this);
         objectManager = new ObjectManager(this);
+
+        // optional: starting position + starting map
+        currentMap = 0; // start at map1
+        // Example spawn (adjust to your map)
+        player.worldX = 5 * tileSize;
+        player.worldY = 5 * tileSize;
     }
 
     // STARTING GAME BY RUNNING GAME LOOP
@@ -69,6 +80,7 @@ public class GamePanel extends JPanel {
         gameLoop.start();
     }
 
+    // ============= MAP SWITCHING API =============
     // Expose tile collision in a safe way for entities in other packages
     public boolean isTileBlocked(int col, int row) {
         return tileManager != null && tileManager.isBlocked(col, row);
@@ -77,6 +89,41 @@ public class GamePanel extends JPanel {
     // Expose OBJECT collision for Collision.java
     public boolean isObjectBlocked(int nextWorldX, int nextWorldY, Rectangle entityArea) {
         return objectManager != null && objectManager.isBlocked(nextWorldX, nextWorldY, entityArea);
+    }
+
+    /**
+     * Teleport / switch map.
+     *
+     * @param newMapIndex index in TileManager.MAP_COUNT (0 = map1.txt, 1 = map2.txt)
+     * @param playerTileCol tile column to spawn at in the new map
+     * @param playerTileRow tile row to spawn at in the new map
+     * @param facingDirection "up", "down", "left", "right"
+     */
+    public void switchToMap(int newMapIndex, int playerTileCol, int playerTileRow, String facingDirection) {
+        if (newMapIndex < 0 || newMapIndex >= TileManager.MAP_COUNT) {
+            System.out.println("Invalid map index: " + newMapIndex);
+            return;
+        }
+
+        currentMap = newMapIndex;
+
+        // place player
+        player.worldX = playerTileCol * tileSize;
+        player.worldY = playerTileRow * tileSize;
+        player.direction = facingDirection;
+
+        // recenter camera immediately on new position
+        int playerWidth = tileSize * 2;
+        int playerHeight = tileSize * 2;
+
+        int screenW = getWidth() > 0 ? getWidth() : screenWidth;
+        int screenH = getHeight() > 0 ? getHeight() : screenHeight;
+
+        cameraX = player.worldX - (screenW / 2) + (playerWidth / 2);
+        cameraY = player.worldY - (screenH / 2) + (playerHeight / 2);
+
+        System.out.println("Switched to map index " + newMapIndex +
+                " at tile (" + playerTileCol + "," + playerTileRow + "), facing " + facingDirection);
     }
 
     // UPDATES GAME LOGIC EVERY FRAME [MOVEMENT SPEED]
