@@ -40,7 +40,7 @@ public class Collision {
             }
         }
 
-        // ===== OBJECT COLLISION (NEW) =====
+        // ===== OBJECT COLLISION =====
         // Checks houses, rocks, etc. based on their collision flag
         if (gp.isObjectBlocked(nextWorldX, nextWorldY, area)) {
             return true;
