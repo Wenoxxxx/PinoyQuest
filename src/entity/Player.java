@@ -20,7 +20,7 @@ public class Player extends Entity {
     public BufferedImage[] downFrames;
     public BufferedImage[] leftFrames;
     public BufferedImage[] rightFrames;
-
+    
     // IDLE ANIMATIONS
     public BufferedImage[] idleUpFrames; // 4 frames (uses idleB1-4)
     public BufferedImage[] idleDownFrames; // 12 frames (uses idleF1-12)
@@ -68,7 +68,7 @@ public class Player extends Entity {
         gamePanel.cameraY = worldY - (gamePanel.screenHeight / 2);
 
         // Default movement and facing
-        speed = 3;
+        speed = 4;
         direction = "down";
 
         int hitboxWidth = gamePanel.tileSize;
@@ -82,7 +82,7 @@ public class Player extends Entity {
 
     public void update() {
         int dx = 0, dy = 0;
-        moving = false;
+        moving = false; 
         boolean moved = false;
 
         if (keyHandler.upPressed) {
