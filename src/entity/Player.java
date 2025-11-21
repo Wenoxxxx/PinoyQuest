@@ -14,26 +14,24 @@ public class Player extends Entity {
     GamePanel gamePanel;
     KeyHandler keyHandler;
 
-
     // WALKING ANIMATION ARRAYS (6 frames)
     public BufferedImage[] upFrames;
     public BufferedImage[] downFrames;
     public BufferedImage[] leftFrames;
     public BufferedImage[] rightFrames;
-    
+
     // IDLE ANIMATIONS
-    public BufferedImage[] idleUpFrames; // 4 frames (uses idleB1-4)
-    public BufferedImage[] idleDownFrames; // 12 frames (uses idleF1-12)
-    public BufferedImage[] idleLeftFrames; // 12 frames (uses idleL1-12)
+    public BufferedImage[] idleUpFrames;    // 4 frames (uses idleB1-4)
+    public BufferedImage[] idleDownFrames;  // 12 frames (uses idleF1-12)
+    public BufferedImage[] idleLeftFrames;  // 12 frames (uses idleL1-12)
     public BufferedImage[] idleRightFrames; // 12 frames (uses idleR1-12)
 
     // ANIMATION CONTROL
     int frameIndex = 0;
     int frameCounter = 0;
-    int animationSpeed = 8; // 30 frames ≈ 0.5 sec at 60 FPS for walking
-    int idleAnimationSpeed = 8; // 8 frames for idle animation (for 12-frame directions)
-    int idleUpAnimationSpeed = 24; // 24 frames for up idle (slower to match 12-frame timing: 4 frames * 24 = 96,
-                                   // same as 12 frames * 8 = 96)
+    int animationSpeed = 8;       // walking
+    int idleAnimationSpeed = 8;   // idle (down/left/right)
+    int idleUpAnimationSpeed = 24; // slower idle for up (4 frames)
 
     boolean moving = false;
     boolean wasMoving = false;
@@ -45,25 +43,20 @@ public class Player extends Entity {
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
-        
+
         setDefaultValues();
         loadPlayerImages();
     }
 
     // INITIALIZATION OF PLAYER CHARACTER
     public void setDefaultValues() {
-        // worldX = 770;
-        // worldY = 400;
-        // speed = 3;
-        // direction = "down"; // default facing
-
-        // Set world position to map center
+        // Spawn at world center
         int centerCol = gamePanel.maxWorldCol / 2;
         int centerRow = gamePanel.maxWorldRow / 2;
         worldX = centerCol * gamePanel.tileSize;
         worldY = centerRow * gamePanel.tileSize;
 
-        // Adjust camera so player is at screen center
+        // Center camera on player
         gamePanel.cameraX = worldX - (gamePanel.screenWidth / 2);
         gamePanel.cameraY = worldY - (gamePanel.screenHeight / 2);
 
@@ -71,6 +64,7 @@ public class Player extends Entity {
         speed = 4;
         direction = "down";
 
+        // Hitbox (1 tile wide, 1 tile tall, positioned at lower half of sprite)
         int hitboxWidth = gamePanel.tileSize;
         int hitboxHeight = gamePanel.tileSize;
         int offsetX = (gamePanel.tileSize * 2 - hitboxWidth) / 2;
@@ -82,9 +76,10 @@ public class Player extends Entity {
 
     public void update() {
         int dx = 0, dy = 0;
-        moving = false; 
+        moving = false;
         boolean moved = false;
 
+        // ----- INPUT -----
         if (keyHandler.upPressed) {
             dy -= 1;
             direction = "up";
@@ -106,10 +101,12 @@ public class Player extends Entity {
             moving = true;
         }
 
+        // ----- MOVEMENT + COLLISION -----
         int moveX = 0;
         int moveY = 0;
 
         if (dx != 0 || dy != 0) {
+            // Normalize diagonal speed
             if (dx != 0 && dy != 0) {
                 double diagonalFactor = 1.0 / Math.sqrt(2.0);
                 moveX = (int) Math.round(dx * speed * diagonalFactor);
@@ -119,6 +116,7 @@ public class Player extends Entity {
                 moveY = dy * speed;
             }
 
+            // Diagonal move attempt
             if (moveX != 0 && moveY != 0) {
                 int nextX = worldX + moveX;
                 int nextY = worldY + moveY;
@@ -128,6 +126,7 @@ public class Player extends Entity {
                     worldY = nextY;
                     moved = true;
                 } else {
+                    // Try X only
                     boolean movedX = false;
                     boolean movedY = false;
 
@@ -137,6 +136,7 @@ public class Player extends Entity {
                         movedX = true;
                     }
 
+                    // Try Y only
                     if (!gamePanel.collision.willCollide(this, worldX, worldY + moveY)) {
                         worldY += moveY;
                         moved = true;
@@ -148,6 +148,7 @@ public class Player extends Entity {
                     }
                 }
             } else {
+                // Axis-aligned move
                 if (moveX != 0) {
                     if (!gamePanel.collision.willCollide(this, worldX + moveX, worldY)) {
                         worldX += moveX;
@@ -172,54 +173,52 @@ public class Player extends Entity {
             moving = false;
         }
 
+        // ----- ANIMATION -----
         updateAnimation();
+
+        // ----- TELEPORT CHECK (AFTER MOVEMENT) -----
+        handleTeleport();
     }
 
     // MAIN ANIMATION LOGIC (MOVING VS IDLE)
     private void updateAnimation() {
-        // Fast transition: reset animation when switching between idle and movement
+        // Reset animation when going from moving → idle or idle → moving
         if (moving != wasMoving) {
-            // State changed - instantly reset to first frame for smooth transition
             frameIndex = 0;
             frameCounter = 0;
         }
 
-        // Reset animation when direction changes while in the same state
+        // Reset when direction changes
         if (!direction.equals(lastDirection)) {
             frameIndex = 0;
             frameCounter = 0;
         }
 
-        // Animate based on current state
         if (moving) {
-            // WALKING: animate walking frames
+            // WALKING
             frameCounter++;
             if (frameCounter > animationSpeed) {
                 frameCounter = 0;
-                frameIndex = (frameIndex + 1) % 6;
+                frameIndex = (frameIndex + 1) % 6; // 6 walking frames
             }
         } else {
-            // IDLE: animate idle frames
+            // IDLE
             frameCounter++;
-            // Use different animation speed for up direction to match timing with other
-            // directions
-            int currentIdleSpeed = (direction.equals("up")) ? idleUpAnimationSpeed : idleAnimationSpeed;
+            int currentIdleSpeed = direction.equals("up") ? idleUpAnimationSpeed : idleAnimationSpeed;
 
             if (frameCounter > currentIdleSpeed) {
                 frameCounter = 0;
-                // Idle animation cycle based on direction
                 switch (direction) {
                     case "up":
-                        frameIndex = (frameIndex + 1) % 4; // UP has only 4 frames, but slower speed matches timing
+                        frameIndex = (frameIndex + 1) % 4;  // 4 idle up frames
                         break;
                     default:
-                        frameIndex = (frameIndex + 1) % 12; // Other directions have 12 frames
+                        frameIndex = (frameIndex + 1) % 12; // 12 idle for other dirs
                         break;
                 }
             }
         }
 
-        // Update state tracking for next frame
         wasMoving = moving;
         lastDirection = direction;
     }
@@ -239,7 +238,7 @@ public class Player extends Entity {
             return null;
         }
     }
-    
+
     // LOAD ALL PLAYER SPRITES
     public void loadPlayerImages() {
 
@@ -253,14 +252,14 @@ public class Player extends Entity {
         idleLeftFrames = new BufferedImage[12];
         idleRightFrames = new BufferedImage[12];
 
-        // Relative base path for assets (no System.getProperty)
-        String basePath = 
-                "src" + File.separator + 
-                "assets" + File.separator + 
-                "sprites" + File.separator + 
+        // Relative base path for assets
+        String basePath =
+                "src" + File.separator +
+                "assets" + File.separator +
+                "sprites" + File.separator +
                 "player" + File.separator;
 
-        // Load walking frames
+        // Walking frames
         for (int i = 0; i < 6; i++) {
             upFrames[i] = loadImageFromFile(basePath + "movement" + File.separator + "up" + (i + 1) + ".png");
             downFrames[i] = loadImageFromFile(basePath + "movement" + File.separator + "down" + (i + 1) + ".png");
@@ -268,35 +267,63 @@ public class Player extends Entity {
             rightFrames[i] = loadImageFromFile(basePath + "movement" + File.separator + "right" + (i + 1) + ".png");
         }
 
-        // Load idle animations
-        // UP (back) - 4 frames using idleB (back), duplicate last frame for remaining
-        // slots
+        // Idle UP (4 frames) → fill rest with last frame
         for (int i = 0; i < 4; i++) {
             idleUpFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleB" + (i + 1) + ".png");
         }
-        // Fill remaining slots with last frame (animation only uses first 4, but array
-        // needs 12)
         BufferedImage lastUpFrame = idleUpFrames[3];
         if (lastUpFrame == null && idleUpFrames[0] != null) {
-            lastUpFrame = idleUpFrames[0]; // Fallback to first frame if last is null
+            lastUpFrame = idleUpFrames[0];
         }
         for (int i = 4; i < 12; i++) {
             idleUpFrames[i] = lastUpFrame;
         }
 
-        // DOWN (forward) - 12 frames using idleF (forward)
+        // Idle DOWN (12 frames)
         for (int i = 0; i < 12; i++) {
             idleDownFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleF" + (i + 1) + ".png");
         }
 
-        // LEFT - 12 frames using idleL
+        // Idle LEFT (12 frames)
         for (int i = 0; i < 12; i++) {
             idleLeftFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleL" + (i + 1) + ".png");
         }
 
-        // RIGHT - 12 frames using idleR
+        // Idle RIGHT (12 frames)
         for (int i = 0; i < 12; i++) {
             idleRightFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleR" + (i + 1) + ".png");
+        }
+    }
+
+    // ====== TELEPORT HANDLER ======
+    private void handleTeleport() {
+        // find tile under the center of the player's hitbox
+        int playerCol = (worldX + solidArea.x + solidArea.width / 2) / gamePanel.tileSize;
+        int playerRow = (worldY + solidArea.y + solidArea.height / 2) / gamePanel.tileSize;
+
+        int tileNum = gamePanel.tileManager.getTileNum(playerCol, playerRow);
+
+        // EXAMPLE:
+        // MAP1 TO MAP2
+        if (gamePanel.currentMap == 0 && tileNum == 5) { // 5 = teleport tile ID
+            gamePanel.switchToMap(
+                    1,      // newMapIndex -> map2.txt
+                    16,     // playerTileCol
+                    2,     // playerTileRow
+                    "down"  // facing
+            );
+            return;
+            
+        }
+
+        // MAP2 TO MAP 1
+        if (gamePanel.currentMap == 1 && tileNum == 5) {
+            gamePanel.switchToMap(
+                    0,
+                    16,
+                    18,
+                    "up"
+            );
         }
     }
 
@@ -304,44 +331,39 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 
-    if (moving) {
-        switch (direction) {
-            case "up": image = upFrames[frameIndex]; break;
-            case "down": image = downFrames[frameIndex]; break;
-            case "left": image = leftFrames[frameIndex]; break;
-            case "right": image = rightFrames[frameIndex]; break;
+        if (moving) {
+            switch (direction) {
+                case "up":    image = upFrames[frameIndex]; break;
+                case "down":  image = downFrames[frameIndex]; break;
+                case "left":  image = leftFrames[frameIndex]; break;
+                case "right": image = rightFrames[frameIndex]; break;
+            }
+        } else {
+            switch (direction) {
+                case "up":    image = idleUpFrames[frameIndex]; break;
+                case "down":  image = idleDownFrames[frameIndex]; break;
+                case "left":  image = idleLeftFrames[frameIndex]; break;
+                case "right": image = idleRightFrames[frameIndex]; break;
+            }
         }
-    } else {
-        switch (direction) {
-            case "up": image = idleUpFrames[frameIndex]; break;
-            case "down": image = idleDownFrames[frameIndex]; break;
-            case "left": image = idleLeftFrames[frameIndex]; break;
-            case "right": image = idleRightFrames[frameIndex]; break;
-        }
-    }
 
         if (image != null) {
-        int spriteWidth = gamePanel.tileSize * 4;
-        int spriteHeight = gamePanel.tileSize * 4;
+            int spriteWidth = gamePanel.tileSize * 4;
+            int spriteHeight = gamePanel.tileSize * 4;
 
-        // Get actual screen size from the panel
-        int screenW = gamePanel.getWidth();
-        int screenH = gamePanel.getHeight();
-        
-        // Use default size if panel not sized yet
-        if (screenW <= 0) {
-            screenW = gamePanel.screenWidth;
+            // Get actual screen size from the panel
+            int screenW = gamePanel.getWidth();
+            int screenH = gamePanel.getHeight();
+
+            // Use default size if panel not sized yet
+            if (screenW <= 0) screenW = gamePanel.screenWidth;
+            if (screenH <= 0) screenH = gamePanel.screenHeight;
+
+            // Draw player in the center of the screen
+            int drawX = (screenW / 2) - (spriteWidth / 2);
+            int drawY = (screenH / 2) - (spriteHeight / 2);
+
+            g2.drawImage(image, drawX, drawY, spriteWidth, spriteHeight, null);
         }
-        if (screenH <= 0) {
-            screenH = gamePanel.screenHeight;
-        }
-
-        // Draw player in the center of the screen
-        int drawX = (screenW / 2) - (spriteWidth / 2);
-        int drawY = (screenH / 2) - (spriteHeight / 2);
-
-        g2.drawImage(image, drawX, drawY, spriteWidth, spriteHeight, null);
     }
-    }
-
 }
