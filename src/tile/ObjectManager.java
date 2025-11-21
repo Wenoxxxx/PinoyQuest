@@ -14,32 +14,41 @@ public class ObjectManager {
     private final GameObject[] objectTypes;
     private int objectTypeCount = 0;
 
-    // Actual placed objects on the map (aligned to the tile grid)
-    public final GameObject[] placedObjects;
-    public int placedObjectCount = 0;
+    // === MULTI-MAP SUPPORT ===
+    // placedObjects[mapIndex][i]
+    public final GameObject[][] placedObjects;
+    // how many objects are used per map
+    public final int[] placedObjectCount;
 
     // Base directories
     private static final String OBJECT_DIR = "src/assets/objects/"; // adjust if different
     private static final String MAP_DIR    = "src/assets/maps/";
 
+    // Number of maps (match TileManager)
+    private static final int MAP_COUNT = TileManager.MAP_COUNT;
+
     public ObjectManager(GamePanel gp) {
         this.gp = gp;
 
-        objectTypes   = new GameObject[32];   // distinct kinds: house, rock, etc.
-        // One possible object per tile cell: width * height (e.g., 31 * 21)
-        placedObjects = new GameObject[gp.maxWorldCol * gp.maxWorldRow];
+        objectTypes = new GameObject[32];   // distinct kinds: house, rock, etc.
+
+        // For each map, allow up to width * height objects
+        int maxPerMap = gp.maxWorldCol * gp.maxWorldRow;
+        placedObjects = new GameObject[MAP_COUNT][maxPerMap];
+        placedObjectCount = new int[MAP_COUNT];
 
         loadObjectTypes();
         System.out.println("Loaded object types: " + objectTypeCount);
 
-        loadObjectMap("objects1.txt");
-        System.out.println("Placed objects: " + placedObjectCount);
+        // === Load per-map object layouts ===
+        loadObjectMap("objects1.txt", 0); // objects for map index 0 (map1.txt)
+        loadObjectMap("objects2.txt", 1); // objects for map index 1 (map2.txt)
     }
 
-    // Define object TYPES (0 = house, 1 = rock, ...)
+    // Define object TYPES (0 = house1, 1 = house2, 2 = tree, 3 = bench, ...)
     private void loadObjectTypes() {
         try {
-            // [TILE ID 0] HOUSE1
+            // [TYPE ID 0] HOUSE1
             GameObject house1 = new GameObject();
             house1.name = "house";
             house1.image = ImageIO.read(new File(OBJECT_DIR + "house1.png"));
@@ -55,7 +64,7 @@ public class ObjectManager {
             );
             objectTypes[objectTypeCount++] = house1;
 
-            // [TILE ID 1] HOUSE2
+            // [TYPE ID 1] HOUSE2
             GameObject house2 = new GameObject();
             house2.name = "house";
             house2.image = ImageIO.read(new File(OBJECT_DIR + "house2.png"));
@@ -70,8 +79,7 @@ public class ObjectManager {
             );
             objectTypes[objectTypeCount++] = house2;
 
-            
-            // [TILE ID 2] TREE1
+            // [TYPE ID 2] TREE1
             GameObject tree1 = new GameObject();
             tree1.name = "tree";
             tree1.image = ImageIO.read(new File(OBJECT_DIR + "tree1.png"));
@@ -85,12 +93,12 @@ public class ObjectManager {
                     gp.tileSize * tree1.height
             );
             objectTypes[objectTypeCount++] = tree1;
-            
-            // [TILE ID 3] BENCH
+
+            // [TYPE ID 3] BENCH
             GameObject bench1 = new GameObject();
             bench1.name = "bench";
             bench1.image = ImageIO.read(new File(OBJECT_DIR + "bench1.png"));
-            bench1.collision = false;      // walkable
+            bench1.collision = false;     // walkable
             bench1.width = 2;             // tiles wide
             bench1.height = 2;            // tiles tall
             bench1.solidArea = new Rectangle(
@@ -100,10 +108,6 @@ public class ObjectManager {
                     gp.tileSize * bench1.height
             );
             objectTypes[objectTypeCount++] = bench1;
-            
-            
-
-    
 
         } catch (IOException e) {
             System.out.println("ERROR: Cannot load object images.");
@@ -111,14 +115,24 @@ public class ObjectManager {
         }
     }
 
-    // Load objects1.txt as a grid exactly like the tile map
-    private void loadObjectMap(String fileName) {
+    // === MULTI-MAP OBJECT LOADING ===
+    // Load objectsX.txt as a grid exactly like the tile map, for a specific mapIndex
+    private void loadObjectMap(String fileName, int mapIndex) {
+        if (mapIndex < 0 || mapIndex >= MAP_COUNT) {
+            System.out.println("Invalid mapIndex in loadObjectMap: " + mapIndex);
+            return;
+        }
+
         File mapFile = new File(MAP_DIR + fileName);
 
         if (!mapFile.exists()) {
-            System.out.println("Object map not found: " + fileName);
+            System.out.println("Object map not found: " + fileName +
+                               " -> no objects for map " + mapIndex);
             return;
         }
+
+        int maxPerMap = placedObjects[mapIndex].length;
+        int count = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(mapFile))) {
 
@@ -147,8 +161,9 @@ public class ObjectManager {
                         GameObject baseType = objectTypes[index];
                         if (baseType == null) continue;
 
-                        if (placedObjectCount >= placedObjects.length) {
-                            System.out.println("WARNING: placedObjects[] is full, skipping extra objects.");
+                        if (count >= maxPerMap) {
+                            System.out.println("WARNING: placedObjects[" + mapIndex + "] is full, skipping extra objects.");
+                            placedObjectCount[mapIndex] = count;
                             return;
                         }
 
@@ -174,10 +189,10 @@ public class ObjectManager {
                         obj.worldX = col * gp.tileSize;
                         obj.worldY = row * gp.tileSize;
 
-                        placedObjects[placedObjectCount++] = obj;
+                        placedObjects[mapIndex][count++] = obj;
 
                         // Debug
-                        System.out.println("Placed " + obj.name +
+                        System.out.println("Map " + mapIndex + " → placed " + obj.name +
                                 " at row=" + row + ", col=" + col +
                                 " (worldX=" + obj.worldX + ", worldY=" + obj.worldY + ")");
                     }
@@ -185,9 +200,12 @@ public class ObjectManager {
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR: Cannot load object map.");
+            System.out.println("ERROR: Cannot load object map: " + fileName);
             e.printStackTrace();
         }
+
+        placedObjectCount[mapIndex] = count;
+        System.out.println("Map " + mapIndex + " total placed objects: " + count);
     }
 
     // Draw objects using the same camera as TileManager
@@ -196,8 +214,13 @@ public class ObjectManager {
         int screenW = gp.getWidth() > 0 ? gp.getWidth() : gp.screenWidth;
         int screenH = gp.getHeight() > 0 ? gp.getHeight() : gp.screenHeight;
 
-        for (int i = 0; i < placedObjectCount; i++) {
-            GameObject obj = placedObjects[i];
+        int mapIndex = gp.currentMap;
+
+        int count = placedObjectCount[mapIndex];
+        GameObject[] mapObjects = placedObjects[mapIndex];
+
+        for (int i = 0; i < count; i++) {
+            GameObject obj = mapObjects[i];
             if (obj == null || obj.image == null) continue;
 
             int worldX = obj.worldX;
@@ -225,7 +248,7 @@ public class ObjectManager {
         }
     }
 
-    //Collision helper: used by GamePanel.isObjectBlocked → Collision.willCollide
+    // Collision helper: used by GamePanel.isObjectBlocked → Collision.willCollide
     public boolean isBlocked(int nextWorldX, int nextWorldY, Rectangle entityArea) {
 
         if (entityArea == null) return false;
@@ -238,8 +261,12 @@ public class ObjectManager {
                 entityArea.height
         );
 
-        for (int i = 0; i < placedObjectCount; i++) {
-            GameObject obj = placedObjects[i];
+        int mapIndex = gp.currentMap;
+        int count = placedObjectCount[mapIndex];
+        GameObject[] mapObjects = placedObjects[mapIndex];
+
+        for (int i = 0; i < count; i++) {
+            GameObject obj = mapObjects[i];
             if (obj == null || obj.image == null) continue;
             if (!obj.collision) continue;                // only block if collision = true
             if (obj.solidArea == null) continue;
