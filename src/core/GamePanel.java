@@ -23,7 +23,7 @@ public class GamePanel extends JPanel {
 
     // MAP WORLD SIZE --------------------------------------------------------------
     public final int maxWorldCol = 31; // WIDTH  | number of tiles horizontally
-    public final int maxWorldRow = 21; // HEIGHT | number of tiles vertically
+    public final int maxWorldRow = 21; // [21 base] HEIGHT | number of tiles vertically
     // MAP WORLD SIZE --------------------------------------------------------------
 
     public final int worldWidth = tileSize * maxWorldCol;
