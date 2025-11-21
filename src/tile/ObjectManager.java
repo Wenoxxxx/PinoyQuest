@@ -39,13 +39,13 @@ public class ObjectManager {
     // Define object TYPES (0 = house, 1 = rock, ...)
     private void loadObjectTypes() {
         try {
-            // ===== HOUSE = type index 0 =====
+            // [TILE ID 0] HOUSE1
             GameObject house1 = new GameObject();
             house1.name = "house";
             house1.image = ImageIO.read(new File(OBJECT_DIR + "house1.png"));
             house1.collision = true;      // not walkable
-            house1.width = 5;             // tiles wide
-            house1.height = 4;            // tiles tall
+            house1.width = 6;             // tiles wide
+            house1.height = 5;            // tiles tall
             // full-sprite hitbox (you can shrink this later if needed)
             house1.solidArea = new Rectangle(
                     0,
@@ -55,13 +55,13 @@ public class ObjectManager {
             );
             objectTypes[objectTypeCount++] = house1;
 
-            // ===== ROCK = type index 1 =====
+            // [TILE ID 1] HOUSE2
             GameObject house2 = new GameObject();
             house2.name = "house";
             house2.image = ImageIO.read(new File(OBJECT_DIR + "house2.png"));
             house2.collision = true;      // not walkable
-            house2.width = 5;             // tiles wide
-            house2.height = 4;            // tiles tall
+            house2.width = 6;             // tiles wide
+            house2.height = 5;            // tiles tall
             house2.solidArea = new Rectangle(
                     0,
                     0,
@@ -70,17 +70,40 @@ public class ObjectManager {
             );
             objectTypes[objectTypeCount++] = house2;
 
-            // Example: WALKABLE decoration
-            /*
-            GameObject flower = new GameObject();
-            flower.name = "flower";
-            flower.image = ImageIO.read(new File(OBJECT_DIR + "flower.png"));
-            flower.collision = false;    // walkable
-            flower.width = 1;
-            flower.height = 1;
-            flower.solidArea = new Rectangle(0, 0, gp.tileSize, gp.tileSize);
-            objectTypes[objectTypeCount++] = flower;
-            */
+            
+            // [TILE ID 2] TREE1
+            GameObject tree1 = new GameObject();
+            tree1.name = "tree";
+            tree1.image = ImageIO.read(new File(OBJECT_DIR + "tree1.png"));
+            tree1.collision = true;      // not walkable
+            tree1.width = 2;             // tiles wide
+            tree1.height = 2;            // tiles tall
+            tree1.solidArea = new Rectangle(
+                    0,
+                    0,
+                    gp.tileSize * tree1.width,
+                    gp.tileSize * tree1.height
+            );
+            objectTypes[objectTypeCount++] = tree1;
+            
+            // [TILE ID 3] BENCH
+            GameObject bench1 = new GameObject();
+            bench1.name = "bench";
+            bench1.image = ImageIO.read(new File(OBJECT_DIR + "bench1.png"));
+            bench1.collision = false;      // walkable
+            bench1.width = 2;             // tiles wide
+            bench1.height = 2;            // tiles tall
+            bench1.solidArea = new Rectangle(
+                    0,
+                    0,
+                    gp.tileSize * bench1.width,
+                    gp.tileSize * bench1.height
+            );
+            objectTypes[objectTypeCount++] = bench1;
+            
+            
+
+    
 
         } catch (IOException e) {
             System.out.println("ERROR: Cannot load object images.");
