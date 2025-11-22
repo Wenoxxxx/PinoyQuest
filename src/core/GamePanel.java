@@ -70,9 +70,9 @@ public class GamePanel extends JPanel {
 
         // optional: starting position + starting map
         currentMap = 0; // start at map1
-        // Example spawn (adjust to your map)
-        player.worldX = 5 * tileSize;
-        player.worldY = 5 * tileSize;
+        //spawn (adjust to your map)
+        player.worldX = 15 * tileSize;
+        player.worldY = 10 * tileSize;
     }
 
     // STARTING GAME BY RUNNING GAME LOOP
