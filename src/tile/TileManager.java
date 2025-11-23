@@ -105,6 +105,38 @@ public class TileManager {
             System.out.println("TILE " + tileTypeCount + " = TELEPORT");
             tileTypeCount++;
 
+            // [Tile ID 6] BUSH
+            tile[tileTypeCount] = new Tile();
+            File bushFile = new File(basePath + "tile10_Bush.png"); // change filename as needed
+            if (bushFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(bushFile);
+            }
+            tile[tileTypeCount].collision = false; // walkable, but used as trigger
+            System.out.println("TILE " + tileTypeCount + " = BUSH");
+            tileTypeCount++;
+
+            // [Tile ID 7] GRASS WITH FLOWERS   
+            tile[tileTypeCount] = new Tile();
+            File grassFlowersFile = new File(basePath + "tile11_GrassWFlowers.png"); // change filename as needed
+            if (grassFlowersFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(grassFlowersFile);
+            }
+            tile[tileTypeCount].collision = false; // walkable, but used as trigger
+            System.out.println("TILE " + tileTypeCount + " = GRASS WITH FLOWERS");
+            tileTypeCount++;
+
+            // [Tile ID 8] FARM   
+            tile[tileTypeCount] = new Tile();
+            File farm = new File(basePath + "tile12_Farm.png"); // change filename as needed
+            if (farm.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(farm);
+            }
+            tile[tileTypeCount].collision = false; // walkable, but used as trigger
+            System.out.println("TILE " + tileTypeCount + " = FARM");
+            tileTypeCount++;
+            
+
+
         } catch (IOException e) {
             System.err.println("Error loading tile images: " + e.getMessage());
             e.printStackTrace();

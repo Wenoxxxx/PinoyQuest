@@ -109,6 +109,98 @@ public class ObjectManager {
             );
             objectTypes[objectTypeCount++] = bench1;
 
+            // [TYPE ID 4] WELL
+            GameObject well = new GameObject();
+            well.name = "well";
+            well.image = ImageIO.read(new File(OBJECT_DIR + "well1.png"));
+            well.collision = true;     // walkable
+            well.width = 2;             // tiles wide
+            well.height = 2;            // tiles tall
+            well.solidArea = new Rectangle(
+                    0,
+                    0,
+                    gp.tileSize * well.width,
+                    gp.tileSize * well.height
+            );
+            objectTypes[objectTypeCount++] = well;
+
+            // [TYPE ID 5] Boxes
+            GameObject boxes = new GameObject();
+            boxes.name = "boxes";
+            boxes.image = ImageIO.read(new File(OBJECT_DIR + "boxes1.png"));
+            boxes.collision = false;     // walkable
+            boxes.width = 3;             // tiles wide
+            boxes.height = 3;            // tiles tall
+            boxes.solidArea = new Rectangle(
+                    0,
+                    0,
+                    gp.tileSize * boxes.width,
+                    gp.tileSize * boxes.height
+            );
+            objectTypes[objectTypeCount++] = boxes;
+
+            // [TYPE ID 6] Tent 1
+            GameObject tent = new GameObject();
+            tent.name = "tent";
+            tent.image = ImageIO.read(new File(OBJECT_DIR + "tent1.png"));
+            tent.collision = true;     // walkable
+            tent.width = 3;             // tiles wide
+            tent.height = 3;            // tiles tall
+            tent.solidArea = new Rectangle(
+                    0,
+                    0, 
+                    gp.tileSize * tent.width,
+                    gp.tileSize * tent.height
+            );
+            objectTypes[objectTypeCount++] = tent;
+
+            // [TYPE ID 7] Tent 2
+            GameObject tent2 = new GameObject();
+            tent2.name = "tent";
+            tent2.image = ImageIO.read(new File(OBJECT_DIR + "tent2.png"));
+            tent2.collision = true;     // walkable
+            tent2.width = 3;             // tiles wide
+            tent2.height = 2;            // tiles tall
+            tent2.solidArea = new Rectangle(
+                    0,
+                    0, 
+                    gp.tileSize * tent2.width,
+                    gp.tileSize * tent2.height
+            );
+            objectTypes[objectTypeCount++] = tent2;
+
+            // [TYPE ID 8] Wheelbarrow
+            GameObject wheelbarrow = new GameObject();
+            wheelbarrow.name = "wheelbarrow";
+            wheelbarrow.image = ImageIO.read(new File(OBJECT_DIR + "wheelbarrow1.png"));
+            wheelbarrow.collision = true;     // walkable
+            wheelbarrow.width = 2;             // tiles wide
+            wheelbarrow.height = 1;            // tiles tall
+            wheelbarrow.solidArea = new Rectangle(
+                    0,
+                    0, 
+                    gp.tileSize * wheelbarrow.width,
+                    gp.tileSize * wheelbarrow.height
+            );
+            objectTypes[objectTypeCount++] = wheelbarrow;
+
+            // [TYPE ID 9] Big Rock
+            GameObject bigRock = new GameObject();
+            bigRock.name = "bigRock";
+            bigRock.image = ImageIO.read(new File(OBJECT_DIR + "bigrockwgrass1.png"));
+            bigRock.collision = true;     // walkable
+            bigRock.width = 3;             // tiles wide
+            bigRock.height = 3;            // tiles tall
+            bigRock.solidArea = new Rectangle(
+                    0,
+                    0, 
+                    gp.tileSize * bigRock.width,
+                    gp.tileSize * bigRock.height
+            );
+            objectTypes[objectTypeCount++] = bigRock;
+
+
+
         } catch (IOException e) {
             System.out.println("ERROR: Cannot load object images.");
             e.printStackTrace();
