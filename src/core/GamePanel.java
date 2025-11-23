@@ -22,7 +22,7 @@ public class GamePanel extends JPanel {
     public final int screenHeight = tileSize * maxScreenRow;
 
     // MAP WORLD SIZE --------------------------------------------------------------
-    public final int maxWorldCol = 31; // WIDTH  | number of tiles horizontally
+    public final int maxWorldCol = 31; // WIDTH | number of tiles horizontally
     public final int maxWorldRow = 21; // HEIGHT | number of tiles vertically
     // MAP WORLD SIZE --------------------------------------------------------------
 
@@ -94,9 +94,10 @@ public class GamePanel extends JPanel {
     /**
      * Teleport / switch map.
      *
-     * @param newMapIndex index in TileManager.MAP_COUNT (0 = map1.txt, 1 = map2.txt)
-     * @param playerTileCol tile column to spawn at in the new map
-     * @param playerTileRow tile row to spawn at in the new map
+     * @param newMapIndex     index in TileManager.MAP_COUNT (0 = map1.txt, 1 =
+     *                        map2.txt)
+     * @param playerTileCol   tile column to spawn at in the new map
+     * @param playerTileRow   tile row to spawn at in the new map
      * @param facingDirection "up", "down", "left", "right"
      */
     public void switchToMap(int newMapIndex, int playerTileCol, int playerTileRow, String facingDirection) {
@@ -173,6 +174,7 @@ public class GamePanel extends JPanel {
 
         // Draw Player
         player.draw(g2);
+        player.drawHud(g2);
 
         g2.dispose();
     }

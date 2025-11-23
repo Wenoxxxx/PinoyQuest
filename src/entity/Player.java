@@ -1,18 +1,32 @@
 package src.entity;
 
-import src.core.KeyHandler;
-import src.core.GamePanel;
-
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import src.core.GamePanel;
+import src.core.KeyHandler;
+import src.entity.skills.Skill;
+import src.entity.skills.SkillManager;
 
 public class Player extends Entity {
 
     GamePanel gamePanel;
     KeyHandler keyHandler;
+    private final SkillManager skillManager;
+
+    private int baseSpeed;
+    private int speedModifier;
+
+    private int maxHealth = 100;
+    private int health = maxHealth;
+    private int maxEnergy = 100;
+    private int energy = maxEnergy;
+    private int energyRegenCounter = 0;
+    private boolean channeling = false;
 
     // WALKING ANIMATION ARRAYS (6 frames)
     public BufferedImage[] upFrames;
@@ -46,6 +60,7 @@ public class Player extends Entity {
 
         setDefaultValues();
         loadPlayerImages();
+        skillManager = new SkillManager(this);
     }
 
     // INITIALIZATION OF PLAYER CHARACTER
@@ -61,8 +76,17 @@ public class Player extends Entity {
         gamePanel.cameraY = worldY - (gamePanel.screenHeight / 2);
 
         // Default movement and facing
-        speed = 4;
+        baseSpeed = 4;
+        speedModifier = 0;
+        refreshSpeed();
         direction = "down";
+
+        maxHealth = 100;
+        health = maxHealth;
+        maxEnergy = 100;
+        energy = maxEnergy;
+        energyRegenCounter = 0;
+        channeling = false;
 
         // Hitbox (1 tile wide, 1 tile tall, positioned at lower half of sprite)
         int hitboxWidth = gamePanel.tileSize;
@@ -173,11 +197,16 @@ public class Player extends Entity {
             moving = false;
         }
 
+        handleSkillInput();
+
         // ----- ANIMATION -----
         updateAnimation();
 
         // ----- TELEPORT CHECK (AFTER MOVEMENT) -----
         handleTeleport();
+
+        skillManager.update();
+        regenerateEnergy();
     }
 
     // MAIN ANIMATION LOGIC (MOVING VS IDLE)
@@ -325,6 +354,176 @@ public class Player extends Entity {
                     "up"
             );
         }
+    }
+
+    private void handleSkillInput() {
+        if (skillManager == null || keyHandler == null) {
+            return;
+        }
+
+        for (int slot = 0; slot < KeyHandler.SKILL_SLOT_COUNT; slot++) {
+            if (keyHandler.consumeSkillTap(slot)) {
+                skillManager.activateSlot(slot);
+            }
+        }
+    }
+
+    private void regenerateEnergy() {
+        if (energy >= maxEnergy) {
+            energyRegenCounter = 0;
+            return;
+        }
+
+        int delay = channeling ? 10 : 25;
+        energyRegenCounter++;
+        if (energyRegenCounter >= delay) {
+            energy = Math.min(maxEnergy, energy + 1);
+            energyRegenCounter = 0;
+        }
+    }
+
+    public void drawHud(Graphics2D g2) {
+        if (g2 == null) {
+            return;
+        }
+
+        int padding = 28;
+        int panelWidth = 320;
+        int panelHeight = 140;
+
+        g2.setColor(new Color(0, 0, 0, 170));
+        g2.fillRoundRect(padding - 18, padding - 30, panelWidth, panelHeight, 12, 12);
+
+        int barWidth = 240;
+        int barHeight = 14;
+        int barX = padding;
+        int barY = padding;
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 16f));
+        g2.setColor(Color.WHITE);
+        g2.drawString("Health", barX, barY - 6);
+        drawBar(g2, barX, barY, barWidth, barHeight, health / (double) maxHealth, new Color(210, 82, 82));
+        g2.drawString(health + " / " + maxHealth, barX + barWidth + 12, barY + barHeight - 2);
+
+        int energyY = barY + 32;
+        g2.drawString("Energy", barX, energyY - 6);
+        drawBar(g2, barX, energyY, barWidth, barHeight, energy / (double) maxEnergy, new Color(80, 165, 220));
+        g2.drawString(energy + " / " + maxEnergy, barX + barWidth + 12, energyY + barHeight - 2);
+
+        int skillYStart = energyY + 36;
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 14f));
+
+        for (int i = 0; i < skillManager.getSlotCount(); i++) {
+            Skill skill = skillManager.getSkill(i);
+            if (skill == null) {
+                continue;
+            }
+
+            String label = keyHandler.getSkillKeyLabel(i) + ": " + skill.getName();
+            g2.setColor(Color.WHITE);
+            g2.drawString(label, barX, skillYStart + (i * 18));
+
+            String status;
+            if (skill.isActive()) {
+                status = "Active";
+            } else if (skill.isOnCooldown()) {
+                double seconds = skill.getCooldownTimer() / 60.0;
+                status = String.format("CD %.1fs", seconds);
+            } else if (energy < skill.getEnergyCost()) {
+                status = "Need " + skill.getEnergyCost() + " EN";
+            } else {
+                status = "Ready";
+            }
+
+            g2.setColor(new Color(200, 200, 200));
+            g2.drawString(status, barX + 170, skillYStart + (i * 18));
+        }
+    }
+
+    private void drawBar(Graphics2D g2, int x, int y, int width, int height, double percent, Color fillColor) {
+        g2.setColor(new Color(45, 45, 45));
+        g2.fillRoundRect(x, y, width, height, 8, 8);
+
+        int actualWidth = (int) (width * Math.max(0, Math.min(1, percent)));
+        g2.setColor(fillColor);
+        g2.fillRoundRect(x, y, actualWidth, height, 8, 8);
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
+
+    public SkillManager getSkillManager() {
+        return skillManager;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void addSpeedModifier(int amount) {
+        speedModifier += amount;
+        refreshSpeed();
+    }
+
+    private void refreshSpeed() {
+        speed = Math.max(1, baseSpeed + speedModifier);
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void heal(int amount) {
+        if (amount <= 0) {
+            return;
+        }
+        health = Math.min(maxHealth, health + amount);
+    }
+
+    public void damage(int amount) {
+        if (amount <= 0) {
+            return;
+        }
+        health = Math.max(0, health - amount);
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public int getMaxEnergy() {
+        return maxEnergy;
+    }
+
+    public boolean consumeEnergy(int amount) {
+        if (amount <= 0) {
+            return true;
+        }
+        if (energy < amount) {
+            return false;
+        }
+        energy -= amount;
+        return true;
+    }
+
+    public void restoreEnergy(int amount) {
+        if (amount <= 0) {
+            return;
+        }
+        energy = Math.min(maxEnergy, energy + amount);
+    }
+
+    public void setChanneling(boolean channeling) {
+        this.channeling = channeling;
+    }
+
+    public boolean isChanneling() {
+        return channeling;
     }
 
     // RENDER SPRITE
