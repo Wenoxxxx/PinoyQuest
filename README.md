@@ -8,7 +8,7 @@ Members: **Owen, Yuan, Kristine, Regine**
 
 ## 🎮 Overview
 
-**PinoyQuest** is a retro-inspired 2D RPG adventure that taps into the timeless charm of classic handheld games—think Pokémon on MyBoy—but infused with pure **Pinoy culture**.
+**PinoyQuest** is a retro-inspired 2D adventure that taps into the timeless charm of classic handheld games—think Pokémon on MyBoy—but infused with pure **Pinoy culture**.
 
 Set in a pixelated rendition of a lively Filipino town, you play as a young hero navigating vibrant streets, sari-sari stores, and nostalgic playgrounds. Your mission? Restore peace after mischievous local spirits (engkanto vibes) start disrupting cherished Filipino childhood games.
 
