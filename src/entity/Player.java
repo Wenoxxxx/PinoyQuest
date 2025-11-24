@@ -332,27 +332,33 @@ public class Player extends Entity {
 
         int tileNum = gamePanel.tileManager.getTileNum(playerCol, playerRow);
 
-        // EXAMPLE:
-        // MAP1 TO MAP2
-        if (gamePanel.currentMap == 0 && tileNum == 5) { // 5 = teleport tile ID
+        // --------- GLOBAL TELEPORT TILE IDS ---------
+        // MAP 1: teleport is local ID 5 (see TileManager: "[Tile ID 5] TELEPORT")
+        int map1TeleportGlobalId = gamePanel.tileManager.tilesetStart[0] + 5;
+
+        // MAP 2: teleport is local ID 1 (see TileManager: "[Tile ID 1] FloorTP (MAP 2)")
+        int map2TeleportGlobalId = gamePanel.tileManager.tilesetStart[1] + 1;
+
+        // ===== MAP1 TO MAP2 =====
+        if (gamePanel.currentMap == 0 && tileNum == map1TeleportGlobalId) {
             gamePanel.switchToMap(
                     1,      // newMapIndex -> map2.txt
-                    16,     // playerTileCol
-                    2,     // playerTileRow
+                    16,     // playerTileCol in map2
+                    2,      // playerTileRow in map2
                     "down"  // facing
             );
             return;
-            
         }
 
-        // MAP2 TO MAP 1
-        if (gamePanel.currentMap == 1 && tileNum == 5) {
+        // ===== MAP2 TO MAP1 =====
+        if (gamePanel.currentMap == 1 && tileNum == map2TeleportGlobalId) {
             gamePanel.switchToMap(
-                    0,
-                    16,
-                    18,
-                    "up"
+                    0,      // back to map1.txt
+                    16,     // playerTileCol in map1
+                    18,     // playerTileRow in map1
+                    "up"    // facing
             );
+            return;
         }
     }
 

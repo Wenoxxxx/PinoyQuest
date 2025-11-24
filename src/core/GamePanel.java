@@ -94,12 +94,13 @@ public class GamePanel extends JPanel {
     /**
      * Teleport / switch map.
      *
-     * @param newMapIndex     index in TileManager.MAP_COUNT (0 = map1.txt, 1 =
-     *                        map2.txt)
-     * @param playerTileCol   tile column to spawn at in the new map
-     * @param playerTileRow   tile row to spawn at in the new map
-     * @param facingDirection "up", "down", "left", "right"
+     * @param newMapIndex     // index in TileManager.MAP_COUNT (0 = map1.txt, 1 =
+     *                        // map2.txt)
+     * @param playerTileCol   // tile column to spawn at in the new map
+     * @param playerTileRow   // tile row to spawn at in the new map
+     * @param facingDirection // "up", "down", "left", "right"
      */
+    
     public void switchToMap(int newMapIndex, int playerTileCol, int playerTileRow, String facingDirection) {
         if (newMapIndex < 0 || newMapIndex >= TileManager.MAP_COUNT) {
             System.out.println("Invalid map index: " + newMapIndex);

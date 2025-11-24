@@ -14,6 +14,9 @@ public class ObjectManager {
     private final GameObject[] objectTypes;
     private int objectTypeCount = 0;
 
+    // For each map, starting index of its object types in objectTypes[]
+    public final int[] objectSetStart;
+
     // === MULTI-MAP SUPPORT ===
     // placedObjects[mapIndex][i]
     public final GameObject[][] placedObjects;
@@ -21,8 +24,10 @@ public class ObjectManager {
     public final int[] placedObjectCount;
 
     // Base directories
-    private static final String OBJECT_DIR = "src/assets/objects/"; // adjust if different
-    private static final String MAP_DIR    = "src/assets/maps/";
+    private static final String OBJECT_ROOT_DIR =
+            "src" + File.separator + "assets" + File.separator + "objects" + File.separator;
+    private static final String MAP_DIR =
+            "src" + File.separator + "assets" + File.separator + "maps" + File.separator;
 
     // Number of maps (match TileManager)
     private static final int MAP_COUNT = TileManager.MAP_COUNT;
@@ -30,7 +35,8 @@ public class ObjectManager {
     public ObjectManager(GamePanel gp) {
         this.gp = gp;
 
-        objectTypes = new GameObject[32];   // distinct kinds: house, rock, etc.
+        objectTypes = new GameObject[64];   // all object types across all maps
+        objectSetStart = new int[MAP_COUNT];
 
         // For each map, allow up to width * height objects
         int maxPerMap = gp.maxWorldCol * gp.maxWorldRow;
@@ -43,163 +49,115 @@ public class ObjectManager {
         // === Load per-map object layouts ===
         loadObjectMap("objects1.txt", 0); // objects for map index 0 (map1.txt)
         loadObjectMap("objects2.txt", 1); // objects for map index 1 (map2.txt)
+        // loadObjectMap("objects3.txt", 2); // if you add a 3rd map
     }
 
-    // Define object TYPES (0 = house1, 1 = house2, 2 = tree, 3 = bench, ...)
+    // Helper: register one object type
+    private void addObjectType(
+            String basePath,
+            String fileName,
+            String debugName,
+            String objectName,
+            boolean collision,
+            int widthTiles,
+            int heightTiles
+    ) throws IOException {
+
+        if (objectTypeCount >= objectTypes.length) {
+            System.out.println("WARNING: objectTypes[] is full, cannot register: " + debugName);
+            return;
+        }
+
+        GameObject obj = new GameObject();
+        obj.name = objectName;
+        obj.collision = collision;
+        obj.width = widthTiles;
+        obj.height = heightTiles;
+
+        File imgFile = new File(basePath + fileName);
+        if (imgFile.exists()) {
+            obj.image = ImageIO.read(imgFile);
+        } else {
+            System.out.println("WARNING: Object image not found: " + imgFile.getPath());
+        }
+
+        // default hitbox = full sprite
+        obj.solidArea = new Rectangle(
+                0,
+                0,
+                gp.tileSize * widthTiles,
+                gp.tileSize * heightTiles
+        );
+
+        objectTypes[objectTypeCount] = obj;
+        System.out.println("OBJECT TYPE " + objectTypeCount + " = " + debugName +
+                " (file: " + imgFile.getPath() + ")");
+        objectTypeCount++;
+    }
+
+    // OBJECT LOADER
     private void loadObjectTypes() {
+        // src/assets/objects/map01/
+        String basePath1 = OBJECT_ROOT_DIR + "map01" + File.separator;
+        // src/assets/objects/map02/
+        String basePath2 = OBJECT_ROOT_DIR + "map02" + File.separator;
+        // String basePath3 = OBJECT_ROOT_DIR + "map03" + File.separator; // if needed
+
         try {
-            // [TYPE ID 0] HOUSE1
-            GameObject house1 = new GameObject();
-            house1.name = "house";
-            house1.image = ImageIO.read(new File(OBJECT_DIR + "house1.png"));
-            house1.collision = true;      // not walkable
-            house1.width = 6;             // tiles wide
-            house1.height = 5;            // tiles tall
-            // full-sprite hitbox (you can shrink this later if needed)
-            house1.solidArea = new Rectangle(
-                    0,
-                    0,
-                    gp.tileSize * house1.width,
-                    gp.tileSize * house1.height
-            );
-            objectTypes[objectTypeCount++] = house1;
+            // =============== MAP 1 OBJECT TYPES ===============
+            objectSetStart[0] = objectTypeCount;
+            int localId = 0;
 
-            // [TYPE ID 1] HOUSE2
-            GameObject house2 = new GameObject();
-            house2.name = "house";
-            house2.image = ImageIO.read(new File(OBJECT_DIR + "house2.png"));
-            house2.collision = true;      // not walkable
-            house2.width = 6;             // tiles wide
-            house2.height = 5;            // tiles tall
-            house2.solidArea = new Rectangle(
-                    0,
-                    0,
-                    gp.tileSize * house2.width,
-                    gp.tileSize * house2.height
-            );
-            objectTypes[objectTypeCount++] = house2;
+            addObjectType(basePath1, "house1.png",       "MAP1_HOUSE1",       "house",       true,  6, 5);
+            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = HOUSE1");
 
-            // [TYPE ID 2] TREE1
-            GameObject tree1 = new GameObject();
-            tree1.name = "tree";
-            tree1.image = ImageIO.read(new File(OBJECT_DIR + "tree1.png"));
-            tree1.collision = true;      // not walkable
-            tree1.width = 2;             // tiles wide
-            tree1.height = 2;            // tiles tall
-            tree1.solidArea = new Rectangle(
-                    0,
-                    0,
-                    gp.tileSize * tree1.width,
-                    gp.tileSize * tree1.height
-            );
-            objectTypes[objectTypeCount++] = tree1;
+            addObjectType(basePath1, "house2.png",       "MAP1_HOUSE2",       "house",       true,  6, 5);
+            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = HOUSE2");
 
-            // [TYPE ID 3] BENCH
-            GameObject bench1 = new GameObject();
-            bench1.name = "bench";
-            bench1.image = ImageIO.read(new File(OBJECT_DIR + "bench1.png"));
-            bench1.collision = false;     // walkable
-            bench1.width = 2;             // tiles wide
-            bench1.height = 2;            // tiles tall
-            bench1.solidArea = new Rectangle(
-                    0,
-                    0,
-                    gp.tileSize * bench1.width,
-                    gp.tileSize * bench1.height
-            );
-            objectTypes[objectTypeCount++] = bench1;
+            addObjectType(basePath1, "tree1.png",        "MAP1_TREE1",        "tree",        true,  2, 2);
+            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TREE1");
 
-            // [TYPE ID 4] WELL
-            GameObject well = new GameObject();
-            well.name = "well";
-            well.image = ImageIO.read(new File(OBJECT_DIR + "well1.png"));
-            well.collision = true;     // walkable
-            well.width = 2;             // tiles wide
-            well.height = 2;            // tiles tall
-            well.solidArea = new Rectangle(
-                    0,
-                    0,
-                    gp.tileSize * well.width,
-                    gp.tileSize * well.height
-            );
-            objectTypes[objectTypeCount++] = well;
+            addObjectType(basePath1, "bench1.png",       "MAP1_BENCH1",       "bench",       false, 2, 2);
+            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = BENCH1");
 
-            // [TYPE ID 5] Boxes
-            GameObject boxes = new GameObject();
-            boxes.name = "boxes";
-            boxes.image = ImageIO.read(new File(OBJECT_DIR + "boxes1.png"));
-            boxes.collision = false;     // walkable
-            boxes.width = 3;             // tiles wide
-            boxes.height = 3;            // tiles tall
-            boxes.solidArea = new Rectangle(
-                    0,
-                    0,
-                    gp.tileSize * boxes.width,
-                    gp.tileSize * boxes.height
-            );
-            objectTypes[objectTypeCount++] = boxes;
+            addObjectType(basePath1, "well1.png",        "MAP1_WELL1",        "well",        true,  2, 2);
+            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = WELL1");
 
-            // [TYPE ID 6] Tent 1
-            GameObject tent = new GameObject();
-            tent.name = "tent";
-            tent.image = ImageIO.read(new File(OBJECT_DIR + "tent1.png"));
-            tent.collision = true;     // walkable
-            tent.width = 3;             // tiles wide
-            tent.height = 3;            // tiles tall
-            tent.solidArea = new Rectangle(
-                    0,
-                    0, 
-                    gp.tileSize * tent.width,
-                    gp.tileSize * tent.height
-            );
-            objectTypes[objectTypeCount++] = tent;
+            addObjectType(basePath1, "boxes1.png",       "MAP1_BOXES1",       "boxes",       false, 3, 3);
+            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = BOXES1");
 
-            // [TYPE ID 7] Tent 2
-            GameObject tent2 = new GameObject();
-            tent2.name = "tent";
-            tent2.image = ImageIO.read(new File(OBJECT_DIR + "tent2.png"));
-            tent2.collision = true;     // walkable
-            tent2.width = 3;             // tiles wide
-            tent2.height = 2;            // tiles tall
-            tent2.solidArea = new Rectangle(
-                    0,
-                    0, 
-                    gp.tileSize * tent2.width,
-                    gp.tileSize * tent2.height
-            );
-            objectTypes[objectTypeCount++] = tent2;
+            addObjectType(basePath1, "tent1.png",        "MAP1_TENT1",        "tent",        true,  3, 3);
+            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TENT1");
 
-            // [TYPE ID 8] Wheelbarrow
-            GameObject wheelbarrow = new GameObject();
-            wheelbarrow.name = "wheelbarrow";
-            wheelbarrow.image = ImageIO.read(new File(OBJECT_DIR + "wheelbarrow1.png"));
-            wheelbarrow.collision = true;     // walkable
-            wheelbarrow.width = 2;             // tiles wide
-            wheelbarrow.height = 1;            // tiles tall
-            wheelbarrow.solidArea = new Rectangle(
-                    0,
-                    0, 
-                    gp.tileSize * wheelbarrow.width,
-                    gp.tileSize * wheelbarrow.height
-            );
-            objectTypes[objectTypeCount++] = wheelbarrow;
+            addObjectType(basePath1, "tent2.png",        "MAP1_TENT2",        "tent",        true,  3, 2);
+            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TENT2");
 
-            // [TYPE ID 9] Big Rock
-            GameObject bigRock = new GameObject();
-            bigRock.name = "bigRock";
-            bigRock.image = ImageIO.read(new File(OBJECT_DIR + "bigrockwgrass1.png"));
-            bigRock.collision = true;     // walkable
-            bigRock.width = 3;             // tiles wide
-            bigRock.height = 3;            // tiles tall
-            bigRock.solidArea = new Rectangle(
-                    0,
-                    0, 
-                    gp.tileSize * bigRock.width,
-                    gp.tileSize * bigRock.height
-            );
-            objectTypes[objectTypeCount++] = bigRock;
+            addObjectType(basePath1, "wheelbarrow1.png", "MAP1_WHEELBARROW1", "wheelbarrow", true,  2, 1);
+            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = WHEELBARROW1");
 
+            addObjectType(basePath1, "farm1.png",        "MAP1_FARM1",        "farm1",       false, 3, 2);
+            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = FARM1");
 
+            // =============== MAP 2 OBJECT TYPES ===============
+            objectSetStart[1] = objectTypeCount;
+            localId = 0;
+
+            // Reuse or change sprites for map02 as you like:
+            addObjectType(basePath2, "house1.png", "MAP2_HOUSE1", "house", true, 6, 5);
+            System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = HOUSE1");
+
+            addObjectType(basePath2, "tree1.png",  "MAP2_TREE1",  "tree",  true, 2, 2);
+            System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TREE1");
+
+            // add more MAP 2 objects here:
+            // addObjectType(basePath2, "tent1.png", "MAP2_TENT1", "tent", true, 3, 3);
+            // ...
+
+            // =============== MAP 3 (optional) ===============
+            // objectSetStart[2] = objectTypeCount;
+            // localId = 0;
+            // addObjectType(basePath3, "xxx.png", "MAP3_XXX", "xxxName", true, 2, 2);
+            // System.out.println("MAP3 OBJ " + localId++ + " ...");
 
         } catch (IOException e) {
             System.out.println("ERROR: Cannot load object images.");
@@ -208,7 +166,7 @@ public class ObjectManager {
     }
 
     // === MULTI-MAP OBJECT LOADING ===
-    // Load objectsX.txt as a grid exactly like the tile map, for a specific mapIndex
+    // Load objectsX.txt as a grid with LOCAL IDs, like tiles
     private void loadObjectMap(String fileName, int mapIndex) {
         if (mapIndex < 0 || mapIndex >= MAP_COUNT) {
             System.out.println("Invalid mapIndex in loadObjectMap: " + mapIndex);
@@ -225,6 +183,7 @@ public class ObjectManager {
 
         int maxPerMap = placedObjects[mapIndex].length;
         int count = 0;
+        int setStart = objectSetStart[mapIndex];
 
         try (BufferedReader br = new BufferedReader(new FileReader(mapFile))) {
 
@@ -241,16 +200,18 @@ public class ObjectManager {
 
                 for (int col = 0; col < gp.maxWorldCol; col++) {
 
-                    int index = -1; // default = empty
+                    int globalIndex = -1; // default = empty
 
                     if (col < values.length) {
-                        index = Integer.parseInt(values[col]);
+                        int localId = Integer.parseInt(values[col]); // 0,1,2,... per map
+                        if (localId >= 0) {
+                            globalIndex = setStart + localId;
+                        }
                     }
 
-                    // -1 = no object on that tile
-                    if (index >= 0 && index < objectTypeCount) {
+                    if (globalIndex >= 0 && globalIndex < objectTypeCount) {
 
-                        GameObject baseType = objectTypes[index];
+                        GameObject baseType = objectTypes[globalIndex];
                         if (baseType == null) continue;
 
                         if (count >= maxPerMap) {

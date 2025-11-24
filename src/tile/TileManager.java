@@ -15,127 +15,198 @@ public class TileManager {
     GamePanel gp;
     public Tile[] tile;
 
-    // [mapIndex][col][row]
+    // [mapIndex][col][row] = tile ID from tile[]
     public int[][][] mapTileNum;
 
-    // how many tile types are actually registered
+    // counts how many tiles are registered in tile[]
     private int tileTypeCount = 0;
 
-    // how many different maps you have (map1.txt, map2.txt, etc.)
-    public static final int MAP_COUNT = 2; // 0 = map1.txt, 1 = map2.txt
+    // number of maps (map1.txt, map2.txt, map3.txt)
+    public static final int MAP_COUNT = 3; // up to 3 maps
+
+    // starting index in tile[] for each map's tileset
+    public int[] tilesetStart = new int[MAP_COUNT];
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
-        // Increase if you need more tile types later
+        // main tile list (all tiles from all maps)
         tile = new Tile[32];
 
-        // allocate maps: [which map][x][y]
+        // mapTileNum[which map][x][y]
         mapTileNum = new int[MAP_COUNT][gp.maxWorldCol][gp.maxWorldRow];
 
-        getTileImage();
-        loadMap(); // this will load map1.txt and map2.txt
+        getTileImage(); // load tile images
+        loadMap();      // load map text files
     }
 
-    // ============= TILESET LOADING =============
-    // LOAD TILE IMAGES (auto-assign tile IDs by order)
+    // ================== LOAD TILE IMAGES ==================
+    // loads all tile sprites and assigns global IDs
     public void getTileImage() {
-        String basePath = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator;
+
+        String basePath1 = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator + "map01" + File.separator;
+        String basePath2 = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator + "map02" + File.separator;
 
         try {
 
-            // [Tile ID 0] GRASS
+            // =============== MAP 1 TILES ===============
+            // local IDs in map1.txt will start from tilesetStart[0]
+            tilesetStart[0] = tileTypeCount;
+            int localId = 0; // local ID for map 1 (0,1,2,...)
+
+            // [Tile ID 0] GRASS (MAP 1)
             tile[tileTypeCount] = new Tile();
-            File grassFile = new File(basePath + "tile0_Grass.png");
+            File grassFile = new File(basePath1 + "tile0_Grass.png");
             if (grassFile.exists()) {
                 tile[tileTypeCount].image = ImageIO.read(grassFile);
             }
             tile[tileTypeCount].collision = false; // walkable
-            System.out.println("TILE " + tileTypeCount + " = GRASS");
+            System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = GRASS");
             tileTypeCount++;
+            localId++;
 
             // [Tile ID 1] PATH HORIZONTAL
             tile[tileTypeCount] = new Tile();
-            File pathHFile = new File(basePath + "tile1_StraightPathHori.png");
+            File pathHFile = new File(basePath1 + "tile1_StraightPathHori.png");
             if (pathHFile.exists()) {
                 tile[tileTypeCount].image = ImageIO.read(pathHFile);
             }
             tile[tileTypeCount].collision = false;
-            System.out.println("TILE " + tileTypeCount + " = PATH_HORI");
+            System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = PATH_HORI");
             tileTypeCount++;
+            localId++;
 
             // [Tile ID 2] PATH VERTICAL
             tile[tileTypeCount] = new Tile();
-            File pathVFile = new File(basePath + "tile1_StraightPathVerti.png");
+            File pathVFile = new File(basePath1 + "tile1_StraightPathVerti.png");
             if (pathVFile.exists()) {
                 tile[tileTypeCount].image = ImageIO.read(pathVFile);
             }
             tile[tileTypeCount].collision = false;
-            System.out.println("TILE " + tileTypeCount + " = PATH_VERT");
+            System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = PATH_VERT");
             tileTypeCount++;
+            localId++;
 
             // [Tile ID 3] ROAD
             tile[tileTypeCount] = new Tile();
-            File roadFile = new File(basePath + "tile7_RockyRoad.png");
+            File roadFile = new File(basePath1 + "tile7_RockyRoad.png");
             if (roadFile.exists()) {
                 tile[tileTypeCount].image = ImageIO.read(roadFile);
             }
             tile[tileTypeCount].collision = false;
-            System.out.println("TILE " + tileTypeCount + " = ROAD");
+            System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = ROAD");
             tileTypeCount++;
+            localId++;
 
             // [Tile ID 4] BORDER
             tile[tileTypeCount] = new Tile();
-            File borderFile = new File(basePath + "tile8_Border.png");
+            File borderFile = new File(basePath1 + "tile8_Border.png");
             if (borderFile.exists()) {
                 tile[tileTypeCount].image = ImageIO.read(borderFile);
             }
-            tile[tileTypeCount].collision = true;
-            System.out.println("TILE " + tileTypeCount + " = BORDER");
+            tile[tileTypeCount].collision = true; // blocks movement
+            System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = BORDER");
             tileTypeCount++;
+            localId++;
 
-            // TEST----------------------------------------------------
             // [Tile ID 5] TELEPORT
             tile[tileTypeCount] = new Tile();
-            File teleportFile = new File(basePath + "tile9_GrassTP.png"); // change filename as needed
+            File teleportFile = new File(basePath1 + "tile9_GrassTP.png");
             if (teleportFile.exists()) {
                 tile[tileTypeCount].image = ImageIO.read(teleportFile);
             }
-            tile[tileTypeCount].collision = false; // walkable, but used as trigger
-            System.out.println("TILE " + tileTypeCount + " = TELEPORT");
+            tile[tileTypeCount].collision = false; // walkable, used as teleport trigger
+            System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = TELEPORT");
             tileTypeCount++;
+            localId++;
 
             // [Tile ID 6] BUSH
             tile[tileTypeCount] = new Tile();
-            File bushFile = new File(basePath + "tile10_Bush.png"); // change filename as needed
+            File bushFile = new File(basePath1 + "tile10_Bush.png");
             if (bushFile.exists()) {
                 tile[tileTypeCount].image = ImageIO.read(bushFile);
             }
-            tile[tileTypeCount].collision = false; // walkable, but used as trigger
-            System.out.println("TILE " + tileTypeCount + " = BUSH");
+            tile[tileTypeCount].collision = false;
+            System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = BUSH");
             tileTypeCount++;
+            localId++;
 
-            // [Tile ID 7] GRASS WITH FLOWERS   
+            // [Tile ID 7] GRASS WITH FLOWERS
             tile[tileTypeCount] = new Tile();
-            File grassFlowersFile = new File(basePath + "tile11_GrassWFlowers.png"); // change filename as needed
+            File grassFlowersFile = new File(basePath1 + "tile11_GrassWFlowers.png");
             if (grassFlowersFile.exists()) {
                 tile[tileTypeCount].image = ImageIO.read(grassFlowersFile);
             }
-            tile[tileTypeCount].collision = false; // walkable, but used as trigger
-            System.out.println("TILE " + tileTypeCount + " = GRASS WITH FLOWERS");
+            tile[tileTypeCount].collision = false;
+            System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = GRASS_WITH_FLOWERS");
             tileTypeCount++;
+            localId++;
+            
+            // =============== MAP 2 TILES ===============
+            // local IDs in map2.txt will start from tilesetStart[1]
+            tilesetStart[1] = tileTypeCount;
+            localId = 0; // reset local ID for map 2
 
-            // [Tile ID 8] FARM   
+            // [Tile ID 0] Floor (MAP 2)
             tile[tileTypeCount] = new Tile();
-            File farm = new File(basePath + "tile12_Farm.png"); // change filename as needed
-            if (farm.exists()) {
-                tile[tileTypeCount].image = ImageIO.read(farm);
+            File flooorFile = new File(basePath2 + "tile0_Floor.png"); // can be same or different sprite
+            if (flooorFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(flooorFile);
             }
-            tile[tileTypeCount].collision = false; // walkable, but used as trigger
-            System.out.println("TILE " + tileTypeCount + " = FARM");
+            tile[tileTypeCount].collision = false;
+            System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = FLOOR");
             tileTypeCount++;
+            localId++;
+
+            // [Tile ID 1] FloorTP (MAP 2)
+            tile[tileTypeCount] = new Tile();
+            File teleportFile2 = new File(basePath2 + "tile1_FloorTP.png");
+            if (teleportFile2.exists()) {    
+                tile[tileTypeCount].image = ImageIO.read(teleportFile2);
+            }
+            tile[tileTypeCount].collision = false; // walkable, used as teleport trigger
+            System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = TELEPORT");
+            tileTypeCount++;
+            localId++;
+
+            // // [Tile ID 2] GRASS (MAP 2)
+            // tile[tileTypeCount] = new Tile();
+            // File grass2File = new File(basePath2 + "tile0_Grass.png"); // can be same or different sprite
+            // if (grass2File.exists()) {
+            //     tile[tileTypeCount].image = ImageIO.read(grass2File);
+            // }
+            // tile[tileTypeCount].collision = false;
+            // System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = GRASS");
+            // tileTypeCount++;
+            // localId++;
+
+            // // [Tile ID 3] GRASS (MAP 2)
+            // tile[tileTypeCount] = new Tile();
+            // File grass2File = new File(basePath2 + "tile0_Grass.png"); // can be same or different sprite
+            // if (grass2File.exists()) {
+            //     tile[tileTypeCount].image = ImageIO.read(grass2File);
+            // }
+            // tile[tileTypeCount].collision = false;
+            // System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = GRASS");
+            // tileTypeCount++;
+            // localId++;
+
+            // // [Tile ID 4] GRASS (MAP 2)
+            // tile[tileTypeCount] = new Tile();
+            // File grass2File = new File(basePath2 + "tile0_Grass.png"); // can be same or different sprite
+            // if (grass2File.exists()) {
+            //     tile[tileTypeCount].image = ImageIO.read(grass2File);
+            // }
+            // tile[tileTypeCount].collision = false;
+            // System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = GRASS");
+            // tileTypeCount++;
+            // localId++;
             
 
+            // more MAP 2 tiles can be added here (paths, borders, etc.)
+
+            // =============== MAP 3 TILES (optional) ===============
+            // tilesetStart[2] can be set here if a third tileset is added
 
         } catch (IOException e) {
             System.err.println("Error loading tile images: " + e.getMessage());
@@ -143,28 +214,35 @@ public class TileManager {
         }
     }
 
-    // ============= MAP LOADING =============
+    // ================== LOAD MAP FILES ==================
 
-    // public method called by constructor
+    // loads all map text files
     public void loadMap() {
-        // map index 0 = map1.txt
+        // map index 0 uses map1.txt
         loadMapFile("map1.txt", 0);
 
-        // map index 1 = map2.txt
+        // map index 1 uses map2.txt
         loadMapFile("map2.txt", 1);
+
+        // map index 2 can use map3.txt if needed:
+        // loadMapFile("map3.txt", 2);
     }
 
-    // load a single map file into mapTileNum[mapIndex]
+    // reads one map file and fills mapTileNum[mapIndex]
+    // map file uses local tile IDs (0,1,2,...) then converted to global IDs
     private void loadMapFile(String fileName, int mapIndex) {
         try {
             String mapPath = "src" + File.separator + "assets" + File.separator + "maps" + File.separator + fileName;
             File mapFile = new File(mapPath);
 
+            int tilesetOffset = tilesetStart[mapIndex]; // start index for this map's tiles
+
             if (!mapFile.exists()) {
-                System.out.println("Map file not found: " + fileName + " → generating default grass for map " + mapIndex);
+                System.out.println("Map file not found: " + fileName + " → filling map " + mapIndex + " with grass.");
                 for (int row = 0; row < gp.maxWorldRow; row++) {
                     for (int col = 0; col < gp.maxWorldCol; col++) {
-                        mapTileNum[mapIndex][col][row] = 0; // default grass
+                        // local ID 0 is grass, so use tilesetOffset
+                        mapTileNum[mapIndex][col][row] = tilesetOffset;
                     }
                 }
                 return;
@@ -178,10 +256,12 @@ public class TileManager {
             int row = 0;
 
             while ((line = br.readLine()) != null && row < gp.maxWorldRow) {
-                // Use \\s+ so multiple spaces or tabs are okay
+                // split by whitespace (spaces or tabs)
                 String[] numbers = line.trim().split("\\s+");
                 for (int col = 0; col < numbers.length && col < gp.maxWorldCol; col++) {
-                    mapTileNum[mapIndex][col][row] = Integer.parseInt(numbers[col]);
+                    int localId = Integer.parseInt(numbers[col]);   // 0,1,2,... from map file
+                    int globalId = tilesetOffset + localId;         // convert to global ID
+                    mapTileNum[mapIndex][col][row] = globalId;
                 }
                 row++;
             }
@@ -193,44 +273,46 @@ public class TileManager {
             System.err.println("Error loading map " + fileName + ": " + e.getMessage());
             e.printStackTrace();
 
-            // fallback: all grass
+            int tilesetOffset = tilesetStart[mapIndex];
+
+            // fallback: fill with grass (local ID 0)
             for (int row = 0; row < gp.maxWorldRow; row++) {
                 for (int col = 0; col < gp.maxWorldCol; col++) {
-                    mapTileNum[mapIndex][col][row] = 0;
+                    mapTileNum[mapIndex][col][row] = tilesetOffset;
                 }
             }
         }
     }
 
-    // Helper to safely get tile number of current map
+    // returns tile ID for current map, with bounds check
     public int getTileNum(int col, int row) {
         if (col < 0 || row < 0 || col >= gp.maxWorldCol || row >= gp.maxWorldRow) {
-            return 0;
+            // out of bounds → use local 0 of current map
+            return tilesetStart[gp.currentMap];
         }
         return mapTileNum[gp.currentMap][col][row];
     }
 
-    // ============= COLLISION =============
-    // CHECK IF TILE BLOCKS MOVEMENT
+    // ================== COLLISION CHECK ==================
+    // checks if tile at [col,row] is blocking
     public boolean isBlocked(int col, int row) {
 
-        // out-of-bounds tiles = BLOCKED to prevent crashes
+        // out-of-bounds tiles are treated as blocked
         if (col < 0 || row < 0 || col >= gp.maxWorldCol || row >= gp.maxWorldRow) {
             return true;
         }
 
         int tileNum = mapTileNum[gp.currentMap][col][row];
 
-        // invalid tile number → treat as non-blocking
+        // invalid tile index → not blocking
         if (tileNum < 0 || tileNum >= tile.length) return false;
         if (tile[tileNum] == null) return false;
 
-        // return the collision flag set during getTileImage()
+        // use collision flag set in getTileImage()
         return tile[tileNum].collision;
     }
 
-    // ============= DRAWING =============
-    // DRAW TILES
+    // ================== DRAW TILES ==================
     public void draw(Graphics2D g2) {
 
         for (int worldRow = 0; worldRow < gp.maxWorldRow; worldRow++) {
@@ -240,7 +322,8 @@ public class TileManager {
 
                 if (tileNum < 0 || tileNum >= tile.length ||
                         tile[tileNum] == null || tile[tileNum].image == null) {
-                    tileNum = 0; // fallback to grass
+                    // fallback to local 0 of current map
+                    tileNum = tilesetStart[gp.currentMap];
                 }
 
                 int worldX = worldCol * gp.tileSize;
@@ -249,7 +332,7 @@ public class TileManager {
                 int screenX = worldX - gp.cameraX;
                 int screenY = worldY - gp.cameraY;
 
-                // screen size fallback
+                // use panel size if getWidth/getHeight returns 0
                 int screenW = gp.getWidth() > 0 ? gp.getWidth() : gp.screenWidth;
                 int screenH = gp.getHeight() > 0 ? gp.getHeight() : gp.screenHeight;
 
