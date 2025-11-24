@@ -20,7 +20,7 @@ Expect a blend of humor, heart, and heritage wrapped in classic RPG mechanics.
 
 * **Authentic Filipino setting** – Explore a town filled with local flavor
 * **Retro pixel art aesthetic** – Nostalgic visuals inspired by classic handheld RPGs
-* **Traditional Filipino games reimagined** – Patintero, Tumbang Preso, Agawan Base, and more
+* **Traditional Filipino games reimagined** – Patintero, Tumbang Preso, etc
 * **Engkanto encounters** – Fight, negotiate, or outsmart mythical tricksters
 * **Story-driven progression** – Restore harmony and uncover your hero’s roots
 
@@ -29,9 +29,8 @@ Expect a blend of humor, heart, and heritage wrapped in classic RPG mechanics.
 ## 🛠️ Tech Stack
 
 * **Language:** Java
-* **Concepts:** OOP, game loops, sprites, tile-based rendering
-* **Engine/Framework (if applicable):** *[Specify here]*
-* **Tools:** VSCode / IntelliJ, GitHub, Aseprite (for sprites if used)
+* **Concepts:** OOP, DSA, game loops, sprites, tile-based rendering
+* **Tools:** VSCode / IntelliJ, GitHub, Aseprite 
 
 ---
 
@@ -54,14 +53,9 @@ Driven by creativity, caffeine, and chaotic good energy.
 
 * **Owen** – Lead Programmer
 * **Yuan** – Systems & Logic Designer
-* **Kristine** – Art & Creative Direction
-* **Regine** – Story & Gameplay Design
+* **Kristine** – Document and Creatives
+* **Regine** – Document and Creatives
 
----
-
-## 📜 License
-
-This project is open-source. Feel free to fork, contribute, or expand—just keep the Filipino spirit alive!
 
 ---
 
