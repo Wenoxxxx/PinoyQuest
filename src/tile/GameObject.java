@@ -21,4 +21,6 @@ public class GameObject {
     // Collision hitbox (relative to worldX/worldY)
     // ObjectManager will set the proper size in loadObjectTypes()
     public Rectangle solidArea = new Rectangle(0, 0, 0, 0);
+
+    public boolean overlapWithPlayer = true;
 }

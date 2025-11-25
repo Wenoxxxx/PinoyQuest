@@ -59,6 +59,7 @@ public class ObjectManager {
             String debugName,
             String objectName,
             boolean collision,
+            boolean overlapWithPlayer,   // 👈 NEW PARAM
             int widthTiles,
             int heightTiles
     ) throws IOException {
@@ -73,6 +74,7 @@ public class ObjectManager {
         obj.collision = collision;
         obj.width = widthTiles;
         obj.height = heightTiles;
+        obj.overlapWithPlayer = overlapWithPlayer; // 👈 set flag
 
         File imgFile = new File(basePath + fileName);
         if (imgFile.exists()) {
@@ -81,13 +83,31 @@ public class ObjectManager {
             System.out.println("WARNING: Object image not found: " + imgFile.getPath());
         }
 
-        // default hitbox = full sprite
-        obj.solidArea = new Rectangle(
-                0,
-                0,
-                gp.tileSize * widthTiles,
-                gp.tileSize * heightTiles
-        );
+        // ===== DEFAULT HITBOX = BASE OF THE REAL SPRITE (IMAGE PIXELS) =====
+        if (obj.image != null) {
+            int spriteW = obj.image.getWidth();
+            int spriteH = obj.image.getHeight();
+
+            // Only bottom 30% collidable (front/base area)
+            int baseTop = (int) (spriteH * 0.7);
+            int baseHeight = spriteH - baseTop;
+            if (baseHeight < 1) baseHeight = 1;
+
+            obj.solidArea = new Rectangle(
+                    0,
+                    baseTop,
+                    spriteW,
+                    baseHeight
+            );
+        } else {
+            // Fallback if image missing
+            obj.solidArea = new Rectangle(
+                    0,
+                    0,
+                    gp.tileSize * widthTiles,
+                    gp.tileSize * heightTiles
+            );
+        }
 
         objectTypes[objectTypeCount] = obj;
         System.out.println("OBJECT TYPE " + objectTypeCount + " = " + debugName +
@@ -97,73 +117,121 @@ public class ObjectManager {
 
     // OBJECT LOADER
     private void loadObjectTypes() {
-        // src/assets/objects/map01/
         String basePath1 = OBJECT_ROOT_DIR + "map01" + File.separator;
-        // src/assets/objects/map02/
         String basePath2 = OBJECT_ROOT_DIR + "map02" + File.separator;
-        // String basePath3 = OBJECT_ROOT_DIR + "map03" + File.separator; // if needed
 
         try {
             // =============== MAP 1 OBJECT TYPES ===============
             objectSetStart[0] = objectTypeCount;
             int localId = 0;
 
-            addObjectType(basePath1, "house1.png",       "MAP1_HOUSE1",       "house",       true,  6, 5);
+            // big houses → overlap true
+            addObjectType(basePath1,
+                    "house1.png",
+                    "MAP1_HOUSE1",
+                    "house",
+                    true,   // collision
+                    true,   // overlapWithPlayer (can walk behind)
+                    6, 5);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = HOUSE1");
 
-            addObjectType(basePath1, "house2.png",       "MAP1_HOUSE2",       "house",       true,  6, 5);
+            addObjectType(basePath1,
+                    "house2.png",
+                    "MAP1_HOUSE2",
+                    "house",
+                    true,
+                    true,   // overlaps
+                    6, 5);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = HOUSE2");
 
-            addObjectType(basePath1, "tree1.png",        "MAP1_TREE1",        "tree",        true,  2, 2);
+            // tree → overlap true (walk behind tree)
+            addObjectType(basePath1,
+                    "tree1.png",
+                    "MAP1_TREE1",
+                    "tree",
+                    true,
+                    true,   // overlaps
+                    2, 2);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TREE1");
 
-            addObjectType(basePath1, "bench1.png",       "MAP1_BENCH1",       "bench",       false, 2, 2);
+          
+            addObjectType(basePath1,
+                    "bench1.png",
+                    "MAP1_BENCH1",
+                    "bench",
+                    false,
+                    false,  // NO overlap (always drawn in front)
+                    2, 2);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = BENCH1");
 
-            addObjectType(basePath1, "well1.png",        "MAP1_WELL1",        "well",        true,  2, 2);
+
+            addObjectType(basePath1,
+                    "well1.png",
+                    "MAP1_WELL1",
+                    "well",
+                    true,
+                    true,   // overlaps
+                    2, 2);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = WELL1");
 
-            addObjectType(basePath1, "boxes1.png",       "MAP1_BOXES1",       "boxes",       false, 3, 3);
+            addObjectType(basePath1,
+                    "boxes1.png",
+                    "MAP1_BOXES1",
+                    "boxes",
+                    false,
+                    false,  // like "small rocks" → NO overlap
+                    3, 3);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = BOXES1");
 
-            addObjectType(basePath1, "tent1.png",        "MAP1_TENT1",        "tent",        true,  3, 3);
+            addObjectType(basePath1,
+                    "tent1.png",
+                    "MAP1_TENT1",
+                    "tent",
+                    true,
+                    true,   // big tent: overlap
+                    3, 3);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TENT1");
 
-            addObjectType(basePath1, "tent2.png",        "MAP1_TENT2",        "tent",        true,  3, 2);
+            addObjectType(basePath1,
+                    "tent2.png",
+                    "MAP1_TENT2",
+                    "tent",
+                    true,
+                    true,   // overlap
+                    3, 2);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TENT2");
 
-            addObjectType(basePath1, "wheelbarrow1.png", "MAP1_WHEELBARROW1", "wheelbarrow", true,  2, 1);
+            // small-ish wheelbarrow → up to you
+            addObjectType(basePath1,
+                    "wheelbarrow1.png",
+                    "MAP1_WHEELBARROW1",
+                    "wheelbarrow",
+                    true,
+                    false,  // example: no overlap
+                    2, 1);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = WHEELBARROW1");
 
-            addObjectType(basePath1, "farm1.png",        "MAP1_FARM1",        "farm1",       false, 3, 2);
-            System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = FARM1");
 
+            
             // =============== MAP 2 OBJECT TYPES ===============
             objectSetStart[1] = objectTypeCount;
             localId = 0;
 
-            // Reuse or change sprites for map02 as you like:
-            addObjectType(basePath2, "house1.png", "MAP2_HOUSE1", "house", true, 6, 5);
-            System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = HOUSE1");
-
-            addObjectType(basePath2, "tree1.png",  "MAP2_TREE1",  "tree",  true, 2, 2);
-            System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TREE1");
-
-            // add more MAP 2 objects here:
-            // addObjectType(basePath2, "tent1.png", "MAP2_TENT1", "tent", true, 3, 3);
-            // ...
-
-            // =============== MAP 3 (optional) ===============
-            // objectSetStart[2] = objectTypeCount;
-            // localId = 0;
-            // addObjectType(basePath3, "xxx.png", "MAP3_XXX", "xxxName", true, 2, 2);
-            // System.out.println("MAP3 OBJ " + localId++ + " ...");
+            addObjectType(basePath2,
+                    "Crystal_shadow1_1.png",
+                    "CRYSTAL1",
+                    "crystal1",
+                    true,
+                    true,   // big crystal: overlap
+                    3, 3);
+            System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = CRYSTAL1");
 
         } catch (IOException e) {
             System.out.println("ERROR: Cannot load object images.");
             e.printStackTrace();
         }
     }
+
 
     // === MULTI-MAP OBJECT LOADING ===
     // Load objectsX.txt as a grid with LOCAL IDs, like tiles
@@ -324,19 +392,144 @@ public class ObjectManager {
             if (!obj.collision) continue;                // only block if collision = true
             if (obj.solidArea == null) continue;
 
-            // Object collision box in world coordinates
-            Rectangle objBox = new Rectangle(
-                    obj.worldX + obj.solidArea.x,
-                    obj.worldY + obj.solidArea.y,
-                    obj.solidArea.width,
-                    obj.solidArea.height
-            );
+            // --- SCALE HITBOX FROM IMAGE SPACE → WORLD SPACE ---
 
-            if (entityBox.intersects(objBox)) {
+            // The sprite is drawn scaled to tileSize * width/height
+            int drawW = gp.tileSize * obj.width;
+            int drawH = gp.tileSize * obj.height;
+
+            int imgW = obj.image.getWidth();
+            int imgH = obj.image.getHeight();
+
+            if (imgW <= 0 || imgH <= 0) {
+                continue; // safety
+            }
+
+            double scaleX = (double) drawW / imgW;
+            double scaleY = (double) drawH / imgH;
+
+            int hitX = obj.worldX + (int) Math.round(obj.solidArea.x * scaleX);
+            int hitY = obj.worldY + (int) Math.round(obj.solidArea.y * scaleY);
+            int hitW = (int) Math.round(obj.solidArea.width  * scaleX);
+            int hitH = (int) Math.round(obj.solidArea.height * scaleY);
+
+            // Object collision box in world coordinates
+            Rectangle objBox = new Rectangle(hitX, hitY, hitW, hitH);
+
+            if (entityBox.intersects(objBox)) { 
                 return true;
             }
         }
 
         return false;
     }
+
+    // ================== LAYERED DRAWING FOR OVERLAP EFFECT ==================
+    public void drawBehindPlayer(Graphics2D g2, int playerFeetRow) {
+
+        int screenW = gp.getWidth() > 0 ? gp.getWidth() : gp.screenWidth;
+        int screenH = gp.getHeight() > 0 ? gp.getHeight() : gp.screenHeight;
+
+        int mapIndex = gp.currentMap;
+        int count = placedObjectCount[mapIndex];
+        GameObject[] mapObjects = placedObjects[mapIndex];
+
+        for (int i = 0; i < count; i++) {
+            GameObject obj = mapObjects[i];
+            if (obj == null || obj.image == null) continue;
+
+            // Objects that do not overlap the player are always drawn in front
+            if (!obj.overlapWithPlayer) {
+                continue;
+            }
+
+            int worldX = obj.worldX;
+            int worldY = obj.worldY;
+
+            int screenX = worldX - gp.cameraX;
+            int screenY = worldY - gp.cameraY;
+
+            boolean visible =
+                    screenX + gp.tileSize * obj.width  > 0 &&
+                    screenX < screenW &&
+                    screenY + gp.tileSize * obj.height > 0 &&
+                    screenY < screenH;
+
+            if (!visible) continue;
+
+            // Bottom of sprite in world → base tile row
+            int objBottomY = obj.worldY + gp.tileSize * obj.height;
+            int objBaseRow = (objBottomY - 1) / gp.tileSize;
+
+            // ---- RULE: if object's base row is ABOVE player's feet row → BEHIND ----
+            if (objBaseRow < playerFeetRow) {
+                g2.drawImage(
+                        obj.image,
+                        screenX,
+                        screenY,
+                        gp.tileSize * obj.width,
+                        gp.tileSize * obj.height,
+                        null
+                );
+            }
+        }
+    }
+
+
+    public void drawInFrontOfPlayer(Graphics2D g2, int playerFeetRow) {
+
+        int screenW = gp.getWidth() > 0 ? gp.getWidth() : gp.screenWidth;
+        int screenH = gp.getHeight() > 0 ? gp.getHeight() : gp.screenHeight;
+
+        int mapIndex = gp.currentMap;
+        int count = placedObjectCount[mapIndex];
+        GameObject[] mapObjects = placedObjects[mapIndex];
+
+        for (int i = 0; i < count; i++) {
+            GameObject obj = mapObjects[i];
+            if (obj == null || obj.image == null) continue;
+
+            int worldX = obj.worldX;
+            int worldY = obj.worldY;
+
+            int screenX = worldX - gp.cameraX;
+            int screenY = worldY - gp.cameraY;
+
+            boolean visible =
+                    screenX + gp.tileSize * obj.width  > 0 &&
+                    screenX < screenW &&
+                    screenY + gp.tileSize * obj.height > 0 &&
+                    screenY < screenH;
+
+            if (!visible) continue;
+
+            int objBottomY = obj.worldY + gp.tileSize * obj.height;
+            int objBaseRow = (objBottomY - 1) / gp.tileSize;
+
+            if (obj.overlapWithPlayer) {
+                // ---- RULE: base row AT or BELOW player's feet row → IN FRONT ----
+                if (objBaseRow >= playerFeetRow) {
+                    g2.drawImage(
+                            obj.image,
+                            screenX,
+                            screenY,
+                            gp.tileSize * obj.width,
+                            gp.tileSize * obj.height,
+                            null
+                    );
+                }
+            } else {
+                // Non-overlap objects: always drawn in this "front" pass
+                g2.drawImage(
+                        obj.image,
+                        screenX,
+                        screenY,
+                        gp.tileSize * obj.width,
+                        gp.tileSize * obj.height,
+                        null
+                );
+            }
+        }
+    }
+
 }

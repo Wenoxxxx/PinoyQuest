@@ -141,6 +141,17 @@ public class TileManager {
             System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = GRASS_WITH_FLOWERS");
             tileTypeCount++;
             localId++;
+
+            // [Tile ID 8] GRASS WITH FLOWERS
+            tile[tileTypeCount] = new Tile();
+            File FarmFile = new File(basePath1 + "tile12_Farm.png");
+            if (FarmFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(FarmFile);
+            }
+            tile[tileTypeCount].collision = false;
+            System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = FARM");
+            tileTypeCount++;
+            localId++;
             
             // =============== MAP 2 TILES ===============
             // local IDs in map2.txt will start from tilesetStart[1]
@@ -169,17 +180,17 @@ public class TileManager {
             tileTypeCount++;
             localId++;
 
-            // // [Tile ID 2] GRASS (MAP 2)
-            // tile[tileTypeCount] = new Tile();
-            // File grass2File = new File(basePath2 + "tile0_Grass.png"); // can be same or different sprite
-            // if (grass2File.exists()) {
-            //     tile[tileTypeCount].image = ImageIO.read(grass2File);
-            // }
-            // tile[tileTypeCount].collision = false;
-            // System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = GRASS");
-            // tileTypeCount++;
-            // localId++;
-
+            // [Tile ID 2] PATINTERO (MAP 2)
+            tile[tileTypeCount] = new Tile();
+            File patinteroFile = new File(basePath2 + "tile02_road1.png"); // can be same or different sprite
+            if (patinteroFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(patinteroFile);
+            }
+            tile[tileTypeCount].collision = false;
+            System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = PATINTERO");
+            tileTypeCount++;
+            localId++;
+            
             // // [Tile ID 3] GRASS (MAP 2)
             // tile[tileTypeCount] = new Tile();
             // File grass2File = new File(basePath2 + "tile0_Grass.png"); // can be same or different sprite
