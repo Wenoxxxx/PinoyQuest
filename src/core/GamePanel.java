@@ -79,7 +79,7 @@ public class GamePanel extends JPanel {
     public void startGame() {
         gameLoop.start();
     }
-
+          
     // ============= MAP SWITCHING API =============
     // Expose tile collision in a safe way for entities in other packages
     public boolean isTileBlocked(int col, int row) {
@@ -92,10 +92,7 @@ public class GamePanel extends JPanel {
     }
 
     /**
-     * Teleport / switch map.
-     *
-     * @param newMapIndex     // index in TileManager.MAP_COUNT (0 = map1.txt, 1 =
-     *                        // map2.txt)
+     * @param newMapIndex     // index in TileManager.MAP_COUNT (0 = map1.txt, 1 = map2.txt)
      * @param playerTileCol   // tile column to spawn at in the new map
      * @param playerTileRow   // tile row to spawn at in the new map
      * @param facingDirection // "up", "down", "left", "right"
@@ -168,13 +165,24 @@ public class GamePanel extends JPanel {
         // Draw Tiles
         tileManager.draw(g2);
 
-        // Draw Objects (houses, rocks, etc.)
+        // ========= PLAYER FEET TILE ROW (for overlap layering) =========
+        int playerFeetY = player.worldY + player.solidArea.y + player.solidArea.height;
+        int playerFeetRow = playerFeetY / tileSize;
+
+        // Draw objects that should appear BEHIND the player
         if (objectManager != null) {
-            objectManager.draw(g2);
+            objectManager.drawBehindPlayer(g2, playerFeetRow);
         }
 
-        // Draw Player
+        // Draw Player (always centered on screen)
         player.draw(g2);
+
+        // Draw objects that should appear IN FRONT of the player
+        if (objectManager != null) {
+            objectManager.drawInFrontOfPlayer(g2, playerFeetRow);
+        }
+
+        // HUD on top of everything
         player.drawHud(g2);
 
         g2.dispose();
