@@ -53,7 +53,7 @@ public class TileManager {
             // local IDs in map1.txt will start from tilesetStart[0]
             tilesetStart[0] = tileTypeCount;
             int localId = 0; // local ID for map 1 (0,1,2,...)
-
+            
             // [Tile ID 0] GRASS (MAP 1)
             tile[tileTypeCount] = new Tile();
             File grassFile = new File(basePath1 + "tile0_Grass.png");
@@ -190,7 +190,7 @@ public class TileManager {
             System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = PATINTERO");
             tileTypeCount++;
             localId++;
-            
+
             // // [Tile ID 3] GRASS (MAP 2)
             // tile[tileTypeCount] = new Tile();
             // File grass2File = new File(basePath2 + "tile0_Grass.png"); // can be same or different sprite

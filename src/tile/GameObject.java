@@ -22,5 +22,13 @@ public class GameObject {
     // ObjectManager will set the proper size in loadObjectTypes()
     public Rectangle solidArea = new Rectangle(0, 0, 0, 0);
 
+    // for overlap / layering logic
     public boolean overlapWithPlayer = true;
+
+    // === ANIMATION SUPPORT ===
+    public boolean animated = false;
+    public BufferedImage[] frames;   // all animation frames
+    public int frameIndex = 0;       // current frame
+    public int frameCounter = 0;     // counts game ticks
+    public int frameSpeed = 6;       // how many ticks before switching frame
 }
