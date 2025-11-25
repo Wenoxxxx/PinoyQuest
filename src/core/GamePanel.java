@@ -129,6 +129,7 @@ public class GamePanel extends JPanel {
     public void update() {
 
         player.update();
+        objectManager.update();
 
         // Player size (if your player sprite is 2x2 tiles)
         int playerWidth = tileSize * 2;
