@@ -191,16 +191,16 @@ public class TileManager {
             tileTypeCount++;
             localId++;
 
-            // // [Tile ID 3] GRASS (MAP 2)
-            // tile[tileTypeCount] = new Tile();
-            // File grass2File = new File(basePath2 + "tile0_Grass.png"); // can be same or different sprite
-            // if (grass2File.exists()) {
-            //     tile[tileTypeCount].image = ImageIO.read(grass2File);
-            // }
-            // tile[tileTypeCount].collision = false;
-            // System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = GRASS");
-            // tileTypeCount++;
-            // localId++;
+            // [Tile ID 3] Road (MAP 2)
+            tile[tileTypeCount] = new Tile();
+            File road = new File(basePath2 + "road1.png"); // can be same or different sprite
+            if (road.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(road);
+            }
+            tile[tileTypeCount].collision = false;
+            System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = ROAD");
+            tileTypeCount++;
+            localId++;
 
             // // [Tile ID 4] GRASS (MAP 2)
             // tile[tileTypeCount] = new Tile();

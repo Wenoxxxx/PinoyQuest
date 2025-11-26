@@ -200,7 +200,7 @@ public class ObjectManager {
         objectTypeCount++;
     }
 
-    // 🔥 NEW: Helper for ANIMATED objects from multiple files: Tree1.png..Tree6.png
+    // Helper for ANIMATED objects from multiple files: Tree1.png..Tree6.png
     private void addAnimatedObjectTypeFromFiles(
             String basePath,
             String baseName,          // e.g. "Tree"
@@ -380,7 +380,7 @@ public class ObjectManager {
                     "MAP1_WHEELBARROW1",
                     "wheelbarrow",
                     true,
-                    true,  // example: no overlap
+                    true,  // example: overlap
                     2, 1);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = WHEELBARROW1");
 
@@ -399,7 +399,7 @@ public class ObjectManager {
                     3, 3,          // width/height in tiles (use what fits your asset)
                     1,             // startIndex (Tree1.png)
                     6,             // 6 frames: Tree1..Tree6
-                    15             //s frameSpeed (ticks per frame)
+                    15             // frameSpeed (ticks per frame)
             );
             System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TREE1");
 
@@ -410,24 +410,44 @@ public class ObjectManager {
                     "crystal1",
                     true,
                     true,   // big crystal: overlap
-                    3, 3);
+                    4, 4);
             System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = CRYSTAL1");
-            
+
             addAnimatedObjectTypeFromFiles(
                     basePath2,
-                    "Skull",        // baseName -> Tree1.png, Tree2.png, ...
+                    "Skull",
                     "MAP2_SKULL1",
                     "skull",
                     true,          // collision
                     true,          // overlapWithPlayer (can walk behind)
                     2, 3,          // width/height in tiles (use what fits your asset)
-                    1,             // startIndex (Tree1.png)
-                    6,             // 6 frames: Tree1..Tree6
-                    15             //s frameSpeed (ticks per frame)
+                    1,             // startIndex
+                    6,             // 6 frames
+                    15             // frameSpeed
             );
             System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = SKULL1");
-    
 
+            // === INVISIBLE TILE FOR BORDER (MAP 2, local index 3) ===
+            // No image, full-tile hitbox, collision = true
+            GameObject invis = new GameObject();
+            invis.name = "invis";
+            invis.collision = true;
+            invis.overlapWithPlayer = false;
+            invis.width = 1;
+            invis.height = 1;
+            invis.image = null; // invisible
+
+            // full 1x1 tile solid area in local coords (will be offset by worldX/worldY)
+            invis.solidArea = new Rectangle(
+                    0,
+                    0,
+                    gp.tileSize * invis.width,
+                    gp.tileSize * invis.height
+            );
+
+            objectTypes[objectTypeCount] = invis;
+            System.out.println("MAP2 OBJ " + localId++ + " (global " + objectTypeCount + ") = INVIS");
+            objectTypeCount++;
 
         } catch (IOException e) {
             System.out.println("ERROR: Cannot load object images.");
@@ -574,7 +594,7 @@ public class ObjectManager {
 
         for (int i = 0; i < count; i++) {
             GameObject obj = mapObjects[i];
-            if (obj == null || obj.image == null) continue;
+            if (obj == null || obj.image == null) continue; // invisible ones are not drawn
 
             int worldX = obj.worldX;
             int worldY = obj.worldY;
@@ -620,33 +640,44 @@ public class ObjectManager {
 
         for (int i = 0; i < count; i++) {
             GameObject obj = mapObjects[i];
-            if (obj == null || obj.image == null) continue;
+            if (obj == null) continue;
             if (!obj.collision) continue;                // only block if collision = true
             if (obj.solidArea == null) continue;
 
-            // --- SCALE HITBOX FROM IMAGE SPACE → WORLD SPACE ---
+            Rectangle objBox;
 
-            // The sprite is drawn scaled to tileSize * width/height
-            int drawW = gp.tileSize * obj.width;
-            int drawH = gp.tileSize * obj.height;
+            if (obj.image == null) {
+                // Invisible / non-sprite objects: solidArea is already in local world units
+                int hitX = obj.worldX + obj.solidArea.x;
+                int hitY = obj.worldY + obj.solidArea.y;
+                int hitW = obj.solidArea.width;
+                int hitH = obj.solidArea.height;
+                objBox = new Rectangle(hitX, hitY, hitW, hitH);
+            } else {
+                // --- SCALE HITBOX FROM IMAGE SPACE → WORLD SPACE ---
 
-            int imgW = obj.image.getWidth();
-            int imgH = obj.image.getHeight();
+                // The sprite is drawn scaled to tileSize * width/height
+                int drawW = gp.tileSize * obj.width;
+                int drawH = gp.tileSize * obj.height;
 
-            if (imgW <= 0 || imgH <= 0) {
-                continue; // safety
+                int imgW = obj.image.getWidth();
+                int imgH = obj.image.getHeight();
+
+                if (imgW <= 0 || imgH <= 0) {
+                    continue; // safety
+                }
+
+                double scaleX = (double) drawW / imgW;
+                double scaleY = (double) drawH / imgH;
+
+                int hitX = obj.worldX + (int) Math.round(obj.solidArea.x * scaleX);
+                int hitY = obj.worldY + (int) Math.round(obj.solidArea.y * scaleY);
+                int hitW = (int) Math.round(obj.solidArea.width * scaleX);
+                int hitH = (int) Math.round(obj.solidArea.height * scaleY);
+
+                // Object collision box in world coordinates
+                objBox = new Rectangle(hitX, hitY, hitW, hitH);
             }
-
-            double scaleX = (double) drawW / imgW;
-            double scaleY = (double) drawH / imgH;
-
-            int hitX = obj.worldX + (int) Math.round(obj.solidArea.x * scaleX);
-            int hitY = obj.worldY + (int) Math.round(obj.solidArea.y * scaleY);
-            int hitW = (int) Math.round(obj.solidArea.width * scaleX);
-            int hitH = (int) Math.round(obj.solidArea.height * scaleY);
-
-            // Object collision box in world coordinates
-            Rectangle objBox = new Rectangle(hitX, hitY, hitW, hitH);
 
             if (entityBox.intersects(objBox)) {
                 return true;
@@ -668,7 +699,7 @@ public class ObjectManager {
 
         for (int i = 0; i < count; i++) {
             GameObject obj = mapObjects[i];
-            if (obj == null || obj.image == null) continue;
+            if (obj == null || obj.image == null) continue; // invisible not drawn
 
             // Objects that do not overlap the player are always drawn in front
             if (!obj.overlapWithPlayer) {
@@ -718,7 +749,7 @@ public class ObjectManager {
 
         for (int i = 0; i < count; i++) {
             GameObject obj = mapObjects[i];
-            if (obj == null || obj.image == null) continue;
+            if (obj == null || obj.image == null) continue; // invisible not drawn
 
             int worldX = obj.worldX;
             int worldY = obj.worldY;
