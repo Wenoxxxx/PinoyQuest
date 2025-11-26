@@ -48,13 +48,25 @@ public class GamePanel extends JPanel {
     // CAMERA POSITION
     public int cameraX;
     public int cameraY;
-
-    // GAME LOOP OBJECT
+    // TESTTTTTTTTTTTTTTTT  
+    private boolean cameraInitialized = false;
+    
+    // GAME LOOP OBJECT 
     private GameLoop gameLoop;
-
+    
     // LOAD OBJECTS/OBSTACLES
     public ObjectManager objectManager;
+    
+    // TESTTTTTTTTTTTTTTTT  
+    private void centerCameraOnPlayer(int screenW, int screenH) {
+        int playerWidth = tileSize * 2;   // 2x2 tiles
+        int playerHeight = tileSize * 2;
 
+        cameraX = player.worldX - (screenW / 2) + (playerWidth / 2);
+        cameraY = player.worldY - (screenH / 2) + (playerHeight / 2);
+    }
+
+    
     // CONSTRUCTOR
     public GamePanel() {
         this.setBackground(Color.BLACK);
@@ -70,11 +82,16 @@ public class GamePanel extends JPanel {
 
         // optional: starting position + starting map
         currentMap = 0; // start at map1
-        //spawn (adjust to your map)
-        player.worldX = 15 * tileSize;
-        player.worldY = 10 * tileSize;
-    }
 
+        // === PLAYER START TILE (center of your world) ===
+        player.worldX = 15 * tileSize; // middle column (0..30 -> 15)
+        player.worldY = 10 * tileSize; // middle row (0..20 -> 10)
+
+        // cameraX = player.worldX - (screenW / 2) + (playerWidth / 2);
+        // cameraY = player.worldY - (screenH / 2) + (playerHeight / 2);
+        centerCameraOnPlayer(screenWidth, screenHeight);
+        cameraInitialized = false;
+    }
     // STARTING GAME BY RUNNING GAME LOOP
     public void startGame() {
         gameLoop.start();
@@ -140,21 +157,24 @@ public class GamePanel extends JPanel {
         int screenH = getHeight();
 
         // Use default size if panel not sized yet
-        if (screenW <= 0) {
-            screenW = screenWidth;
-        }
-        if (screenH <= 0) {
-            screenH = screenHeight;
-        }
+        if (screenW <= 0) screenW = screenWidth;
+        if (screenH <= 0) screenH = screenHeight;
 
         // Center camera on player
         int targetCameraX = player.worldX - (screenW / 2) + (playerWidth / 2);
         int targetCameraY = player.worldY - (screenH / 2) + (playerHeight / 2);
 
-        // Smooth follow (LERP)
-        double smoothing = 0.15; // Adjust for speed (0.1 = smoother)
-        cameraX += (targetCameraX - cameraX) * smoothing;
-        cameraY += (targetCameraY - cameraY) * smoothing;
+        if (!cameraInitialized) {
+            // First frame after spawn: SNAP to target (no hover)
+            cameraX = targetCameraX;
+            cameraY = targetCameraY;
+            cameraInitialized = true;
+        } else {
+            // Next frames: smooth follow (LERP)
+            double smoothing = 0.15; // Adjust for speed
+            cameraX += (targetCameraX - cameraX) * smoothing;
+            cameraY += (targetCameraY - cameraY) * smoothing;
+        }
     }
 
     // DRAWS EVERYTHING ON SCREEN EVERY FRAME
@@ -162,6 +182,19 @@ public class GamePanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
+
+        // TESTTTTTTTTTTT
+        if (!cameraInitialized) {
+        int screenW = getWidth() > 0 ? getWidth() : screenWidth;
+        int screenH = getHeight() > 0 ? getHeight() : screenHeight;
+        centerCameraOnPlayer(screenW, screenH);
+        cameraInitialized = true;
+    }
+
+
+
+
 
         // Draw Tiles
         tileManager.draw(g2);
