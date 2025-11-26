@@ -344,7 +344,7 @@ public class Player extends Entity {
             gamePanel.switchToMap(
                     1,      // newMapIndex -> map2.txt
                     16,     // playerTileCol in map2
-                    2,      // playerTileRow in map2
+                    1,      // playerTileRow in map2
                     "down"  // facing
             );
             return;
