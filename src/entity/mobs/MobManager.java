@@ -17,8 +17,9 @@ public class MobManager {
     private final int[][][] mobLayout;
 
     // Mob IDs
-    public static final int MOB_NONE       = 0;
-    public static final int MOB_WHITELADY  = 1;
+    public static final int MOB_NONE      = 0;
+    public static final int MOB_WHITELADY = 1;
+    public static final int MOB_SAWTRAP   = 2;
 
     // Base directory for mob map files
     private static final String MOB_MAP_DIR =
@@ -98,8 +99,9 @@ public class MobManager {
     public void spawnMobsForMap(int mapIndex) {
         if (mapIndex < 0 || mapIndex >= TileManager.MAP_COUNT) return;
 
-        // Clear existing mobs for now (only White Lady list for you)
+        // Clear existing mobs
         gp.whiteLadies.clear();
+        gp.sawTraps.clear();
 
         for (int col = 0; col < gp.maxWorldCol; col++) {
             for (int row = 0; row < gp.maxWorldRow; row++) {
@@ -114,7 +116,10 @@ public class MobManager {
                     case MOB_WHITELADY -> {
                         gp.whiteLadies.add(new WhiteLady(gp, worldX, worldY));
                     }
-                    // add more mob types later (e.g. MOB_SLIME, MOB_BAT, etc.)
+                    case MOB_SAWTRAP -> {
+                        gp.sawTraps.add(new SawTrap(gp, worldX, worldY));
+                    }
+                    // dari dungag mobs yuan
                 }
             }
         }
@@ -124,15 +129,20 @@ public class MobManager {
 
     // =============== UPDATE & DRAW =======================
     public void update() {
-        // right now you only have WhiteLady
         for (WhiteLady wl : gp.whiteLadies) {
             wl.update();
+        }
+        for (SawTrap st : gp.sawTraps) {
+            st.update();
         }
     }
 
     public void draw(Graphics2D g2) {
         for (WhiteLady wl : gp.whiteLadies) {
             wl.draw(g2);
+        }
+        for (SawTrap st : gp.sawTraps) {
+            st.draw(g2);
         }
     }
 }

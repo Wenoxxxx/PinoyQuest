@@ -13,6 +13,9 @@ public class WhiteLady extends Entity {
 
     private final GamePanel gamePanel;
 
+    // Tracks how many WhiteLadies have been created (for alternating direction)
+    private static int spawnCount = 0;
+
     // Animation frames
     private static final int FRAME_COUNT = 7;
     private final BufferedImage[] frames = new BufferedImage[FRAME_COUNT];
@@ -26,8 +29,13 @@ public class WhiteLady extends Entity {
     // Patrol logic
     private final int patrolTiles = 23;
     private final int patrolDistancePx;
-    private final int startX;
+    private final int leftX;
+    private final int rightX;
     private boolean movingRight = true;
+
+    // Sprite render size (in world pixels)
+    private final int renderWidth;
+    private final int renderHeight;
 
     private static final String BASE_DIR =
             "src" + File.separator +
@@ -39,23 +47,46 @@ public class WhiteLady extends Entity {
     public WhiteLady(GamePanel gp, int worldX, int worldY) {
         this.gamePanel = gp;
 
-        this.worldX = worldX;
-        this.worldY = worldY;
-
-        this.speed = 4;
-
         // health from Entity
         this.maxHealth = 50;
         this.health = maxHealth;
 
-        // patrol range
-        this.startX = worldX;
+        // base patrol range: we treat incoming worldX as the LEFT side
+        this.leftX = worldX;
         this.patrolDistancePx = patrolTiles * gp.tileSize;
+        this.rightX = leftX + patrolDistancePx;
 
-        // hitbox
-        this.solidArea.setBounds(4, 4, gp.tileSize - 15, gp.tileSize - 15);
+        // === alternating start position + direction ===
+        if (spawnCount % 2 == 0) {
+            // even: start left, move right
+            this.worldX = leftX;
+            this.movingRight = true;
+        } else {
+            // odd: start right, move left
+            this.worldX = rightX;
+            this.movingRight = false;
+        }
+        spawnCount++;
+        // ==============================================
+
+        this.worldY = worldY;
+        this.speed = 4;
+
+        // ==== SPRITE DRAW SIZE ====
+ 
+        this.renderWidth  = gp.tileSize * 2;   
+        this.renderHeight = gp.tileSize * 2;   
+        // ==========================
+
+        int hitboxWidth  = renderWidth - 12;             // slightly narrower than sprite
+        int hitboxHeight = renderHeight / 3;             // bottom third
+        int hitboxX      = (renderWidth - hitboxWidth) / 2; // center horizontally
+        int hitboxY      = renderHeight - hitboxHeight - 4; // near bottom
+
+        this.solidArea.setBounds(hitboxX, hitboxY, hitboxWidth, hitboxHeight);
         this.solidAreaDefaultX = this.solidArea.x;
         this.solidAreaDefaultY = this.solidArea.y;
+        // ================================
 
         loadFrames();
     }
@@ -111,17 +142,17 @@ public class WhiteLady extends Entity {
 
     @Override
     public void update() {
-        // Simple left-right patrol
+        // Left-right patrol using leftX/rightX
         if (movingRight) {
             worldX += speed;
-            if (worldX >= startX + patrolDistancePx) {
-                worldX = startX + patrolDistancePx;
+            if (worldX >= rightX) {
+                worldX = rightX;
                 movingRight = false;
             }
         } else {
             worldX -= speed;
-            if (worldX <= startX) {
-                worldX = startX;
+            if (worldX <= leftX) {
+                worldX = leftX;
                 movingRight = true;
             }
         }
@@ -165,11 +196,18 @@ public class WhiteLady extends Entity {
         int screenX = worldX - gamePanel.cameraX;
         int screenY = worldY - gamePanel.cameraY;
 
-        int size = gamePanel.tileSize * 2;
-
-        // Debug magenta box so you always see where she is
+        // Debug sprite bounds (optional)
         g2.setColor(new Color(255, 0, 255, 80));
-        g2.fillRect(screenX, screenY, size, size);
+        g2.fillRect(screenX, screenY, renderWidth, renderHeight);
+
+        // Debug hitbox (optional)
+        g2.setColor(new Color(0, 255, 0, 120));
+        g2.fillRect(
+                screenX + solidArea.x,
+                screenY + solidArea.y,
+                solidArea.width,
+                solidArea.height
+        );
 
         if (!spritesLoaded) return;
         if (frames[frameIndex] == null) return;
@@ -178,15 +216,15 @@ public class WhiteLady extends Entity {
 
         if (movingRight) {
             // normal draw (facing right)
-            g2.drawImage(frame, screenX, screenY, size, size, null);
+            g2.drawImage(frame, screenX, screenY, renderWidth, renderHeight, null);
         } else {
             // flip horizontally (facing left)
             Graphics2D g2d = (Graphics2D) g2;
             java.awt.geom.AffineTransform old = g2d.getTransform();
 
-            g2d.translate(screenX + size, screenY);
+            g2d.translate(screenX + renderWidth, screenY);
             g2d.scale(-1, 1);
-            g2d.drawImage(frame, 0, 0, size, size, null);
+            g2d.drawImage(frame, 0, 0, renderWidth, renderHeight, null);
 
             g2d.setTransform(old);
         }

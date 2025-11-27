@@ -387,32 +387,8 @@ public class ObjectManager {
             // =============== MAP 2 OBJECT TYPES ===============
             objectSetStart[1] = objectTypeCount;
             localId = 0;
-
-            //  Animated Tree for MAP 2 using Tree1.png..Tree6.png in objects/map02
-            addAnimatedObjectTypeFromFiles(
-                    basePath2,
-                    "Tree",        // baseName -> Tree1.png, Tree2.png, ...
-                    "MAP2_TREE1",
-                    "tree",
-                    true,          // collision
-                    true,          // overlapWithPlayer (can walk behind)
-                    3, 3,          // width/height in tiles (use what fits your asset)
-                    1,             // startIndex (Tree1.png)
-                    6,             // 6 frames: Tree1..Tree6
-                    15             // frameSpeed (ticks per frame)
-            );
-            System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TREE1");
-
-            // Crystal for map 2
-            addObjectType(basePath2,
-                    "Crystal_shadow1_1.png",
-                    "CRYSTAL1",
-                    "crystal1",
-                    true,
-                    true,   // big crystal: overlap
-                    4, 4);
-            System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = CRYSTAL1");
-
+            
+            // SKULL
             addAnimatedObjectTypeFromFiles(
                     basePath2,
                     "Skull",
@@ -427,6 +403,17 @@ public class ObjectManager {
             );
             System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = SKULL1");
 
+            // Crystal for map 2
+            addObjectType(basePath2,
+                    "Crystal_shadow1_1.png",
+                    "CRYSTAL1",
+                    "crystal1",
+                    true,
+                    true,   // big crystal: overlap
+                    4, 4);
+            System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = CRYSTAL1");
+
+           
             // === INVISIBLE TILE FOR BORDER (MAP 2, local index 3) ===
             // No image, full-tile hitbox, collision = true
             GameObject invis = new GameObject();
@@ -448,6 +435,19 @@ public class ObjectManager {
             objectTypes[objectTypeCount] = invis;
             System.out.println("MAP2 OBJ " + localId++ + " (global " + objectTypeCount + ") = INVIS");
             objectTypeCount++;
+
+             // Trap base map 2
+            addObjectType(basePath2,
+                    "trapbase1.png",
+                    "trapbase",
+                    "trapbase",
+                    false,
+                    false,   
+                    1, 13);
+            System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TRAPBASE");
+
+
+            
 
         } catch (IOException e) {
             System.out.println("ERROR: Cannot load object images.");

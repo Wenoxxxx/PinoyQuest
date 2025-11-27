@@ -16,6 +16,7 @@ import src.tile.TileManager;
 import java.util.ArrayList;
 import java.util.List;
 import src.entity.mobs.WhiteLady;
+import src.entity.mobs.SawTrap;
 import src.entity.mobs.MobManager;
 
 
@@ -96,6 +97,7 @@ public class GamePanel extends JPanel {
 
     // ===================== MOBS ==============================
     public List<WhiteLady> whiteLadies = new ArrayList<>();
+    public List<SawTrap> sawTraps = new ArrayList<>();
     public MobManager mobManager;
     
 

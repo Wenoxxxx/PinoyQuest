@@ -1,22 +1,17 @@
-# 🐉 PinoyQuest
-
-**A Retro-Style Filipino 2D RPG Adventure**
-Built with passion by **Team JavaWockeez**
-Members: **Owen, Yuan, Kristine, Regine**
-
+# PinoyQuest []
 ---
 
-## 🎮 Overview
+## Overview
 
 **PinoyQuest** is a retro-inspired 2D adventure that taps into the timeless charm of classic handheld games—think Pokémon on MyBoy—but infused with pure **Pinoy culture**.
 
 Set in a pixelated rendition of a lively Filipino town, you play as a young hero navigating vibrant streets, sari-sari stores, and nostalgic playgrounds. Your mission? Restore peace after mischievous local spirits (engkanto vibes) start disrupting cherished Filipino childhood games.
 
-Expect a blend of humor, heart, and heritage wrapped in classic RPG mechanics.
+Expect a blend of humor, heart, and heritage wrapped in classic RPG-adventure mechanics.
 
 ---
 
-## 🌟 Core Features
+## Core Features
 
 * **Authentic Filipino setting** – Explore a town filled with local flavor
 * **Retro pixel art aesthetic** – Nostalgic visuals inspired by classic handheld RPGs
@@ -26,7 +21,7 @@ Expect a blend of humor, heart, and heritage wrapped in classic RPG mechanics.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Language:** Java
 * **Concepts:** OOP, DSA, game loops, sprites, tile-based rendering
@@ -34,7 +29,7 @@ Expect a blend of humor, heart, and heritage wrapped in classic RPG mechanics.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 1. Clone the repository:
 
@@ -47,7 +42,7 @@ Expect a blend of humor, heart, and heritage wrapped in classic RPG mechanics.
 
 ---
 
-## 🤝 Team JavaWockeez
+## Team JavaWockeez
 
 Driven by creativity, caffeine, and chaotic good energy.
 
