@@ -42,8 +42,6 @@ public class GameLoop implements Runnable {
         thread = null;
     }
 
-
-
     // MAIN GAME LOOP
     @Override
     public void run(){

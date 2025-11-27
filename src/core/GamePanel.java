@@ -8,8 +8,16 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import src.entity.Player;
+import src.entity.mobs.WhiteLady;
 import src.tile.ObjectManager;
 import src.tile.TileManager;
+
+// MOBS
+import java.util.ArrayList;
+import java.util.List;
+import src.entity.mobs.WhiteLady;
+import src.entity.mobs.MobManager;
+
 
 public class GamePanel extends JPanel {
 
@@ -69,7 +77,8 @@ public class GamePanel extends JPanel {
 
     // ===================== MENU UI =====================
     private BufferedImage menuBackground;
-    private BufferedImage buttonSprite;
+    // 0 = Start, 1 = Resume, 2 = Settings, 3 = Quit
+    private BufferedImage[] buttonSprites = new BufferedImage[4];
 
     // 0 = Start, 1 = Resume, 2 = Settings, 3 = Quit
     public int menuSelectedIndex = 0;
@@ -84,6 +93,13 @@ public class GamePanel extends JPanel {
         cameraX = player.worldX - (screenW / 2) + (playerWidth / 2);
         cameraY = player.worldY - (screenH / 2) + (playerHeight / 2);
     }
+
+    // ===================== MOBS ==============================
+    public List<WhiteLady> whiteLadies = new ArrayList<>();
+    public MobManager mobManager;
+    
+
+
 
     // ===================== CONSTRUCTOR =====================
     public GamePanel() {
@@ -114,13 +130,22 @@ public class GamePanel extends JPanel {
         cameraInitialized = false;
 
         loadMenuSprites();
+
+        mobManager = new MobManager(this);
+        whiteLadies.clear();
     }
 
     private void loadMenuSprites() {
         try {
-            // TODO: adjust these paths to your actual files
+            // background
             menuBackground = ImageIO.read(new File("src/assets/ui/mainMenu/BG.png"));
-            buttonSprite   = ImageIO.read(new File("src/assets/ui/button.png"));
+
+            // buttons: make sure these paths match your actual files
+            buttonSprites[0] = ImageIO.read(new File("src/assets/ui/mainMenu/btn1.png")); // Start
+            buttonSprites[1] = ImageIO.read(new File("src/assets/ui/mainMenu/btn2.png")); // Resume
+            buttonSprites[2] = ImageIO.read(new File("src/assets/ui/mainMenu/btn3.png")); // Settings
+            buttonSprites[3] = ImageIO.read(new File("src/assets/ui/mainMenu/btn4.png")); // Quit
+
         } catch (IOException e) {
             System.out.println("Failed to load menu sprites:");
             e.printStackTrace();
@@ -175,6 +200,13 @@ public class GamePanel extends JPanel {
 
         cameraInitialized = true;
 
+    if (mobManager != null) {
+        if (currentMap == 1) {  
+            mobManager.spawnMobsForMap(1);  // load mobs_map2.txt
+        } else {
+            whiteLadies.clear();            // clear all mobs in other maps
+        }
+    }
         System.out.println("Switched to map index " + newMapIndex +
                 " at tile (" + playerTileCol + "," + playerTileRow + "), facing " + facingDirection);
     }
@@ -230,6 +262,16 @@ public class GamePanel extends JPanel {
         player.update();
         objectManager.update();
 
+        // TESTT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if (mobManager != null) {
+            mobManager.update();
+        }
+        
+        
+        for (WhiteLady wl : whiteLadies) {
+            wl.update();
+        }
+
         // Player size (if your player sprite is 2x2 tiles)
         int playerWidth = tileSize * 2;
         int playerHeight = tileSize * 2;
@@ -281,26 +323,32 @@ public class GamePanel extends JPanel {
         // Draw Tiles
         tileManager.draw(g2);
 
-        // ========= PLAYER FEET TILE ROW (for overlap layering) =========
         int playerFeetY = player.worldY + player.solidArea.y + player.solidArea.height;
         int playerFeetRow = playerFeetY / tileSize;
 
-        // Draw objects that should appear BEHIND the player
+        // Objects behind player
         if (objectManager != null) {
             objectManager.drawBehindPlayer(g2, playerFeetRow);
         }
 
-        // Draw Player (always centered on screen)
+        // Player
         player.draw(g2);
 
-        // Draw objects that should appear IN FRONT of the player
+        // Objects in front of player
         if (objectManager != null) {
             objectManager.drawInFrontOfPlayer(g2, playerFeetRow);
         }
 
-        // HUD on top of everything
+        // MOBS AFTER OBJECTS, SO THEY AREN'T HIDDEN
+        if (mobManager != null) {
+            mobManager.draw(g2);
+        }
+
+        // HUD
         player.drawHud(g2);
     }
+
+
 
     private void drawMainMenu(Graphics2D g2) {
         int screenW = getWidth() > 0 ? getWidth() : screenWidth;
@@ -311,11 +359,8 @@ public class GamePanel extends JPanel {
             int bgW = menuBackground.getWidth();
             int bgH = menuBackground.getHeight();
 
-            // Scale needed to fit the screen
             double scaleX = (double) screenW / bgW;
             double scaleY = (double) screenH / bgH;
-
-            // Use the smaller scale so the image is never stretched
             double scale = Math.min(scaleX, scaleY);
 
             int drawW = (int) (bgW * scale);
@@ -326,60 +371,65 @@ public class GamePanel extends JPanel {
 
             g2.drawImage(menuBackground, x, y, drawW, drawH, null);
         } else {
-            // fallback if image fails to load
             g2.setColor(Color.BLACK);
             g2.fillRect(0, 0, screenW, screenH);
         }
 
-        // ===================== TITLE =====================
+        // ===================== TITLE (optional) =====================
         g2.setFont(new Font("Arial", Font.BOLD, 48));
         g2.setColor(Color.WHITE);
-
+        // you can draw a title string here if you want
 
         // ===================== BUTTONS =====================
-        int buttonWidth  = (buttonSprite != null) ? buttonSprite.getWidth()  : 260;
-        int buttonHeight = (buttonSprite != null) ? buttonSprite.getHeight() : 60;
+
+        int defaultButtonWidth  = 260;
+        int defaultButtonHeight = 60;
+
+        // Scale factor (try 1.5, 1.8, 2.0, etc.)
+        double buttonScale = 5.5;
+
+        // use first button’s height for spacing, if available
+        int baseButtonHeight = defaultButtonHeight;
+        if (buttonSprites[0] != null) {
+            baseButtonHeight = (int)(buttonSprites[0].getHeight() * buttonScale);
+        }
 
         int centerX = screenW / 2;
-        int startY  = screenH / 2 - 2 * (buttonHeight + 10)+60;
-        int gap     = 20;
+        int startY  = screenH / 2 - 2 * (baseButtonHeight + 10) + 60;
+        int gap     = 5;
 
         g2.setFont(new Font("Arial", Font.PLAIN, 26));
 
         for (int i = 0; i < menuOptions.length; i++) {
-            int x = centerX - (buttonWidth / 2);
-            int y = startY + i * (buttonHeight + gap);
+            BufferedImage btnImg = buttonSprites[i];
 
-            // button sprite
-            if (buttonSprite != null) {
-                // drawn at its natural resolution, not stretched
-                g2.drawImage(buttonSprite, x, y, buttonWidth, buttonHeight, null);
+            int rawWidth  = (btnImg != null) ? btnImg.getWidth()  : defaultButtonWidth;
+            int rawHeight = (btnImg != null) ? btnImg.getHeight() : defaultButtonHeight;
+
+            // scaling here
+            int buttonWidth  = (int)(rawWidth  * buttonScale);
+            int buttonHeight = (int)(rawHeight * buttonScale);
+
+            int x = centerX - (buttonWidth / 2);
+            int y = startY + i * (baseButtonHeight + gap);
+
+            // button sprite or fallback
+            if (btnImg != null) {
+                g2.drawImage(btnImg, x, y, buttonWidth, buttonHeight, null);
             } else {
                 g2.setColor(new Color(0, 0, 0, 180));
                 g2.fillRoundRect(x, y, buttonWidth, buttonHeight, 20, 20);
             }
 
-            // highlight
+            // highlight border if selected
             if (i == menuSelectedIndex) {
                 g2.setColor(Color.YELLOW);
                 g2.setStroke(new BasicStroke(3));
                 g2.drawRoundRect(x, y, buttonWidth, buttonHeight, 20, 20);
             }
-
-            // text
-            String label = menuOptions[i];
-            if (label.equals("Resume") && !canResume) {
-                g2.setColor(Color.GRAY);
-            } else {
-                g2.setColor(Color.WHITE);
-            }
-
-            int textWidth = g2.getFontMetrics().stringWidth(label);
-            int textX = centerX - textWidth / 2;
-            int textY = y + (buttonHeight / 2) + g2.getFontMetrics().getAscent() / 2 - 4;
-
-            g2.drawString(label, textX, textY);
+            
         }
+
 
         // ===================== HINT TEXT =====================
         g2.setFont(new Font("Arial", Font.ITALIC, 18));
@@ -388,7 +438,6 @@ public class GamePanel extends JPanel {
         g2.setColor(Color.WHITE);
         g2.drawString(hint, (screenW - hintW) / 2, screenH - 40);
     }
-
 
     private void drawSettingsScreen(Graphics2D g2) {
         int screenW = getWidth() > 0 ? getWidth() : screenWidth;
