@@ -491,11 +491,19 @@ public class Player extends Entity {
         health = Math.min(maxHealth, health + amount);
     }
 
+    // UPDATED: core damage logic
     public void damage(int amount) {
         if (amount <= 0) {
             return;
         }
         health = Math.max(0, health - amount);
+        System.out.println("Player hit! Health: " + health);
+        // if (health == 0) { /* handle death later */ }
+    }
+
+    // For enemies like White Lady to call
+    public void takeDamage(int amount) {
+        damage(amount);
     }
 
     public int getEnergy() {
@@ -567,6 +575,10 @@ public class Player extends Entity {
             // Draw player in the center of the screen
             int drawX = (screenW / 2) - (spriteWidth / 2);
             int drawY = (screenH / 2) - (spriteHeight / 2);
+
+            // keep these updated for enemies (like White Lady)
+            this.screenX = drawX;
+            this.screenY = drawY;
 
             g2.drawImage(image, drawX, drawY, spriteWidth, spriteHeight, null);
         }
