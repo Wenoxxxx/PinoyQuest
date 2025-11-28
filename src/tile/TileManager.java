@@ -40,6 +40,33 @@ public class TileManager {
         loadMap();      // load map text files
     }
 
+    // ========================================================
+    // NEW: Reload a single map when switching maps
+    // ========================================================
+    public void loadMap(int mapIndex) {
+        if (mapIndex < 0 || mapIndex >= MAP_COUNT) {
+            System.out.println("[TileManager] Invalid map index " + mapIndex);
+            return;
+        }
+
+        String fileName = "map" + (mapIndex + 1) + ".txt";
+        loadMapFileByIndex(fileName, mapIndex);
+
+        System.out.println("[TileManager] Reloaded map " + mapIndex + " from " + fileName);
+    }
+
+    // Wrapper: uses your existing loadMapFile(String, int)
+    private void loadMapFileByIndex(String fileName, int mapIndex) {
+        try {
+            String path = "src" + File.separator + "assets" + File.separator + "maps" + File.separator + fileName;
+            loadMapFile(fileName, mapIndex);  // your original logic already handles file paths internally
+        } catch (Exception e) {
+            System.out.println("[TileManager] Failed to reload map " + mapIndex);
+            e.printStackTrace();
+        }
+    }
+
+
     // ================== LOAD TILE IMAGES ==================
     // loads all tile sprites and assigns global IDs
     public void getTileImage() {
@@ -218,6 +245,10 @@ public class TileManager {
 
             // =============== MAP 3 TILES (optional) ===============
             // tilesetStart[2] can be set here if a third tileset is added
+
+
+            tilesetStart[2] = tileTypeCount;
+            localId = 0; 
 
         } catch (IOException e) {
             System.err.println("Error loading tile images: " + e.getMessage());
