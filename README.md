@@ -48,10 +48,10 @@ Expect a blend of humor, heart, and heritage wrapped in classic RPG-adventure me
 
 Driven by creativity, caffeine, and chaotic good energy.
 
-   -Owen – Lead Programmer
-   -Yuan – Systems & Logic Designer
-   -Kristine – Document and Creatives
-   -Regine – Document and Creatives
+   * -Owen – Lead Programmer
+   * -Yuan – Systems & Logic Designer
+   * -Kristine – Document and Creatives
+   * -Regine – Document and Creatives
 
 ## 🇵🇭 Salamat!
 
