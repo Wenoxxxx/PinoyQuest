@@ -1,5 +1,5 @@
+<img src="src/assets/ui/gameIcon/icon.png" alt="Game Icon" width="100" height="100">
 
-<img = src/assets/ui/gameIcon/icon.png alt="Game Icon"> 
 # PinoyQuest 
 ---
 
@@ -15,31 +15,31 @@ Expect a blend of humor, heart, and heritage wrapped in classic RPG-adventure me
 
 ## Core Features
 
-* **Authentic Filipino setting** – Explore a town filled with local flavor
-* **Retro pixel art aesthetic** – Nostalgic visuals inspired by classic handheld RPGs
-* **Traditional Filipino games reimagined** – Patintero, Tumbang Preso, etc
-* **Engkanto encounters** – Fight, negotiate, or outsmart mythical tricksters
-* **Story-driven progression** – Restore harmony and uncover your hero’s roots
+* **Authentic Filipino setting** – Explore a town filled with local flavor  
+* **Retro pixel art aesthetic** – Nostalgic visuals inspired by classic handheld RPGs  
+* **Traditional Filipino games reimagined** – Patintero, Tumbang Preso, etc  
+* **Engkanto encounters** – Fight, negotiate, or outsmart mythical tricksters  
+* **Story-driven progression** – Restore harmony and uncover your hero’s roots  
 
 ---
 
 ## Tech Stack
 
-* **Language:** Java
-* **Concepts:** OOP, DSA, game loops, sprites, tile-based rendering
-* **Tools:** VSCode / IntelliJ, GitHub, Aseprite 
+* **Language:** Java  
+* **Concepts:** OOP, DSA, game loops, sprites, tile-based rendering  
+* **Tools:** VSCode / IntelliJ, GitHub, Aseprite  
 
 ---
 
 ## Getting Started
 
 1. Clone the repository:
-
-   ```
+   ```bash
    git clone https://github.com/<your_repo_here>/PinoyQuest.git
-   ```
 2. Open project in your preferred Java IDE.
+
 3. Run the main game file.
+
 4. Play and enjoy the Filipino nostalgia hit!
 
 ---
@@ -48,15 +48,11 @@ Expect a blend of humor, heart, and heritage wrapped in classic RPG-adventure me
 
 Driven by creativity, caffeine, and chaotic good energy.
 
-* **Owen** – Lead Programmer
-* **Yuan** – Systems & Logic Designer
-* **Kristine** – Document and Creatives
-* **Regine** – Document and Creatives
-
-
----
+Owen – Lead Programmer
+Yuan – Systems & Logic Designer
+Kristine – Document and Creatives
+Regine – Document and Creatives
 
 ## 🇵🇭 Salamat!
 
-Thank you for checking out **PinoyQuest**. Tara, laro na!
-
+Thank you for checking out PinoyQuest. Tara, laro na!
