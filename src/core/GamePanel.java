@@ -178,39 +178,54 @@ public class GamePanel extends JPanel {
      * @param facingDirection // "up", "down", "left", "right"
      */
     public void switchToMap(int newMapIndex, int playerTileCol, int playerTileRow, String facingDirection) {
+
         if (newMapIndex < 0 || newMapIndex >= TileManager.MAP_COUNT) {
-            System.out.println("Invalid map index: " + newMapIndex);
+            System.out.println("[ERROR] Invalid map index: " + newMapIndex);
             return;
         }
 
+        // ================================================
+        // 1) Set current map
+        // ================================================
         currentMap = newMapIndex;
 
-        // place player
+        // ================================================
+        // 2) Reload the TILEMAP for the new map
+        // ================================================
+        if (tileManager != null) {
+            tileManager.loadMap(newMapIndex);
+        }
+
+        // ================================================
+        // 3) Respawn mobs for THIS map (clears old mobs too)
+        // ================================================
+        if (mobManager != null) {
+            mobManager.spawnMobsForMap(newMapIndex);
+        }
+
+        // ================================================
+        // 4) Move player to the correct tile in new map
+        // ================================================
         player.worldX = playerTileCol * tileSize;
         player.worldY = playerTileRow * tileSize;
         player.direction = facingDirection;
 
-        // recenter camera immediately on new position
+        // ================================================
+        // 5) Snap camera to the player
+        // ================================================
+        int screenW = (getWidth() > 0 ? getWidth() : screenWidth);
+        int screenH = (getHeight() > 0 ? getHeight() : screenHeight);
+
         int playerWidth = tileSize * 2;
         int playerHeight = tileSize * 2;
-
-        int screenW = getWidth() > 0 ? getWidth() : screenWidth;
-        int screenH = getHeight() > 0 ? getHeight() : screenHeight;
 
         cameraX = player.worldX - (screenW / 2) + (playerWidth / 2);
         cameraY = player.worldY - (screenH / 2) + (playerHeight / 2);
 
         cameraInitialized = true;
 
-    if (mobManager != null) {
-        if (currentMap == 1) {  
-            mobManager.spawnMobsForMap(1);  // load mobs_map2.txt
-        } else {
-            whiteLadies.clear();            // clear all mobs in other maps
-        }
-    }
-        System.out.println("Switched to map index " + newMapIndex +
-                " at tile (" + playerTileCol + "," + playerTileRow + "), facing " + facingDirection);
+        System.out.println("[GamePanel] Switched to map " + newMapIndex +
+                " → spawn=(" + playerTileCol + "," + playerTileRow + "), facing=" + facingDirection);
     }
 
     // ===================== GAME STATE HELPERS =====================
