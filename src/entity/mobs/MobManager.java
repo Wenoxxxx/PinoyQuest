@@ -13,7 +13,7 @@ public class MobManager {
 
     private final GamePanel gp;
 
-    // mob id map: [mapIndex][col][row]
+    // mob map: [mapIndex][col][row]
     private final int[][][] mobLayout;
 
     // Mob IDs
@@ -21,7 +21,7 @@ public class MobManager {
     public static final int MOB_WHITELADY = 1;
     public static final int MOB_SAWTRAP   = 2;
 
-    // Base directory for mob map files
+    // Directory path
     private static final String MOB_MAP_DIR =
             "src" + File.separator +
             "assets" + File.separator +
@@ -33,10 +33,12 @@ public class MobManager {
         mobLayout = new int[TileManager.MAP_COUNT][gp.maxWorldCol][gp.maxWorldRow];
 
         loadMobMaps();
-        spawnMobsForMap(gp.currentMap);
+        spawnMobsForMap(gp.currentMap);   // initial map spawn
     }
 
-    // =============== LOAD MOB MAP FILES =================
+    // ============================================================
+    //                  LOAD ALL MOB MAP FILES
+    // ============================================================
     private void loadMobMaps() {
         for (int mapIndex = 0; mapIndex < TileManager.MAP_COUNT; mapIndex++) {
             String fileName = MOB_MAP_DIR + "mobsmap" + (mapIndex + 1) + ".txt";
@@ -63,14 +65,12 @@ public class MobManager {
 
                 for (; col < numbers.length && col < gp.maxWorldCol; col++) {
                     try {
-                        int mobId = Integer.parseInt(numbers[col]);
-                        mobLayout[mapIndex][col][row] = mobId;
+                        mobLayout[mapIndex][col][row] = Integer.parseInt(numbers[col]);
                     } catch (NumberFormatException e) {
                         mobLayout[mapIndex][col][row] = MOB_NONE;
                     }
                 }
 
-                // if line shorter than maxWorldCol, fill remaining with 0
                 while (col < gp.maxWorldCol) {
                     mobLayout[mapIndex][col][row] = MOB_NONE;
                     col++;
@@ -79,7 +79,6 @@ public class MobManager {
                 row++;
             }
 
-            // fill remaining rows with no mobs
             while (row < gp.maxWorldRow) {
                 for (int col = 0; col < gp.maxWorldCol; col++) {
                     mobLayout[mapIndex][col][row] = MOB_NONE;
@@ -95,39 +94,44 @@ public class MobManager {
         }
     }
 
-    // =============== SPAWN MOBS FROM LAYOUT ==============
+    // ============================================================
+    //                   RESPAWN MOBS PER MAP
+    // ============================================================
     public void spawnMobsForMap(int mapIndex) {
         if (mapIndex < 0 || mapIndex >= TileManager.MAP_COUNT) return;
 
-        // Clear existing mobs
+        System.out.println("[MobManager] Respawning mobs for map " + mapIndex);
+
+        // Always clear previous map’s mobs
         gp.whiteLadies.clear();
         gp.sawTraps.clear();
 
+        // Spawn mobs listed in layout
         for (int col = 0; col < gp.maxWorldCol; col++) {
             for (int row = 0; row < gp.maxWorldRow; row++) {
-                int mobId = mobLayout[mapIndex][col][row];
 
+                int mobId = mobLayout[mapIndex][col][row];
                 if (mobId == MOB_NONE) continue;
 
                 int worldX = col * gp.tileSize;
                 int worldY = row * gp.tileSize;
 
                 switch (mobId) {
-                    case MOB_WHITELADY -> {
-                        gp.whiteLadies.add(new WhiteLady(gp, worldX, worldY));
-                    }
-                    case MOB_SAWTRAP -> {
-                        gp.sawTraps.add(new SawTrap(gp, worldX, worldY));
-                    }
-                    // dari dungag mobs yuan
+                    case MOB_WHITELADY -> gp.whiteLadies.add(
+                            new WhiteLady(gp, worldX, worldY)
+                    );
+
+                    case MOB_SAWTRAP -> gp.sawTraps.add(
+                            new SawTrap(gp, worldX, worldY)
+                    );
                 }
             }
         }
-
-        System.out.println("[MobManager] Spawned mobs for map " + mapIndex);
     }
 
-    // =============== UPDATE & DRAW =======================
+    // ============================================================
+    //                        UPDATE & DRAW
+    // ============================================================
     public void update() {
         for (WhiteLady wl : gp.whiteLadies) {
             wl.update();
