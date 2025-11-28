@@ -1,4 +1,6 @@
-# PinoyQuest []
+
+<img = src/assets/ui/gameIcon/icon.png alt="Game Icon"> 
+# PinoyQuest 
 ---
 
 ## Overview
