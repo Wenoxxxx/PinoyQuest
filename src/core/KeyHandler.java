@@ -83,6 +83,21 @@ public class KeyHandler implements KeyListener {
             skillPressed[slot] = true;
         }
 
+        // ========== INVENTORY TOGGLE ==========
+        if (code == KeyEvent.VK_I) {
+            gp.showInventory = !gp.showInventory;
+
+            // OPTIONAL: freeze movement when inventory is open
+            if (gp.showInventory) {
+                upPressed = false;
+                downPressed = false;
+                leftPressed = false;
+                rightPressed = false;
+            }
+        }
+
+
+        
         // pause back to menu
         if (code == KeyEvent.VK_ESCAPE) {
             gp.canResume = true;
