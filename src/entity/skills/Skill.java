@@ -25,11 +25,18 @@ public abstract class Skill {
         this.energyCost = Math.max(0, energyCost);
     }
 
-    public void update(Player player) {
+    // ===========================================================
+    // === NEW API: update WITH COOLDOWN MULTIPLIER ============
+    // ===========================================================
+    public void update(Player player, double cooldownMultiplier) {
+
+        // Scale cooldown reduction by multiplier (0.0 = no cooldown, 1.0 = normal)
         if (cooldownTimer > 0) {
-            cooldownTimer--;
+            cooldownTimer -= cooldownMultiplier;
+            if (cooldownTimer < 0) cooldownTimer = 0;
         }
 
+        // Existing active effect logic (unchanged)
         if (active) {
             whileActive(player);
 
@@ -43,7 +50,16 @@ public abstract class Skill {
         }
     }
 
-    public boolean tryActivate(Player player) {
+    // LEGACY SUPPORT (so your old skills still compile even if they call update(player))
+    public void update(Player player) {
+        update(player, 1.0);
+    }
+
+    // ===========================================================
+    // === NEW API: tryActivate WITH COOLDOWN MULTIPLIER =========
+    // ===========================================================
+    public boolean tryActivate(Player player, double cooldownMultiplier) {
+
         if (!canActivate(player)) {
             return false;
         }
@@ -52,7 +68,8 @@ public abstract class Skill {
             return false;
         }
 
-        cooldownTimer = cooldownFrames;
+        // Apply cooldown scaled by multiplier
+        cooldownTimer = (int)(cooldownFrames * cooldownMultiplier);
 
         if (durationFrames > 0) {
             remainingActiveFrames = durationFrames;
@@ -65,6 +82,15 @@ public abstract class Skill {
 
         return true;
     }
+
+    // Legacy support
+    public boolean tryActivate(Player player) {
+        return tryActivate(player, 1.0);
+    }
+
+    // ===========================================================
+    // ==================== ORIGINAL METHODS ======================
+    // ===========================================================
 
     public boolean canActivate(Player player) {
         return !active && cooldownTimer == 0 && player.getEnergy() >= energyCost;
@@ -127,4 +153,3 @@ public abstract class Skill {
 
     protected void onDeactivate(Player player) {}
 }
-
