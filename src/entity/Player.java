@@ -8,7 +8,9 @@ import javax.imageio.ImageIO;
 
 import src.core.GamePanel;
 import src.core.KeyHandler;
+
 import src.entity.skills.SkillManager;
+import src.items.Item;
 
 public class Player extends Entity {
 
@@ -52,6 +54,18 @@ public class Player extends Entity {
 
     public int screenX;
     public int screenY;
+
+    // ===== INVENTORY (3x2 GRID) =====
+    public static final int INVENTORY_ROWS = 2;
+    public static final int INVENTORY_COLS = 3;
+
+    public Item[][] inventory = new Item[INVENTORY_ROWS][INVENTORY_COLS];
+
+    // ===== ITEM-RELATED FLAGS & SLOTS =====
+    public Item weapon;
+    public boolean hasMap2Key = false;
+
+
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
@@ -113,8 +127,9 @@ public class Player extends Entity {
     public String getDirection() {
         return direction;
     }
-    
-    
+
+
+
     // ========================= UPDATE =========================
     public void update() {
 
@@ -346,6 +361,11 @@ public class Player extends Entity {
 
     public void heal(int amount) {
         if (amount > 0) health = Math.min(maxHealth, health + amount);
+    }
+
+    public void activateShield(int durationTicks) {
+        // Placeholder for shield logic
+        System.out.println("Player shield activated for " + durationTicks + " ticks!");
     }
 
     public void damage(int amount) {
