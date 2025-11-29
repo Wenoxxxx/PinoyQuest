@@ -78,12 +78,13 @@ public class KeyHandler implements KeyListener {
 
         // skills
         int slot = getSkillSlotFromCode(code);
-        if (slot != -1) {
+        if (slot >= 0 && slot < SKILL_SLOT_COUNT) {
             if (!skillPressed[slot]) {
                 skillTapped[slot] = true;
             }
             skillPressed[slot] = true;
         }
+
 
         // OPEN INVENTORY (Switch State)
         if (code == KeyEvent.VK_I) {
@@ -100,6 +101,15 @@ public class KeyHandler implements KeyListener {
             return;
         }
 
+       if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+            if (gp.gameState == GamePanel.STATE_INVENTORY && gp.ui != null) {
+                var invUI = gp.ui.getInventoryUI();
+                if (invUI != null) {
+                    invUI.useSelectedItem();
+                }
+            }
+        }
+
         // GO BACK TO MENU
         if (code == KeyEvent.VK_ESCAPE) {
             gp.canResume = true;
@@ -112,22 +122,28 @@ public class KeyHandler implements KeyListener {
 
         // CLOSE inventory on I or ESC
         if (code == KeyEvent.VK_I || code == KeyEvent.VK_ESCAPE) {
-
-                // Reset movement keys to avoid ghost movement
-                upPressed = false;
-                downPressed = false;
-                leftPressed = false;
-                rightPressed = false;
-
-                gp.gameState = GamePanel.STATE_PLAY;
+            upPressed = false;
+            downPressed = false;
+            leftPressed = false;
+            rightPressed = false;
+            gp.gameState = GamePanel.STATE_PLAY;
+            return;
         }
 
         // MOVE CURSOR WITH WASD
-        if (code == KeyEvent.VK_W) gp.ui.getInventoryUI().moveCursorUp();
-        if (code == KeyEvent.VK_S) gp.ui.getInventoryUI().moveCursorDown();
-        if (code == KeyEvent.VK_A) gp.ui.getInventoryUI().moveCursorLeft();
-        if (code == KeyEvent.VK_D) gp.ui.getInventoryUI().moveCursorRight();
+        if (gp.ui != null && gp.ui.getInventoryUI() != null) {
+            var inv = gp.ui.getInventoryUI();
 
+            if (code == KeyEvent.VK_W) inv.moveCursorUp();
+            if (code == KeyEvent.VK_S) inv.moveCursorDown();
+            if (code == KeyEvent.VK_A) inv.moveCursorLeft();
+            if (code == KeyEvent.VK_D) inv.moveCursorRight();
+
+            // USE ITEM (ENTER / SPACE)
+            if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+                inv.useSelectedItem();
+            }
+        }
     }
 
     // ===================== SETTINGS =====================

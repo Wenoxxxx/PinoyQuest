@@ -5,6 +5,7 @@ import java.awt.*;
 
 import src.entity.Player;
 import src.entity.mobs.WhiteLady;
+import src.items.ItemManager;
 import src.tile.ObjectManager;
 import src.tile.TileManager;
 import src.ui.UI;
@@ -75,6 +76,10 @@ public class GamePanel extends JPanel {
     public MainMenuUI mainMenuUI;
     public boolean showInventory = false;
 
+    // ITEM
+    public ItemManager itemManager;
+
+
     // ===================== CONSTRUCTOR =====================
     public GamePanel() {
 
@@ -90,6 +95,8 @@ public class GamePanel extends JPanel {
 
         tileManager = new TileManager(this);
         objectManager = new ObjectManager(this);
+
+        itemManager = new ItemManager(this);
 
         player = new Player(this, keyHandler);
 
@@ -201,6 +208,8 @@ public class GamePanel extends JPanel {
         player.update();
         objectManager.update();
 
+        itemManager.update();
+
         if (mobManager != null)
             mobManager.update();
 
@@ -264,26 +273,42 @@ public class GamePanel extends JPanel {
         g2.dispose();
     }
 
-    private void drawGame(Graphics2D g2) {
+   private void drawGame(Graphics2D g2) {
 
-        tileManager.draw(g2);
+    tileManager.draw(g2);
 
-        int playerFeetY = player.worldY + player.solidArea.y + player.solidArea.height;
-        int playerFeetRow = playerFeetY / tileSize;
+    int playerFeetY = player.worldY + player.solidArea.y + player.solidArea.height;
+    int playerFeetRow = playerFeetY / tileSize;
 
-        if (objectManager != null)
-            objectManager.drawBehindPlayer(g2, playerFeetRow);
+    //  ITEMS BEHIND PLAYER
+    if (itemManager != null)
+        itemManager.drawBehindPlayer(g2, playerFeetRow);
 
-        player.draw(g2);
+    //  OBJECTS BEHIND PLAYER
+    if (objectManager != null)
+        objectManager.drawBehindPlayer(g2, playerFeetRow);
 
-        if (objectManager != null)
-            objectManager.drawInFrontOfPlayer(g2, playerFeetRow);
+    //  DRAW PLAYER
+    player.draw(g2);
 
-        if (mobManager != null)
-            mobManager.draw(g2);
+    //  OBJECTS IN FRONT
+    if (objectManager != null)
+        objectManager.drawInFrontOfPlayer(g2, playerFeetRow);
 
-        ui.draw(g2);
-    }
+    //  ITEMS IN FRONT
+    if (itemManager != null)
+        itemManager.drawInFrontOfPlayer(g2, playerFeetRow);
+
+
+    //  MOBS
+    if (mobManager != null)
+        mobManager.draw(g2);
+
+
+    //  UI 
+    ui.draw(g2);
+}
+
 
     private void drawSettingsScreen(Graphics2D g2) {
 
