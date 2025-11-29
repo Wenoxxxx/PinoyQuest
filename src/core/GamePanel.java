@@ -56,6 +56,7 @@ public class GamePanel extends JPanel {
     public static final int STATE_MENU     = 0;
     public static final int STATE_PLAY     = 1;
     public static final int STATE_SETTINGS = 2;
+    public static final int STATE_INVENTORY = 3;
 
     public int gameState = STATE_MENU;
 
@@ -251,6 +252,13 @@ public class GamePanel extends JPanel {
         }
         else if (gameState == STATE_PLAY) {
             drawGame(g2);
+        }
+        else if (gameState == STATE_INVENTORY) {
+            // Draw the game FROZEN in the background
+            drawGame(g2);
+
+            // Then draw the inventory popup on top
+            ui.getInventoryUI().draw(g2);
         }
 
         g2.dispose();

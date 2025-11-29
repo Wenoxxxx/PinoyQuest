@@ -32,41 +32,43 @@ public class KeyHandler implements KeyListener {
 
         if (gp.gameState == GamePanel.STATE_MENU) {
             handleMenuInput(code);
-        } else if (gp.gameState == GamePanel.STATE_PLAY) {
+        } 
+        else if (gp.gameState == GamePanel.STATE_PLAY) {
             handlePlayInput(code);
-        } else if (gp.gameState == GamePanel.STATE_SETTINGS) {
+        } 
+        else if (gp.gameState == GamePanel.STATE_SETTINGS) {
             handleSettingsInput(code);
+        } 
+        else if (gp.gameState == GamePanel.STATE_INVENTORY) {
+            handleInventoryInput(code);
         }
     }
 
+    // ===================== MENU =====================
     private void handleMenuInput(int code) {
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
             gp.menuSelectedIndex--;
             if (gp.menuSelectedIndex < 0) {
                 gp.menuSelectedIndex = gp.menuOptions.length - 1;
             }
-        } else if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+        } 
+        else if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
             gp.menuSelectedIndex++;
             if (gp.menuSelectedIndex >= gp.menuOptions.length) {
                 gp.menuSelectedIndex = 0;
             }
-        } else if (code == KeyEvent.VK_ENTER) {
+        } 
+        else if (code == KeyEvent.VK_ENTER) {
             int i = gp.menuSelectedIndex;
 
-            if (i == 0) {               // Start
-                gp.startNewGame();
-            } else if (i == 1) {        // Resume
-                if (gp.canResume) {
-                    gp.resumeGame();
-                }
-            } else if (i == 2) {        // Settings
-                gp.openSettings();
-            } else if (i == 3) {        // Quit
-                System.exit(0);
-            }
+            if (i == 0) gp.startNewGame();    // Start
+            else if (i == 1 && gp.canResume) gp.resumeGame(); // Resume
+            else if (i == 2) gp.openSettings();               // Settings
+            else if (i == 3) System.exit(0);                  // Quit
         }
     }
 
+    // ===================== PLAY =====================
     private void handlePlayInput(int code) {
         // movement
         if (code == KeyEvent.VK_W) upPressed = true;
@@ -83,30 +85,53 @@ public class KeyHandler implements KeyListener {
             skillPressed[slot] = true;
         }
 
-        // ========== INVENTORY TOGGLE ==========
+        // OPEN INVENTORY (Switch State)
         if (code == KeyEvent.VK_I) {
-            gp.showInventory = !gp.showInventory;
 
-            // OPTIONAL: freeze movement when inventory is open
-            if (gp.showInventory) {
-                upPressed = false;
-                downPressed = false;
-                leftPressed = false;
-                rightPressed = false;
-            }
+            // Move to Inventory State
+            gp.gameState = GamePanel.STATE_INVENTORY;
+
+            // Force stop all player movement immediately
+            upPressed = false;
+            downPressed = false;
+            leftPressed = false;
+            rightPressed = false;
+
+            return;
         }
 
-
-        
-        // pause back to menu
+        // GO BACK TO MENU
         if (code == KeyEvent.VK_ESCAPE) {
             gp.canResume = true;
             gp.gameState = GamePanel.STATE_MENU;
         }
     }
 
+    // ===================== INVENTORY =====================
+    private void handleInventoryInput(int code) {
+
+        // CLOSE inventory on I or ESC
+        if (code == KeyEvent.VK_I || code == KeyEvent.VK_ESCAPE) {
+
+                // Reset movement keys to avoid ghost movement
+                upPressed = false;
+                downPressed = false;
+                leftPressed = false;
+                rightPressed = false;
+
+                gp.gameState = GamePanel.STATE_PLAY;
+        }
+
+        // MOVE CURSOR WITH WASD
+        if (code == KeyEvent.VK_W) gp.ui.getInventoryUI().moveCursorUp();
+        if (code == KeyEvent.VK_S) gp.ui.getInventoryUI().moveCursorDown();
+        if (code == KeyEvent.VK_A) gp.ui.getInventoryUI().moveCursorLeft();
+        if (code == KeyEvent.VK_D) gp.ui.getInventoryUI().moveCursorRight();
+
+    }
+
+    // ===================== SETTINGS =====================
     private void handleSettingsInput(int code) {
-        // just ESC to go back for now
         if (code == KeyEvent.VK_ESCAPE) {
             gp.gameState = GamePanel.STATE_MENU;
         }
@@ -129,27 +154,22 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    // ===================== Skill Helpers =====================
     public boolean consumeSkillTap(int slot) {
-        if (slot < 0 || slot >= SKILL_SLOT_COUNT) {
-            return false;
-        }
+        if (slot < 0 || slot >= SKILL_SLOT_COUNT) return false;
         boolean tapped = skillTapped[slot];
         skillTapped[slot] = false;
         return tapped;
     }
 
     public String getSkillKeyLabel(int slot) {
-        if (slot < 0 || slot >= SKILL_SLOT_COUNT) {
-            return "-";
-        }
+        if (slot < 0 || slot >= SKILL_SLOT_COUNT) return "-";
         return SKILL_KEY_LABELS[slot];
     }
 
     private int getSkillSlotFromCode(int code) {
         for (int i = 0; i < SKILL_KEY_CODES.length; i++) {
-            if (SKILL_KEY_CODES[i] == code) {
-                return i;
-            }
+            if (SKILL_KEY_CODES[i] == code) return i;
         }
         return -1;
     }
