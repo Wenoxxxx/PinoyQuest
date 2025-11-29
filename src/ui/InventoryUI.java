@@ -44,15 +44,21 @@ public class InventoryUI {
     public void draw(Graphics2D g2) {
 
         // === Popup Background ===
-        g2.setColor(new Color(0, 0, 0, 180));
-        g2.fillRoundRect(100, 100, 400, 300, 18, 18);
+        int invX = 10;        // same X
+        int invY = 145;        // moved DOWN below HUD
+        int invWidth = 320;
+        int invHeight = 200;
 
-        // Text
+        // Draw popup panel
+        g2.setColor(new Color(0, 0, 0, 180));
+        g2.fillRoundRect(invX, invY, invWidth, invHeight, 18, 18);
+
+        // Title
         g2.setColor(Color.WHITE);
-        g2.drawString("Inventory", 120, 130);
+        g2.drawString("Inventory", invX + 20, invY + 30);
 
         // === GRID SETTINGS ===
-        int cols = 3;
+        int cols = 4;
         int rows = 2;
 
         int slotSize = 64;       // size of each slot
@@ -62,8 +68,9 @@ public class InventoryUI {
         int gridHeight = (slotSize * rows) + (slotPadding * (rows - 1));
 
         // Center grid inside the popup
-        int startX = 100 + (400 - gridWidth) / 2;
-        int startY = 100 + (300 - gridHeight) / 2 + 20; // +20 to move grid lower
+        int startX = invX + (invWidth - gridWidth) / 2;
+        int startY = invY + (invHeight - gridHeight) / 2 + 20;
+
 
         // === DRAW GRID SLOTS ===
         g2.setColor(new Color(180, 180, 180, 180)); // slot background
