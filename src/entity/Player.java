@@ -117,6 +117,15 @@ public class Player extends Entity {
     
     // ========================= UPDATE =========================
     public void update() {
+
+        // STOP PLAYER MOVEMENT WHEN INVENTORY IS OPEN
+        if (gamePanel.showInventory) {
+            moving = false;
+            return;
+        }
+
+
+
         int dx = 0, dy = 0;
         moving = false;
         boolean moved = false;
