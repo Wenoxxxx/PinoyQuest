@@ -70,6 +70,7 @@ public class KeyHandler implements KeyListener {
 
     // ===================== PLAY =====================
     private void handlePlayInput(int code) {
+
         // movement
         if (code == KeyEvent.VK_W) upPressed = true;
         if (code == KeyEvent.VK_S) downPressed = true;
@@ -85,28 +86,23 @@ public class KeyHandler implements KeyListener {
             skillPressed[slot] = true;
         }
 
+        // ================= HOTBAR SWITCHING (1-2-3) =================
+        if (code == KeyEvent.VK_1) gp.actionBarUI.activeSlot = 0;
+        if (code == KeyEvent.VK_2) gp.actionBarUI.activeSlot = 1;
+        if (code == KeyEvent.VK_3) gp.actionBarUI.activeSlot = 2;
 
-        // OPEN INVENTORY (Switch State)
+        // OPEN INVENTORY
         if (code == KeyEvent.VK_I) {
-
-            // Move to Inventory State
             gp.gameState = GamePanel.STATE_INVENTORY;
-
-            // Force stop all player movement immediately
-            upPressed = false;
-            downPressed = false;
-            leftPressed = false;
-            rightPressed = false;
-
+            upPressed = downPressed = leftPressed = rightPressed = false;
             return;
         }
 
-       if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+        // USE SELECTED INVENTORY ITEM (backup handling)
+        if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
             if (gp.gameState == GamePanel.STATE_INVENTORY && gp.ui != null) {
                 var invUI = gp.ui.getInventoryUI();
-                if (invUI != null) {
-                    invUI.useSelectedItem();
-                }
+                if (invUI != null) invUI.useSelectedItem();
             }
         }
 
@@ -116,6 +112,7 @@ public class KeyHandler implements KeyListener {
             gp.gameState = GamePanel.STATE_MENU;
         }
     }
+
 
     // ===================== INVENTORY =====================
     private void handleInventoryInput(int code) {

@@ -9,6 +9,7 @@ import src.items.ItemManager;
 import src.tile.ObjectManager;
 import src.tile.TileManager;
 import src.ui.UI;
+import src.ui.ActionBarUI;
 import src.ui.MainMenuUI;
 
 // MOBS
@@ -78,6 +79,8 @@ public class GamePanel extends JPanel {
 
     // ITEM
     public ItemManager itemManager;
+    public ActionBarUI actionBarUI;
+
 
 
     // ===================== CONSTRUCTOR =====================
@@ -112,6 +115,7 @@ public class GamePanel extends JPanel {
         // NEW UI SYSTEMS
         ui = new UI(this, player);
         mainMenuUI = new MainMenuUI(this);
+        actionBarUI = new ActionBarUI(this, player);
     }
 
     private void centerCameraOnPlayer(int screenW, int screenH) {
@@ -304,9 +308,13 @@ public class GamePanel extends JPanel {
     if (mobManager != null)
         mobManager.draw(g2);
 
-
-    //  UI 
+    // UI 
     ui.draw(g2);
+
+    // Hotbar under HUD (only while playing)
+    if (gameState == STATE_PLAY) {
+        actionBarUI.draw(g2);
+    }
 }
 
 
