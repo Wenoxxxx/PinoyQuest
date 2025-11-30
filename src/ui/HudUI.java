@@ -25,7 +25,12 @@ public class HudUI {
         drawHud(g2);
     }
 
+    public int getHudHeight() {
+        return 138; // adjust if your HUD grows later
+    }
+
     private void drawHud(Graphics2D g2) {
+
 
         int padding = 28;
         int panelWidth = 320;

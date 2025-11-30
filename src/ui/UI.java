@@ -28,6 +28,10 @@ public class UI {
         return inventoryUI;
     }
 
+    public HudUI getHudUI() {
+        return hudUI;
+    }
+
     public void draw(Graphics2D g2) {
 
         // PLAY state → show full HUD and skills
