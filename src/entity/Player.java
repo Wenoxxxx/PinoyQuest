@@ -64,6 +64,8 @@ public class Player extends Entity {
     // ===== ITEM-RELATED FLAGS & SLOTS =====
     public Item weapon;
     public boolean hasMap2Key = false;
+    public Item[] hotbar = new Item[3];
+
 
 
 
