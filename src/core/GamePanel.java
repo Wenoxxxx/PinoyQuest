@@ -14,7 +14,7 @@ import src.ui.MainMenuUI;
 
 // MOBS
 import java.util.ArrayList;
-import java.util.List; 
+import java.util.List;
 import src.entity.mobs.SawTrap;
 import src.entity.mobs.MobManager;
 
@@ -24,7 +24,7 @@ public class GamePanel extends JPanel {
     final int mainTileSize = 16;
     final int scale = 3;
 
-    public final int tileSize = mainTileSize * scale; 
+    public final int tileSize = mainTileSize * scale;
     public final int maxScreenCol = 40;
     public final int maxScreenRow = 22;
 
@@ -55,8 +55,8 @@ public class GamePanel extends JPanel {
     public ObjectManager objectManager;
 
     // GAME STATES
-    public static final int STATE_MENU     = 0;
-    public static final int STATE_PLAY     = 1;
+    public static final int STATE_MENU = 0;
+    public static final int STATE_PLAY = 1;
     public static final int STATE_SETTINGS = 2;
     public static final int STATE_INVENTORY = 3;
 
@@ -80,8 +80,6 @@ public class GamePanel extends JPanel {
     // ITEM
     public ItemManager itemManager;
     public ActionBarUI actionBarUI;
-
-
 
     // ===================== CONSTRUCTOR =====================
     public GamePanel() {
@@ -188,7 +186,8 @@ public class GamePanel extends JPanel {
     }
 
     public void resumeGame() {
-        if (!canResume) return;
+        if (!canResume)
+            return;
         gameState = STATE_PLAY;
         cameraInitialized = false;
     }
@@ -226,8 +225,10 @@ public class GamePanel extends JPanel {
         int screenW = getWidth();
         int screenH = getHeight();
 
-        if (screenW <= 0) screenW = screenWidth;
-        if (screenH <= 0) screenH = screenHeight;
+        if (screenW <= 0)
+            screenW = screenWidth;
+        if (screenH <= 0)
+            screenH = screenHeight;
 
         int targetCameraX = player.worldX - (screenW / 2) + (playerWidth / 2);
         int targetCameraY = player.worldY - (screenH / 2) + (playerHeight / 2);
@@ -244,13 +245,11 @@ public class GamePanel extends JPanel {
     }
 
     // ===================== START GAME=====================
-    
+
     public void startGame() {
         gameLoop.start();
     }
 
-    
-    
     // ===================== DRAW =====================
     @Override
     public void paintComponent(Graphics g) {
@@ -259,14 +258,11 @@ public class GamePanel extends JPanel {
 
         if (gameState == STATE_MENU) {
             mainMenuUI.draw(g2);
-        }
-        else if (gameState == STATE_SETTINGS) {
+        } else if (gameState == STATE_SETTINGS) {
             drawSettingsScreen(g2);
-        }
-        else if (gameState == STATE_PLAY) {
+        } else if (gameState == STATE_PLAY) {
             drawGame(g2);
-        }
-        else if (gameState == STATE_INVENTORY) {
+        } else if (gameState == STATE_INVENTORY) {
             // Draw the game FROZEN in the background
             drawGame(g2);
 
@@ -277,46 +273,44 @@ public class GamePanel extends JPanel {
         g2.dispose();
     }
 
-   private void drawGame(Graphics2D g2) {
+    private void drawGame(Graphics2D g2) {
 
-    tileManager.draw(g2);
+        tileManager.draw(g2);
 
-    int playerFeetY = player.worldY + player.solidArea.y + player.solidArea.height;
-    int playerFeetRow = playerFeetY / tileSize;
+        int playerFeetY = player.worldY + player.solidArea.y + player.solidArea.height;
+        int playerFeetRow = playerFeetY / tileSize;
 
-    //  ITEMS BEHIND PLAYER
-    if (itemManager != null)
-        itemManager.drawBehindPlayer(g2, playerFeetRow);
+        // ITEMS BEHIND PLAYER
+        if (itemManager != null)
+            itemManager.drawBehindPlayer(g2, playerFeetRow);
 
-    //  OBJECTS BEHIND PLAYER
-    if (objectManager != null)
-        objectManager.drawBehindPlayer(g2, playerFeetRow);
+        // OBJECTS BEHIND PLAYER
+        if (objectManager != null)
+            objectManager.drawBehindPlayer(g2, playerFeetRow);
 
-    //  DRAW PLAYER
-    player.draw(g2);
+        // DRAW PLAYER
+        player.draw(g2);
 
-    //  OBJECTS IN FRONT
-    if (objectManager != null)
-        objectManager.drawInFrontOfPlayer(g2, playerFeetRow);
+        // OBJECTS IN FRONT
+        if (objectManager != null)
+            objectManager.drawInFrontOfPlayer(g2, playerFeetRow);
 
-    //  ITEMS IN FRONT
-    if (itemManager != null)
-        itemManager.drawInFrontOfPlayer(g2, playerFeetRow);
+        // ITEMS IN FRONT
+        if (itemManager != null)
+            itemManager.drawInFrontOfPlayer(g2, playerFeetRow);
 
+        // MOBS
+        if (mobManager != null)
+            mobManager.draw(g2);
 
-    //  MOBS
-    if (mobManager != null)
-        mobManager.draw(g2);
+        // UI
+        ui.draw(g2);
 
-    // UI 
-    ui.draw(g2);
-
-    // Hotbar under HUD (only while playing)
-    if (gameState == STATE_PLAY) {
-        actionBarUI.draw(g2);
+        // Hotbar under HUD (only while playing)
+        if (gameState == STATE_PLAY) {
+            actionBarUI.draw(g2);
+        }
     }
-}
-
 
     private void drawSettingsScreen(Graphics2D g2) {
 
