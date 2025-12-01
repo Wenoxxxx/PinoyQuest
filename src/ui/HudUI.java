@@ -3,109 +3,119 @@ package src.ui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
 
 import src.core.GamePanel;
 import src.entity.Player;
-import src.entity.skills.Skill;
-import src.entity.skills.SkillManager;
 
 public class HudUI {
 
     private final GamePanel gp;
     private final Player player;
-    private final SkillManager skillManager;
+
+    // ==== HUD BACKGROUND SPRITE ====
+    private BufferedImage hudPanel;
+    public int hudScale = 3;       // resize HUD sprite
+    public int hudX = 20;
+    public int hudY = 20;
+
+    // ==== CUSTOMIZABLE BAR SETTINGS ====
+    public int barXOffset = 115;
+    public int barYOffsetHealth = 28;
+    public int barYOffsetEnergy = 58;
+    public int barWidth = 190;
+    public int barHeight = 10;
+    public int barCornerRadius = 6;
+
+    public Color healthColor = new Color(210, 82, 82);
+    public Color energyColor = new Color(80, 165, 220);
 
     public HudUI(GamePanel gp, Player player) {
         this.gp = gp;
         this.player = player;
-        this.skillManager = player.getSkillManager();
+
+        // Load HUD sprite
+        try {
+            hudPanel = ImageIO.read(new File("src/assets/ui/hud/hud_panel.png"));
+        } catch (Exception e) {
+            System.out.println("ERROR LOADING HUD PANEL!");
+            e.printStackTrace();
+        }
+
+        applyPresetForYourSprite();
+    }
+
+    // Auto-fit layout for your HUD sprite
+    private void applyPresetForYourSprite() {
+        barXOffset = 115;
+        barYOffsetHealth = 28;
+        barYOffsetEnergy = 58;
+        barWidth = 190;
+        barHeight = 10;
+        barCornerRadius = 6;
     }
 
     public void draw(Graphics2D g2) {
         drawHud(g2);
     }
 
+    // Used by ActionBarUI to position hotbar below HUD
     public int getHudHeight() {
-        return 138; // adjust if your HUD grows later
+        if (hudPanel != null)
+            return hudPanel.getHeight() * hudScale + 20;
+        return 140;
     }
 
     private void drawHud(Graphics2D g2) {
 
+        // === Draw Background Sprite ===
+        if (hudPanel != null) {
+            int scaledW = hudPanel.getWidth() * hudScale;
+            int scaledH = hudPanel.getHeight() * hudScale;
+            g2.drawImage(hudPanel, hudX, hudY, scaledW, scaledH, null);
+        } else {
+            // fallback box
+            g2.setColor(new Color(0, 0, 0, 170));
+            g2.fillRoundRect(hudX, hudY, 320, 140, 12, 12);
+        }
 
-        int padding = 28;
-        int panelWidth = 320;
-        int panelHeight = 140;
+        // === Positions ===
+        int barX = hudX + barXOffset;
+        int healthY = hudY + barYOffsetHealth;
+        int energyY = hudY + barYOffsetEnergy;
 
-        g2.setColor(new Color(0, 0, 0, 170));
-        g2.fillRoundRect(padding - 18, padding - 30, panelWidth, panelHeight, 12, 12);
-
-        int barWidth = 240;
-        int barHeight = 14;
-        int barX = padding;
-        int barY = padding;
-
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 16f));
-        g2.setColor(Color.WHITE);
-        g2.drawString("Health", barX, barY - 6);
-
-        drawBar(g2, barX, barY, barWidth, barHeight,
+        // === HEALTH BAR ===
+        drawBar(g2, barX, healthY, barWidth, barHeight,
                 player.getHealth() / (double) player.getMaxHealth(),
-                new Color(210, 82, 82));
+                healthColor);
 
-        g2.drawString(player.getHealth() + " / " + player.getMaxHealth(),
-                barX + barWidth + 12, barY + barHeight - 2);
-
-        int energyY = barY + 32;
-        g2.drawString("Energy", barX, energyY - 6);
-
+        // === ENERGY BAR ===
         drawBar(g2, barX, energyY, barWidth, barHeight,
                 player.getEnergy() / (double) player.getMaxEnergy(),
-                new Color(80, 165, 220));
+                energyColor);
 
-        g2.drawString(player.getEnergy() + " / " + player.getMaxEnergy(),
-                barX + barWidth + 12, energyY + barHeight - 2);
+        // === LABELS ===
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 16f));
+        g2.setColor(Color.WHITE);
 
-        drawSkillList(g2, barX, energyY + 36);
+        g2.drawString("HP", barX - 28, healthY + 12);
+        g2.drawString("EN", barX - 28, energyY + 12);
     }
 
-    private void drawSkillList(Graphics2D g2, int x, int startY) {
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 14f));
+    // Simple Rounded Bar Renderer
+    private void drawBar(Graphics2D g2, int x, int y, int width, int height,
+                         double percent, Color fillColor) {
 
-        for (int i = 0; i < skillManager.getSlotCount(); i++) {
-            Skill skill = skillManager.getSkill(i);
-            if (skill == null) continue;
+        // background
+        g2.setColor(new Color(40, 40, 40));
+        g2.fillRoundRect(x, y, width, height, barCornerRadius, barCornerRadius);
 
-            String key = gp.keyHandler.getSkillKeyLabel(i);
-            String label = key + ": " + skill.getName();
-
-            g2.setColor(Color.WHITE);
-            g2.drawString(label, x, startY + (i * 18));
-
-            String status;
-            if (skill.isActive()) {
-                status = "Active";
-            } else if (skill.isOnCooldown()) {
-                double seconds = skill.getCooldownTimer() / 60.0;
-                status = String.format("CD %.1fs", seconds);
-            } else if (player.getEnergy() < skill.getEnergyCost()) {
-                status = "Need " + skill.getEnergyCost() + " EN";
-            } else {
-                status = "Ready";
-            }
-
-            g2.setColor(new Color(200, 200, 200));
-            g2.drawString(status, x + 170, startY + (i * 18));
-        }
-    }
-
-    private void drawBar(Graphics2D g2, int x, int y, int width, int height, double percent, Color fillColor) {
-
-        g2.setColor(new Color(45, 45, 45));
-        g2.fillRoundRect(x, y, width, height, 8, 8);
-
-        int actualWidth = (int) (width * Math.max(0, Math.min(1, percent)));
+        // fill
+        int filled = (int) (width * Math.max(0, Math.min(1, percent)));
 
         g2.setColor(fillColor);
-        g2.fillRoundRect(x, y, actualWidth, height, 8, 8);
+        g2.fillRoundRect(x, y, filled, height, barCornerRadius, barCornerRadius);
     }
 }
