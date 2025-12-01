@@ -1,8 +1,9 @@
 package src.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
 
 import src.core.GamePanel;
 import src.entity.Player;
@@ -15,47 +16,123 @@ public class SkillIconUI {
     private final Player player;
     private final SkillManager skillManager;
 
-    public int boxWidth = 240;
-    public int boxHeight = 70;
+    // ================================
+    //  CUSTOMIZABLE SETTINGS
+    // ================================
 
+    // Background sprite
+    private BufferedImage skillPanel;
+
+    // Position
+    public boolean centerX = true;
+    public boolean centerY = false;
+
+    public int posX = 0;           // auto-calculated if centered
+    public int posY = 0;
+
+    public int offsetX = -100;     // <--- move left(-) or right(+) while centered
+    public int offsetY = -5;        // optional vertical offset
+
+    // Scaling
+    public int boxWidth = 220;
+    public int boxHeight = 130;
+
+    // Icon coordinates INSIDE the panel
+    public int iconY = 42;  
+    public int[] iconX = { 75, 180, 285 };
+
+    // Text offsets
+    public int keyOffsetY = 90;
+    public int cdOffsetY  = 112;
+
+    // Font sizes
+    public int keyFontSize = 15;
+    public int cdFontSize  = 10;
+
+    // Margin from bottom (if not centered vertically)
+    public int bottomMargin = 35;
+
+    // ==================================
+    //  CONSTRUCTOR
+    // ==================================
     public SkillIconUI(GamePanel gp, Player player) {
         this.gp = gp;
         this.player = player;
         this.skillManager = player.getSkillManager();
+
+        try {
+            skillPanel = ImageIO.read(new File("src/assets/ui/skill/skillbg.png"));
+        } catch (Exception e) {
+            System.out.println("ERROR LOADING skillbg.png");
+            e.printStackTrace();
+        }
     }
 
+    // ==================================
+    //  DRAW
+    // ==================================
     public void draw(Graphics2D g2) {
 
-        int screenW = gp.getWidth() > 0 ? gp.getWidth() : gp.screenWidth;
-        int screenH = gp.getHeight() > 0 ? gp.getHeight() : gp.screenHeight;  // <-- IMPORTANT FIX
+        int screenW = gp.getWidth()  > 0 ? gp.getWidth()  : gp.screenWidth;
+        int screenH = gp.getHeight() > 0 ? gp.getHeight() : gp.screenHeight;
 
-        // === Bottom-Center Position ===
-        int x = (screenW / 2) - (boxWidth / 2);
-        int y = screenH - boxHeight - 25;    // always visible
+        // -------------------------------
+        // POSITIONING
+        // -------------------------------
 
-        // TEMP DEBUG (to confirm position)
-        g2.setColor(new Color(255, 0, 0, 70));
-        g2.fillRoundRect(x, y, boxWidth, boxHeight, 12, 12);
+        if (centerX)
+            posX = (screenW / 2) - (boxWidth / 2) + offsetX;   // centered + offset
+        else
+            posX += offsetX;
 
-        // Actual background
-        g2.setColor(new Color(0, 0, 0, 150));
-        g2.fillRoundRect(x, y, boxWidth, boxHeight, 12, 12);
+        if (centerY)
+            posY = (screenH / 2) - (boxHeight / 2) + offsetY;
+        else
+            posY = screenH - boxHeight - bottomMargin + offsetY;
 
-        g2.setColor(Color.WHITE);
-        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 18f));
+        // -------------------------------
+        // DRAW BACKGROUND PANEL
+        // -------------------------------
+        if (skillPanel != null)
+            g2.drawImage(skillPanel, posX, posY, boxWidth, boxHeight, null);
+        else {
+            g2.setColor(new Color(0, 0, 0, 170));
+            g2.fillRoundRect(posX, posY, boxWidth, boxHeight, 15, 15);
+        }
 
-        int textX = x + 20;
-        int textY = y + 25;
+        // -------------------------------
+        // DRAW SKILL KEYS + COOLDOWN TEXT
+        // -------------------------------
 
-        for (int i = 0; i < skillManager.getSlotCount(); i++) {
+        for (int i = 0; i < 3; i++) {
+
             Skill s = skillManager.getSkill(i);
             if (s == null) continue;
 
-            String key = gp.keyHandler.getSkillKeyLabel(i);
-            String label = key + ": " + s.getName();
+            int cx = posX + iconX[i];  // center X of the icon
 
-            g2.drawString(label, textX, textY);
-            textY += 20;
+            // Draw KEY (J/K/L)
+            g2.setColor(Color.WHITE);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, (float) keyFontSize));
+
+            // --- Center key label under icon ---
+            String key = gp.keyHandler.getSkillKeyLabel(i);
+            int keyWidth = g2.getFontMetrics().stringWidth(key);
+            g2.drawString(key, cx - keyWidth / 2, posY + keyOffsetY);
+
+            // ===== Cooldown / Status =====
+            String cdText;
+
+            if (s.isActive()) cdText = "Active";
+            else if (s.isOnCooldown()) cdText = String.format("CD %.1fs", s.getCooldownTimer() / 60.0);
+            else cdText = "Ready";
+
+            g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) cdFontSize));
+
+            // --- Center status under icon ---
+            int cdWidth = g2.getFontMetrics().stringWidth(cdText);
+            g2.drawString(cdText, cx - cdWidth / 2, posY + cdOffsetY);
         }
+
     }
 }

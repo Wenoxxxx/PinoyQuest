@@ -16,69 +16,83 @@ public class ActionBarUI {
 
     private BufferedImage barBackground;
 
-    // RESIZE HERE
     private int barWidth = 230;
     private int barHeight = 130;
 
     private int slotSize = 48;
     private int slotPadding = 12;
 
-    public int activeSlot = 0; // hotbar index 0–2
+    public int activeSlot = 0;
 
     public ActionBarUI(GamePanel gp, Player player) {
         this.gp = gp;
         this.player = player;
 
         try {
-            File file = new File("src/assets/ui/actionbar/actionbar.png");
-            barBackground = ImageIO.read(file);
+            barBackground = ImageIO.read(new File("src/assets/ui/actionbar/actionbar.png"));
         } catch (Exception e) {
             System.out.println("ERROR LOADING ACTION BAR BACKGROUND");
             e.printStackTrace();
         }
     }
 
+    public int getBarWidth() {
+        return barWidth;
+    }
+
     public void draw(Graphics2D g2) {
 
-        // --- Position hotbar DIRECTLY under HUD ---
-        int hudY = gp.ui.getHudUI().getHudHeight();
-        int barX = 0;
-        int barY = hudY + 10; // padding under HUD
+        int screenW = gp.getWidth() > 0 ? gp.getWidth() : gp.screenWidth;
+        int screenH = gp.getHeight() > 0 ? gp.getHeight() : gp.screenHeight;
 
-        // Draw background panel
+        int skillsWidth = gp.ui.getSkillIconUI().boxWidth;
+        int totalGroupWidth = skillsWidth + 30 + barWidth;
+
+        // LEFT boundary of the combined group
+        int startX = (screenW - totalGroupWidth) / 2;
+
+        // Y position
+        int y = screenH - barHeight - 40;
+
+        // Action bar goes to the RIGHT of skill box
+        int barX = startX + skillsWidth + 30;
+
+        // Draw background
         if (barBackground != null) {
-            g2.drawImage(barBackground, barX, barY, barWidth, barHeight, null);
+            g2.drawImage(barBackground, barX, y, barWidth, barHeight, null);
         } else {
             g2.setColor(new Color(0, 0, 0, 160));
-            g2.fillRoundRect(barX, barY, barWidth, barHeight, 15, 15);
+            g2.fillRoundRect(barX, y, barWidth, barHeight, 15, 15);
         }
 
-        // Hotbar slot layout
+        // Slot layout
         int totalSlotWidth = slotSize * 3 + slotPadding * 2;
-        int startX = barX + (barWidth - totalSlotWidth) / 2;
-        int startY = barY + (barHeight - slotSize) / 2;
+        int startSlotX = barX + (barWidth - totalSlotWidth) / 2;
+        int startSlotY = y + (barHeight - slotSize) / 2;
 
         for (int i = 0; i < 3; i++) {
-            int x = startX + i * (slotSize + slotPadding);
-            int y = startY;
 
-            // Highlight selected slot
+            int x = startSlotX + i * (slotSize + slotPadding);
+            int slotY = startSlotY;
+
+            // Highlight active slot
             if (i == activeSlot) {
                 g2.setColor(new Color(255, 215, 0, 150));
-                g2.fillRoundRect(x, y, slotSize, slotSize, 10, 10);
+                g2.fillRoundRect(x, slotY, slotSize, slotSize, 10, 10);
             }
 
+            // Border
             g2.setColor(Color.WHITE);
-            g2.drawRoundRect(x, y, slotSize, slotSize, 10, 10);
+            g2.drawRoundRect(x, slotY, slotSize, slotSize, 10, 10);
 
-            // Draw item icon (scaled)
+            // Item icon
             Item item = player.hotbar[i];
             if (item != null && item.sprite != null) {
-                g2.drawImage(item.sprite, x + 6, y + 6, slotSize - 12, slotSize - 12, null);
+                g2.drawImage(item.sprite, x + 6, slotY + 6, slotSize - 12, slotSize - 12, null);
             }
 
             // Slot number
-            g2.drawString("" + (i + 1), x + 4, y + 12);
+            g2.drawString("" + (i + 1), x + 4, slotY + 12);
         }
     }
 }

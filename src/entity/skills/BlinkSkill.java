@@ -12,7 +12,7 @@ public class BlinkSkill extends Skill {
                 "blink",
                 "Blink",
                 "Teleport a few tiles toward the facing direction, skipping obstacles if possible.",
-                180,
+                500,
                 0,
                 25
         );

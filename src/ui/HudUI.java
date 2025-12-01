@@ -17,15 +17,15 @@ public class HudUI {
 
     // ==== HUD BACKGROUND SPRITE ====
     private BufferedImage hudPanel;
-    public int hudScale = 3;       // resize HUD sprite
-    public int hudX = 20;
-    public int hudY = 20;
+    public int hudScale = 4;       // resize HUD sprite
+    public int hudX = 0;
+    public int hudY = 30;
 
     // ==== CUSTOMIZABLE BAR SETTINGS ====
-    public int barXOffset = 115;
+    public int barXOffset = 100;
     public int barYOffsetHealth = 28;
     public int barYOffsetEnergy = 58;
-    public int barWidth = 190;
+    public int barWidth = 170;
     public int barHeight = 10;
     public int barCornerRadius = 6;
 
@@ -49,10 +49,10 @@ public class HudUI {
 
     // Auto-fit layout for your HUD sprite
     private void applyPresetForYourSprite() {
-        barXOffset = 115;
+        barXOffset = 130;
         barYOffsetHealth = 28;
         barYOffsetEnergy = 58;
-        barWidth = 190;
+        barWidth = 140;
         barHeight = 10;
         barCornerRadius = 6;
     }
@@ -82,9 +82,9 @@ public class HudUI {
         }
 
         // === Positions ===
-        int barX = hudX + barXOffset;
-        int healthY = hudY + barYOffsetHealth;
-        int energyY = hudY + barYOffsetEnergy;
+        int barX = hudX + barXOffset+ 30;
+        int healthY = hudY + barYOffsetHealth+ 10;
+        int energyY = hudY + barYOffsetEnergy+ 10;
 
         // === HEALTH BAR ===
         drawBar(g2, barX, healthY, barWidth, barHeight,

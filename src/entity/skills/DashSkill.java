@@ -11,9 +11,9 @@ public class DashSkill extends Skill {
                 "dash",
                 "Dash",
                 "Gain a burst of movement speed for a short duration.",
-                240,
-                40,
-                15
+                400,
+                100,
+                25
         );
     }
 

@@ -31,6 +31,10 @@ public class UI {
         return hudUI;
     }
 
+    public SkillIconUI getSkillIconUI() {
+        return skillIconUI;
+    }
+
     public void draw(Graphics2D g2) {
 
         if (gp.gameState == GamePanel.STATE_PLAY) {
