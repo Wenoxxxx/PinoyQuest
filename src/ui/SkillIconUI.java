@@ -17,39 +17,61 @@ public class SkillIconUI {
     private final SkillManager skillManager;
 
     // ================================
-    //  CUSTOMIZABLE SETTINGS
+    //  BACKGROUND SPRITE
     // ================================
-
-    // Background sprite
     private BufferedImage skillPanel;
 
-    // Position
+    // ================================
+    //  PANEL POSITIONING (CUSTOMIZABLE)
+    // ================================
     public boolean centerX = true;
     public boolean centerY = false;
 
-    public int posX = 0;           // auto-calculated if centered
+    public int posX = 0;          // calculated each draw
     public int posY = 0;
 
-    public int offsetX = -100;     // <--- move left(-) or right(+) while centered
-    public int offsetY = -5;        // optional vertical offset
+    // HORIZONTAL AND VERTICAL OFFSETS (NEW)
+    public int offsetX = -100;     //  MOVE WHOLE PANEL LEFT/RIGHT
+    public int offsetY = -5;       //  MOVE WHOLE PANEL UP/DOWN
 
-    // Scaling
-    public int boxWidth = 220;
+    // ================================
+    //  PANEL SIZE
+    // ================================
+    public int boxWidth = 250;
     public int boxHeight = 130;
 
-    // Icon coordinates INSIDE the panel
-    public int iconY = 42;  
-    public int[] iconX = { 75, 180, 285 };
+    // ================================
+    //  ICON POSITIONS (CUSTOMIZABLE)
+    // ================================
+    public int iconBaseX = 60;          // where icon 0 starts
+    public int iconBaseY = 42;          // vertical base for iconsd
+    public int iconSpacingX = 60;       // horizontal spacing between icons
 
-    // Text offsets
-    public int keyOffsetY = 90;
-    public int cdOffsetY  = 112;
+    // Vertical micro-adjustment per icon (NEW!)
+    public int[] iconOffsetY = {0, 0, 0};
 
-    // Font sizes
+    // Horizontal micro-adjustment per icon (NEW!)
+    public int[] iconOffsetX = {0, 0, 0};
+
+    // ================================
+    //  TEXT SPACING CONTROLS
+    // ================================
+    public int spacingIconToKey = 14;       // icon to key label
+    public int spacingKeyToCooldown = 15;   // key to cooldown text
+
+    // Micro adjustments for ALL text (NEW)
+    public int textOffsetX = -3;     
+    public int textOffsetY = 45;     
+
+    // ================================
+    //  FONT SIZES
+    // ================================
     public int keyFontSize = 15;
-    public int cdFontSize  = 10;
+    public int cdFontSize = 10;
 
-    // Margin from bottom (if not centered vertically)
+    // ================================
+    //  SCREEN ANCHORING
+    // ================================
     public int bottomMargin = 35;
 
     // ==================================
@@ -69,30 +91,27 @@ public class SkillIconUI {
     }
 
     // ==================================
-    //  DRAW
+    //  DRAW UI
     // ==================================
     public void draw(Graphics2D g2) {
 
-        int screenW = gp.getWidth()  > 0 ? gp.getWidth()  : gp.screenWidth;
+        int screenW = gp.getWidth() > 0 ? gp.getWidth() : gp.screenWidth;
         int screenH = gp.getHeight() > 0 ? gp.getHeight() : gp.screenHeight;
 
-        // -------------------------------
-        // POSITIONING
-        // -------------------------------
-
+        // ---------- CENTERING ----------
         if (centerX)
-            posX = (screenW / 2) - (boxWidth / 2) + offsetX;   // centered + offset
-        else
-            posX += offsetX;
+            posX = (screenW / 2) - (boxWidth / 2);
 
         if (centerY)
-            posY = (screenH / 2) - (boxHeight / 2) + offsetY;
+            posY = (screenH / 2) - (boxHeight / 2);
         else
-            posY = screenH - boxHeight - bottomMargin + offsetY;
+            posY = screenH - boxHeight - bottomMargin;
 
-        // -------------------------------
-        // DRAW BACKGROUND PANEL
-        // -------------------------------
+        // ---------- APPLY OFFSETS ----------
+        posX += offsetX;
+        posY += offsetY;
+
+        // ---------- DRAW BACKGROUND ----------
         if (skillPanel != null)
             g2.drawImage(skillPanel, posX, posY, boxWidth, boxHeight, null);
         else {
@@ -100,39 +119,46 @@ public class SkillIconUI {
             g2.fillRoundRect(posX, posY, boxWidth, boxHeight, 15, 15);
         }
 
-        // -------------------------------
-        // DRAW SKILL KEYS + COOLDOWN TEXT
-        // -------------------------------
-
+        // =============================================
+        //  DRAW SKILL LABELS + COOLDOWNS
+        // =============================================
         for (int i = 0; i < 3; i++) {
 
             Skill s = skillManager.getSkill(i);
             if (s == null) continue;
 
-            int cx = posX + iconX[i];  // center X of the icon
+            // ICON POSITION (with H/V micro-adjustments)
+            int cx = posX + iconBaseX + (i * iconSpacingX) + iconOffsetX[i];
+            int cy = posY + iconBaseY + iconOffsetY[i];
 
-            // Draw KEY (J/K/L)
-            g2.setColor(Color.WHITE);
+            // ---------------- KEY LABEL ----------------
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, (float) keyFontSize));
+            g2.setColor(Color.WHITE);
 
-            // --- Center key label under icon ---
             String key = gp.keyHandler.getSkillKeyLabel(i);
-            int keyWidth = g2.getFontMetrics().stringWidth(key);
-            g2.drawString(key, cx - keyWidth / 2, posY + keyOffsetY);
+            int keyW = g2.getFontMetrics().stringWidth(key);
 
-            // ===== Cooldown / Status =====
+            g2.drawString(
+                key,
+                cx - keyW / 2 + textOffsetX,
+                cy + spacingIconToKey + textOffsetY
+            );
+
+            // ---------------- COOLDOWN TEXT ----------------
             String cdText;
-
             if (s.isActive()) cdText = "Active";
-            else if (s.isOnCooldown()) cdText = String.format("CD %.1fs", s.getCooldownTimer() / 60.0);
+            else if (s.isOnCooldown())
+                cdText = String.format("CD %.1fs", s.getCooldownTimer() / 60.0);
             else cdText = "Ready";
 
             g2.setFont(g2.getFont().deriveFont(Font.PLAIN, (float) cdFontSize));
+            int cdW = g2.getFontMetrics().stringWidth(cdText);
 
-            // --- Center status under icon ---
-            int cdWidth = g2.getFontMetrics().stringWidth(cdText);
-            g2.drawString(cdText, cx - cdWidth / 2, posY + cdOffsetY);
+            g2.drawString(
+                cdText,
+                cx - cdW / 2 + textOffsetX,
+                cy + spacingIconToKey + spacingKeyToCooldown + textOffsetY
+            );
         }
-
     }
 }

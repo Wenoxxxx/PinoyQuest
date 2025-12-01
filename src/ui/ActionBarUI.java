@@ -49,13 +49,13 @@ public class ActionBarUI {
         int totalGroupWidth = skillsWidth + 30 + barWidth;
 
         // LEFT boundary of the combined group
-        int startX = (screenW - totalGroupWidth) / 2;
+        int startX = (screenW - totalGroupWidth)/2;
 
         // Y position
         int y = screenH - barHeight - 40;
 
         // Action bar goes to the RIGHT of skill box
-        int barX = startX + skillsWidth + 30;
+        int barX = startX + skillsWidth;
 
         // Draw background
         if (barBackground != null) {
