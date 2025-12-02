@@ -2,6 +2,7 @@ package src.items.consumables;
 
 import src.items.Item;
 import src.core.GamePanel;
+import src.entity.Player;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -31,9 +32,15 @@ public class HealthRegenItem extends Item {
         this.pickupOffsetY = 0;
     }
 
-    @Override
+   @Override
     public void onPickup() {
-        gp.player.heal(30);
-        this.consumed = true;
+        // NO auto-heal
+        System.out.println("Picked up: " + name);
+    }
+
+    @Override
+    public void use(Player player) {
+        player.heal(30);
+        System.out.println("Used Health Potion!");
     }
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import src.core.GamePanel;
+import src.entity.Player;
 import src.items.Item;
 
 public class NoCooldownItem extends Item {
@@ -20,7 +21,7 @@ public class NoCooldownItem extends Item {
                     new File("src/assets/items/1nocd.png")
             );
         } catch (Exception e) {
-            System.out.println("ERROR: Failed loading HealthRegen sprite");
+            System.out.println("ERROR: Failed loading no cooldown sprite");
         }
 
         // Size of item on the map
@@ -34,9 +35,16 @@ public class NoCooldownItem extends Item {
         this.pickupOffsetY = 0;
     }
 
-    @Override
+
+   @Override
     public void onPickup() {
-        gp.player.getSkillManager().activateNoCooldown(DURATION_TICKS);
-        this.consumed = true;
+        // NO auto-heal
+        System.out.println("Picked up: " + name);
+    }
+
+    @Override
+    public void use(Player player) {
+        player.heal(30);
+        System.out.println("Used no cool down!");
     }
 }

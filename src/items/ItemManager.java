@@ -130,6 +130,7 @@ public class ItemManager {
         );
 
         for (Item item : mapItems) {
+                
             if (item == null || item.consumed) continue;
 
             int boxW = item.pickupWidth > 0 ? item.pickupWidth : gp.tileSize;
@@ -142,10 +143,22 @@ public class ItemManager {
                     boxH
             );
 
-            if (playerHit.intersects(itemBox)) {
-                item.onPickup();
-                item.consumed = true;
-            }
+                if (playerHit.intersects(itemBox)) {
+
+                    boolean stored = gp.player.addToInventory(item);
+
+                    if (stored) {
+                        // do NOT consume on pickup for consumables
+                        item.onPickup();  // <-- safe, only prints
+                        item.consumed = true;
+
+                        gp.ui.showMessage("Picked up: " + item.name);
+                    }
+                    else {
+                        gp.ui.showMessage("Inventory full!");
+                    }
+                }
+
         }
 
         mapItems.removeIf(i -> i.consumed);
@@ -183,6 +196,6 @@ public class ItemManager {
 
             if (row >= playerFeetRow)
                 item.draw(g2);
-        }
+        } 
     }
 }
