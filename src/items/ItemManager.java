@@ -29,26 +29,23 @@ public class ItemManager {
     public ItemManager(GamePanel gp) {
         this.gp = gp;
 
-        // init per-map lists
-        for (int i = 0; i < items.length; i++) {
+        for (int i = 0; i < items.length; i++)
             items[i] = new ArrayList<>();
-        }
 
         registerItemTypes();
 
         loadItemMap("items1.txt", 0);
         loadItemMap("items2.txt", 1);
-        // loadItemMap("items3.txt", 2);
     }
 
-    // ========================
+    // ============================================================
     // REGISTER ITEM TYPES
-    // ========================
+    // ============================================================
     private void registerItemTypes() {
-        addType(new HealthRegenItem(gp, 0, 0));  // id = 0
-        addType(new NoCooldownItem(gp, 0, 0));   // id = 1
-        addType(new ShieldItem(gp, 0, 0));       // id = 2
-        addType(new Map2Key(gp, 0, 0));          // id = 3
+        addType(new HealthRegenItem(gp, 0, 0));
+        addType(new NoCooldownItem(gp, 0, 0));
+        addType(new ShieldItem(gp, 0, 0));
+        addType(new Map2Key(gp, 0, 0));
 
         System.out.println("Registered " + itemTypeCount + " item types.");
     }
@@ -57,9 +54,9 @@ public class ItemManager {
         itemTypes[itemTypeCount++] = item;
     }
 
-    // ========================
-    // LOAD itemsX.txt INTO mapIndex
-    // ========================
+    // ============================================================
+    // LOAD ITEM MAP
+    // ============================================================
     private void loadItemMap(String fileName, int mapIndex) {
 
         File file = new File(MAP_DIR + fileName);
@@ -81,29 +78,24 @@ public class ItemManager {
                 for (int col = 0; col < values.length && col < gp.maxWorldCol; col++) {
 
                     int id = Integer.parseInt(values[col]);
+                    if (id < 0 || id >= itemTypeCount) continue;
 
-                    if (id >= 0 && id < itemTypeCount) {
+                    int worldX = col * gp.tileSize;
+                    int worldY = row * gp.tileSize;
 
-                        int worldX = col * gp.tileSize;
-                        int worldY = row * gp.tileSize;
+                    Item template = itemTypes[id];
+                    Item newItem = template.copy(gp, worldX, worldY);
 
-                        Item template = itemTypes[id];
-                        Item newItem = template.copy(gp, worldX, worldY);
+                    if (newItem != null && newItem.sprite != null) {
+                        int spriteW = newItem.sprite.getWidth();
+                        int spriteH = newItem.sprite.getHeight();
 
-                        if (newItem != null && newItem.sprite != null) {
-
-                            int spriteW = newItem.sprite.getWidth();
-                            int spriteH = newItem.sprite.getHeight();
-
-                            // Perfect centering
-                            newItem.worldX = worldX + (gp.tileSize - spriteW) / 2;
-                            newItem.worldY = worldY + (gp.tileSize - spriteH) / 2;
-                        }
-
-                        if (newItem != null) {
-                            items[mapIndex].add(newItem);
-                        }
+                        newItem.worldX = worldX + (gp.tileSize - spriteW) / 2;
+                        newItem.worldY = worldY + (gp.tileSize - spriteH) / 2;
                     }
+
+                    if (newItem != null)
+                        items[mapIndex].add(newItem);
                 }
                 row++;
             }
@@ -114,9 +106,9 @@ public class ItemManager {
         }
     }
 
-    // ========================
-    // UPDATE (pickup)
-    // ========================
+    // ============================================================
+    // UPDATE (PICKUP LOGIC)
+    // ============================================================
     public void update() {
 
         ArrayList<Item> mapItems = items[gp.currentMap];
@@ -126,72 +118,56 @@ public class ItemManager {
                 gp.player.worldX + gp.player.solidArea.x,
                 gp.player.worldY + gp.player.solidArea.y,
                 gp.player.solidArea.width,
-                gp.player.solidArea.height);
+                gp.player.solidArea.height
+        );
 
-<<<<<<< HEAD
-        for (Item item : items) {
-            if (item == null || item.consumed)
-                continue;
-=======
         for (Item item : mapItems) {
-                
+
             if (item == null || item.consumed) continue;
->>>>>>> 7494ac8e7a24abbfdae9c08c4e01c804a77470a7
 
             int boxW = item.pickupWidth > 0 ? item.pickupWidth : gp.tileSize;
             int boxH = item.pickupHeight > 0 ? item.pickupHeight : gp.tileSize;
 
             Rectangle itemBox = new Rectangle(
-<<<<<<< HEAD
-                    item.worldX,
-                    item.worldY,
-                    gp.tileSize * item.widthTiles,
-                    gp.tileSize * item.heightTiles);
-=======
                     item.worldX + item.pickupOffsetX,
                     item.worldY + item.pickupOffsetY,
                     boxW,
                     boxH
             );
->>>>>>> 7494ac8e7a24abbfdae9c08c4e01c804a77470a7
 
-                if (playerHit.intersects(itemBox)) {
+            if (playerHit.intersects(itemBox)) {
 
-                    boolean stored = gp.player.addToInventory(item);
-
-                    if (stored) {
-                        // do NOT consume on pickup for consumables
-                        item.onPickup();  // <-- safe, only prints
-                        item.consumed = true;
-
-                        gp.ui.showMessage("Picked up: " + item.name);
-                    }
-                    else {
-                        gp.ui.showMessage("Inventory full!");
-                    }
+                // ❗ HOTFIX: Prevent pickup while dragging (SHIFT)
+                if (gp.ui.getInventoryUI().isHoldingItem()) {
+                    gp.ui.showMessage("Finish swapping first!");
+                    continue;
                 }
 
+                boolean stored = gp.player.addToInventory(item);
+
+                if (stored) {
+                    item.onPickup();
+                    item.consumed = true;
+                    gp.ui.showMessage("Picked up: " + item.name);
+                } else {
+                    gp.ui.showMessage("Inventory full!");
+                }
+            }
         }
 
         mapItems.removeIf(i -> i.consumed);
     }
 
-    // ========================
-    // DRAW (behind/in front)
-    // ========================
+    // ============================================================
+    // DRAW BEHIND PLAYER
+    // ============================================================
     public void drawBehindPlayer(Graphics2D g2, int playerFeetRow) {
 
-<<<<<<< HEAD
-        for (Item item : items) {
-            if (item == null || item.sprite == null)
-                continue;
-=======
         ArrayList<Item> mapItems = items[gp.currentMap];
         if (mapItems == null) return;
 
         for (Item item : mapItems) {
             if (item == null || item.sprite == null) continue;
->>>>>>> 7494ac8e7a24abbfdae9c08c4e01c804a77470a7
 
             int bottom = item.worldY + gp.tileSize;
             int row = (bottom - 1) / gp.tileSize;
@@ -201,25 +177,22 @@ public class ItemManager {
         }
     }
 
+    // ============================================================
+    // DRAW IN FRONT OF PLAYER
+    // ============================================================
     public void drawInFrontOfPlayer(Graphics2D g2, int playerFeetRow) {
 
-<<<<<<< HEAD
-        for (Item item : items) {
-            if (item == null || item.sprite == null)
-                continue;
-=======
         ArrayList<Item> mapItems = items[gp.currentMap];
         if (mapItems == null) return;
 
         for (Item item : mapItems) {
             if (item == null || item.sprite == null) continue;
->>>>>>> 7494ac8e7a24abbfdae9c08c4e01c804a77470a7
 
             int bottom = item.worldY + gp.tileSize;
             int row = (bottom - 1) / gp.tileSize;
 
             if (row >= playerFeetRow)
                 item.draw(g2);
-        } 
+        }
     }
 }

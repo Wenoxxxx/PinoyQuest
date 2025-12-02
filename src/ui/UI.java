@@ -56,18 +56,43 @@ public class UI {
     private void drawMessage(Graphics2D g2) {
         if (messageTimer > 0) {
 
-            // Background box
-            g2.setColor(new Color(0, 0, 0, 150));
-            g2.fillRoundRect(20, 20, 260, 40, 10, 10);
+            // ===== MESSAGE FONT LIKE SKILLS =====
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 10f));
 
-            // Text
+            // Text width for centering
+            int textWidth = g2.getFontMetrics().stringWidth(message);
+
+            // ======= CUSTOM POSITIONING =======
+            int screenW = gp.getWidth();
+            int screenH = gp.getHeight();
+
+            // Position above action bar and skills
+            int barHeight = 120;             // height area of skills + action bar
+            int offsetY = -58;               // manual tweak  move higher/lower
+
+            int msgX = (screenW / 2) - (textWidth / 2);
+            int msgY = screenH - barHeight + offsetY;
+
+            // Background padding
+            int pad = 10;
+            int boxW = textWidth + pad * 2;
+            int boxH = 28;
+
+            int boxX = msgX - pad;
+            int boxY = msgY - 18;
+
+            // ===== BACKGROUND =====
+            g2.setColor(new Color(0, 0, 0, 150));
+            g2.fillRoundRect(boxX, boxY, boxW, boxH, 10, 10);
+
+            // ===== TEXT =====
             g2.setColor(Color.WHITE);
-            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20f));
-            g2.drawString(message, 30, 47);
+            g2.drawString(message, msgX, msgY);
 
             messageTimer--;
         }
     }
+
 
     // =========================================================
     //        MAIN DRAW FUNCTION

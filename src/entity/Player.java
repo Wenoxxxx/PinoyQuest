@@ -220,6 +220,7 @@ public class Player extends Entity {
         handleTeleport();
         skillManager.update();
         regenerateEnergy();
+        updateShield();
     }
 
     // ========================= ANIMATION =========================
@@ -342,6 +343,24 @@ public class Player extends Entity {
         }
     }
 
+
+    // ===== SHIELD / DAMAGE IMMUNITY BUFF =====
+    public boolean shieldActive = false;
+    private long shieldEndTime = 0;
+
+    public void enableShield(long durationMs) {
+        shieldActive = true;
+        shieldEndTime = System.currentTimeMillis() + durationMs;
+        System.out.println("[BUFF] Shield activated for " + durationMs + "ms!");
+    }
+
+    private void updateShield() {
+        if (shieldActive && System.currentTimeMillis() > shieldEndTime) {
+            shieldActive = false;
+            System.out.println("[BUFF] Shield expired.");
+        }
+    }
+
     // ========================= ENERGY =========================
     private void regenerateEnergy() {
         if (energy >= maxEnergy) {
@@ -429,7 +448,13 @@ public class Player extends Entity {
         System.out.println("Player shield activated for " + durationTicks + " ticks!");
     }
 
-    public void damage(int amount) {
+  public void damage(int amount) {
+        
+    if (shieldActive) {
+            System.out.println("[SHIELD] Damage blocked!");
+            return;
+        }
+
         if (amount > 0) {
             health = Math.max(0, health - amount);
             System.out.println("Player hit! Health: " + health);

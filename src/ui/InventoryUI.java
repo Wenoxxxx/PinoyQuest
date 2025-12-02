@@ -17,23 +17,8 @@ public class InventoryUI {
 
     private BufferedImage inventoryPanel;
 
-    // === PRECISE RESIZABLE PANEL ===
-    private int panelWidth  = 490;  
-    private int panelHeight = 240;  
-
-    public InventoryUI(GamePanel gp, Player player) {
-        this.gp = gp;
-        this.player = player;
-
-        try {
-            File file = new File("src/assets/ui/inventory/inventory_panel.png");
-            inventoryPanel = ImageIO.read(file);
-            System.out.println("InventoryPanel Loaded: " + inventoryPanel);
-        } catch (Exception e) {
-            System.out.println("ERROR loading inventory panel!");
-            e.printStackTrace();
-        }
-    }
+    private int panelWidth  = 490;
+    private int panelHeight = 240;
 
     private int selectedRow = 0;
     private int selectedCol = 0;
@@ -41,81 +26,192 @@ public class InventoryUI {
     private final int maxRows = 2;
     private final int maxCols = 3;
 
-    public void moveCursorUp() { if (selectedRow > 0) selectedRow--; }
-    public void moveCursorDown() { if (selectedRow < maxRows - 1) selectedRow++; }
-    public void moveCursorLeft() { if (selectedCol > 0) selectedCol--; }
-    public void moveCursorRight() { if (selectedCol < maxCols - 1) selectedCol++; }
+    // ====== HOLD SYSTEM ======
+    private boolean holdingItem = false;
+    private Item heldItem = null;
 
+    // ORIGINAL slot where the held item came from
+    private int originRow = -1;
+    private int originCol = -1;
+
+    public InventoryUI(GamePanel gp, Player player) {
+        this.gp = gp;
+        this.player = player;
+
+        try {
+            inventoryPanel = ImageIO.read(
+                new File("src/assets/ui/inventory/inventory_panel.png")
+            );
+        } catch (Exception e) {
+            System.out.println("ERROR loading inventory panel!");
+        }
+    }
+
+    public boolean isHoldingItem() {
+        return holdingItem;
+    }
+
+    // ===========================
+    //   USE ITEM
+    // ===========================
     public void useSelectedItem() {
+
         Item item = player.inventory[selectedRow][selectedCol];
         if (item == null) return;
 
         item.use(player);
-
-        // remove item after use
         player.inventory[selectedRow][selectedCol] = null;
 
-        // sync action bar if top row changed
-        if (selectedRow == 0) {
+        if (selectedRow == 0)
             player.syncHotbarFromInventory();
-        }
 
         gp.ui.showMessage(item.name + " used!");
     }
 
-    public void draw(Graphics2D g2) {
+    // ===========================
+    //   BEGIN HOLD (SHIFT down)
+    // ===========================
+    public void beginHoldSelectedItem() {
 
-        int invX = 0;
-        int invY = 145;
+        if (holdingItem) return;
 
-        if (inventoryPanel == null) {
-            g2.setColor(Color.RED);
-            g2.drawString("Failed to load inventory panel!", invX, invY);
+        Item slot = player.inventory[selectedRow][selectedCol];
+        if (slot == null) return;
+
+        originRow = selectedRow;
+        originCol = selectedCol;
+
+        heldItem = slot;
+        holdingItem = true;
+
+        // temporarily remove from original position
+        player.inventory[originRow][originCol] = null;
+    }
+
+    // ===========================
+    //   FINISH SWAP (SHIFT release)
+    // ===========================
+    public void finishHoldSwap() {
+
+        if (!holdingItem || heldItem == null) return;
+
+        // If dropped back to origin → restore
+        if (selectedRow == originRow && selectedCol == originCol) {
+            player.inventory[originRow][originCol] = heldItem;
+            clearHold();
+            if (originRow == 0) player.syncHotbarFromInventory();
             return;
         }
 
-        // Draw panel
-        g2.drawImage(inventoryPanel, invX, invY, panelWidth, panelHeight, null);
+        Item target = player.inventory[selectedRow][selectedCol];
 
-        // Slot grid settings
-        int cols = 3;
-        int rows = 2;
+        if (target == null) {
+            // Empty → place held item here
+            player.inventory[selectedRow][selectedCol] = heldItem;
+        } else {
+            // Swap:
+            player.inventory[selectedRow][selectedCol] = heldItem;
+            player.inventory[originRow][originCol] = target;
+        }
+
+        clearHold();
+
+        if (selectedRow == 0 || originRow == 0) {
+            player.syncHotbarFromInventory();
+        }
+    }
+
+    private void clearHold() {
+        holdingItem = false;
+        heldItem = null;
+        originRow = -1;
+        originCol = -1;
+    }
+
+    // ===========================
+    //   CURSOR MOVEMENT
+    // ===========================
+    public void moveCursorUp() {
+        if (selectedRow > 0) selectedRow--;
+    }
+
+    public void moveCursorDown() {
+        if (selectedRow < maxRows - 1) selectedRow++;
+    }
+
+    public void moveCursorLeft() {
+        if (selectedCol > 0) selectedCol--;
+    }
+
+    public void moveCursorRight() {
+        if (selectedCol < maxCols - 1) selectedCol++;
+    }
+
+    // ===========================
+    //   DRAW
+    // ===========================
+
+    public int invX = 750;   // change to move left/right
+    public int invY = 400;   // change to move up/down
+
+    public void draw(Graphics2D g2) {
+
+        int drawX = invX;
+        int drawY = invY;
+
+        // Draw panel
+        if (inventoryPanel != null)
+            g2.drawImage(inventoryPanel, drawX, drawY, panelWidth, panelHeight, null);
+
         int slotSize = 64;
         int slotPadding = 10;
 
-        int slotOffsetX = 76;  
-        int slotOffsetY = 80;   
+        int startX = drawX + 76;
+        int startY = drawY + 80;
 
-        int startX = invX + slotOffsetX;
-        int startY = invY + slotOffsetY;
-
-        // Render slots
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
+        for (int row = 0; row < maxRows; row++) {
+            for (int col = 0; col < maxCols; col++) {
 
                 int x = startX + col * (slotSize + slotPadding);
                 int y = startY + row * (slotSize + slotPadding);
 
-                // slot bg
                 g2.setColor(new Color(60, 60, 60, 180));
                 g2.fillRoundRect(x, y, slotSize, slotSize, 10, 10);
 
-                // item sprite
-                Item slotItem = player.inventory[row][col];
-                if (slotItem != null && slotItem.sprite != null) {
-                    g2.drawImage(slotItem.sprite, x + 6, y + 6, slotSize - 12, slotSize - 12, null);
+                Item slot = player.inventory[row][col];
+                if (slot != null && slot.sprite != null) {
+                    g2.drawImage(slot.sprite, x + 6, y + 6, slotSize - 12, slotSize - 12, null);
                 }
 
-                // border
                 g2.setColor(Color.WHITE);
                 g2.drawRoundRect(x, y, slotSize, slotSize, 10, 10);
 
-                // selected highlight
                 if (row == selectedRow && col == selectedCol) {
                     g2.setColor(new Color(255, 255, 0, 120));
                     g2.fillRoundRect(x, y, slotSize, slotSize, 10, 10);
                 }
             }
         }
+
+        // Show held item
+        if (holdingItem && heldItem != null && heldItem.sprite != null) {
+
+            int cursorX = startX + selectedCol * (slotSize + slotPadding);
+            int cursorY = startY + selectedRow * (slotSize + slotPadding);
+
+            g2.drawImage(
+                heldItem.sprite,
+                cursorX + 6,
+                cursorY + 6,
+                slotSize - 12,
+                slotSize - 12,
+                null
+            );
+
+            g2.setColor(Color.WHITE);
+            g2.drawRect(cursorX + 6, cursorY + 6, slotSize - 12, slotSize - 12);
+        }
     }
+
+
 }
