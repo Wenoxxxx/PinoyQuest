@@ -5,12 +5,14 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
 
+    private boolean rightShiftHeld = false;
+
     public static final int SKILL_SLOT_COUNT = 3;
     private static final String[] SKILL_KEY_LABELS = {"J", "K", "L"};
     private static final int[] SKILL_KEY_CODES = {
-        KeyEvent.VK_J,
-        KeyEvent.VK_K,
-        KeyEvent.VK_L
+            KeyEvent.VK_J,
+            KeyEvent.VK_K,
+            KeyEvent.VK_L
     };
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
@@ -28,17 +30,30 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+
         int code = e.getKeyCode();
+
+        // ==================================
+        // SHIFT HOLD ONLY WORKS IN INVENTORY
+        // ==================================
+        if (gp.gameState == GamePanel.STATE_INVENTORY &&
+                code == KeyEvent.VK_SHIFT &&
+                !rightShiftHeld) {
+
+            rightShiftHeld = true;
+            gp.ui.getInventoryUI().beginHoldSelectedItem();
+            return;
+        }
 
         if (gp.gameState == GamePanel.STATE_MENU) {
             handleMenuInput(code);
-        } 
+        }
         else if (gp.gameState == GamePanel.STATE_PLAY) {
             handlePlayInput(code);
-        } 
+        }
         else if (gp.gameState == GamePanel.STATE_SETTINGS) {
             handleSettingsInput(code);
-        } 
+        }
         else if (gp.gameState == GamePanel.STATE_INVENTORY) {
             handleInventoryInput(code);
         }
@@ -48,100 +63,93 @@ public class KeyHandler implements KeyListener {
     private void handleMenuInput(int code) {
         if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
             gp.menuSelectedIndex--;
-            if (gp.menuSelectedIndex < 0) {
+            if (gp.menuSelectedIndex < 0)
                 gp.menuSelectedIndex = gp.menuOptions.length - 1;
-            }
-        } 
+        }
         else if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
             gp.menuSelectedIndex++;
-            if (gp.menuSelectedIndex >= gp.menuOptions.length) {
+            if (gp.menuSelectedIndex >= gp.menuOptions.length)
                 gp.menuSelectedIndex = 0;
-            }
-        } 
+        }
         else if (code == KeyEvent.VK_ENTER) {
             int i = gp.menuSelectedIndex;
 
-            if (i == 0) gp.startNewGame();    // Start
-            else if (i == 1 && gp.canResume) gp.resumeGame(); // Resume
-            else if (i == 2) gp.openSettings();               // Settings
-            else if (i == 3) System.exit(0);                  // Quit
+            if (i == 0) gp.startNewGame();
+            else if (i == 1 && gp.canResume) gp.resumeGame();
+            else if (i == 2) gp.openSettings();
+            else if (i == 3) System.exit(0);
         }
     }
 
     // ===================== PLAY =====================
     private void handlePlayInput(int code) {
 
-        // movement
         if (code == KeyEvent.VK_W) upPressed = true;
         if (code == KeyEvent.VK_S) downPressed = true;
         if (code == KeyEvent.VK_A) leftPressed = true;
         if (code == KeyEvent.VK_D) rightPressed = true;
 
-        // skills
         int slot = getSkillSlotFromCode(code);
         if (slot >= 0 && slot < SKILL_SLOT_COUNT) {
-            if (!skillPressed[slot]) {
-                skillTapped[slot] = true;
-            }
+            if (!skillPressed[slot]) skillTapped[slot] = true;
             skillPressed[slot] = true;
         }
 
-        // ================= HOTBAR SWITCHING (1-2-3) =================
         if (code == KeyEvent.VK_1) gp.actionBarUI.activeSlot = 0;
         if (code == KeyEvent.VK_2) gp.actionBarUI.activeSlot = 1;
         if (code == KeyEvent.VK_3) gp.actionBarUI.activeSlot = 2;
 
-        // OPEN INVENTORY
         if (code == KeyEvent.VK_I) {
             gp.gameState = GamePanel.STATE_INVENTORY;
             upPressed = downPressed = leftPressed = rightPressed = false;
             return;
         }
 
-        // USE HOTBAR ITEM while PLAYING
         if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
-            // call player's hotbar use (make sure Player.useHotbarItem exists)
-            if (gp.player != null && gp.actionBarUI != null) {
+            if (gp.player != null) {
                 gp.player.useHotbarItem(gp.actionBarUI.activeSlot);
             }
             return;
         }
 
-        // GO BACK TO MENU
         if (code == KeyEvent.VK_ESCAPE) {
             gp.canResume = true;
             gp.gameState = GamePanel.STATE_MENU;
         }
     }
 
-
     // ===================== INVENTORY =====================
     private void handleInventoryInput(int code) {
 
-        // CLOSE inventory on I or ESC
         if (code == KeyEvent.VK_I || code == KeyEvent.VK_ESCAPE) {
-            upPressed = false;
-            downPressed = false;
-            leftPressed = false;
-            rightPressed = false;
             gp.gameState = GamePanel.STATE_PLAY;
             return;
         }
 
-        // MOVE CURSOR WITH WASD
-        if (gp.ui != null && gp.ui.getInventoryUI() != null) {
-            var inv = gp.ui.getInventoryUI();
+        var inv = gp.ui.getInventoryUI();
+        if (inv == null) return;
 
-            if (code == KeyEvent.VK_W) inv.moveCursorUp();
-            if (code == KeyEvent.VK_S) inv.moveCursorDown();
-            if (code == KeyEvent.VK_A) inv.moveCursorLeft();
-            if (code == KeyEvent.VK_D) inv.moveCursorRight();
+       // Movement inside inventory
+        if (code == KeyEvent.VK_W) {
+            inv.moveCursorUp();
+            return;
+        }
+        if (code == KeyEvent.VK_S) {
+            inv.moveCursorDown();
+            return;
+        }
+        if (code == KeyEvent.VK_A) {
+            inv.moveCursorLeft();
+            return;
+        }
+        if (code == KeyEvent.VK_D) {
+            inv.moveCursorRight();
+            return;
+        }
 
-            // USE ITEM in INVENTORY (ENTER / SPACE)
-            if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
-                inv.useSelectedItem();
-                return;
-            }
+
+        if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+            inv.useSelectedItem();
         }
     }
 
@@ -154,6 +162,7 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+
         int code = e.getKeyCode();
 
         if (gp.gameState == GamePanel.STATE_PLAY) {
@@ -163,13 +172,22 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_D) rightPressed = false;
 
             int slot = getSkillSlotFromCode(code);
-            if (slot != -1) {
-                skillPressed[slot] = false;
-            }
+            if (slot != -1) skillPressed[slot] = false;
+        }
+
+        // ================================
+        // SHIFT → PERFORM SWAP
+        // ================================
+        if (gp.gameState == GamePanel.STATE_INVENTORY &&
+                code == KeyEvent.VK_SHIFT &&
+                rightShiftHeld) {
+
+            rightShiftHeld = false;
+            gp.ui.getInventoryUI().finishHoldSwap();
         }
     }
 
-    // ===================== Skill Helpers =====================
+    // SKILL HELPERS
     public boolean consumeSkillTap(int slot) {
         if (slot < 0 || slot >= SKILL_SLOT_COUNT) return false;
         boolean tapped = skillTapped[slot];

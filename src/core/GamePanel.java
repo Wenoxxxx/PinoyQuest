@@ -199,6 +199,7 @@ public class GamePanel extends JPanel {
     public void openSettings() {
         gameState = STATE_SETTINGS;
     }
+    
 
     // ===================== UPDATE =====================
     public void update() {

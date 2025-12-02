@@ -15,8 +15,14 @@ public abstract class Skill {
     private int remainingActiveFrames = 0;
     private boolean active = false;
 
+    // === Independent cooldown override for this specific skill ===
+    protected double cooldownMultiplier = 1.0;
+    private long infiniteCooldownEndTime = 0;
+
+
     protected Skill(String id, String name, String description,
                     int cooldownFrames, int durationFrames, int energyCost) {
+
         this.id = id;
         this.name = name;
         this.description = description;
@@ -25,19 +31,24 @@ public abstract class Skill {
         this.energyCost = Math.max(0, energyCost);
     }
 
-    // ===========================================================
-    // === NEW API: update WITH COOLDOWN MULTIPLIER ============
-    // ===========================================================
-    public void update(Player player, double cooldownMultiplier) {
 
-        // Scale cooldown reduction by multiplier (0.0 = no cooldown, 1.0 = normal)
+    // ===========================================================
+    // === Unified UPDATE (no duplicates, fully correct)
+    // ===========================================================
+    public void update(Player player) {
+
+        // Update infinite cooldown buff
+        updatePerSkillCooldownBuff();
+
+        // Cooldown reduction
         if (cooldownTimer > 0) {
             cooldownTimer -= cooldownMultiplier;
             if (cooldownTimer < 0) cooldownTimer = 0;
         }
 
-        // Existing active effect logic (unchanged)
+        // Active effect system
         if (active) {
+
             whileActive(player);
 
             if (remainingActiveFrames > 0) {
@@ -50,15 +61,30 @@ public abstract class Skill {
         }
     }
 
-    // LEGACY SUPPORT (so your old skills still compile even if they call update(player))
-    public void update(Player player) {
-        update(player, 1.0);
-    }
 
     // ===========================================================
-    // === NEW API: tryActivate WITH COOLDOWN MULTIPLIER =========
+    // === Infinite cooldown system (per skill only)
     // ===========================================================
-    public boolean tryActivate(Player player, double cooldownMultiplier) {
+    public void enableInfiniteCooldown(long durationMs) {
+        cooldownMultiplier = 0.0;
+        infiniteCooldownEndTime = System.currentTimeMillis() + durationMs;
+        System.out.println("[Skill Buff] " + name + " infinite cooldown for " + durationMs + "ms");
+    }
+
+    private void updatePerSkillCooldownBuff() {
+        if (cooldownMultiplier == 0.0 &&
+                System.currentTimeMillis() > infiniteCooldownEndTime) {
+
+            cooldownMultiplier = 1.0;
+            System.out.println("[Skill Buff] " + name + " cooldown restored");
+        }
+    }
+
+
+    // ===========================================================
+    // === Try Activate (uses per-skill cooldown only)
+    // ===========================================================
+    public boolean tryActivate(Player player) {
 
         if (!canActivate(player)) {
             return false;
@@ -68,7 +94,7 @@ public abstract class Skill {
             return false;
         }
 
-        // Apply cooldown scaled by multiplier
+        // Apply cooldown with per-skill multiplier
         cooldownTimer = (int)(cooldownFrames * cooldownMultiplier);
 
         if (durationFrames > 0) {
@@ -83,15 +109,10 @@ public abstract class Skill {
         return true;
     }
 
-    // Legacy support
-    public boolean tryActivate(Player player) {
-        return tryActivate(player, 1.0);
-    }
 
     // ===========================================================
-    // ==================== ORIGINAL METHODS ======================
+    // === Base methods
     // ===========================================================
-
     public boolean canActivate(Player player) {
         return !active && cooldownTimer == 0 && player.getEnergy() >= energyCost;
     }
@@ -147,6 +168,8 @@ public abstract class Skill {
         return (double) cooldownTimer / (double) cooldownFrames;
     }
 
+
+    // Hooks for subclasses
     protected void whileActive(Player player) {}
 
     protected abstract void onActivate(Player player);
