@@ -320,9 +320,10 @@ public class Player extends Entity {
 
         int tileNum = gamePanel.tileManager.getTileNum(playerCol, playerRow);
 
+        // TILE ID
         int map1TP = gamePanel.tileManager.tilesetStart[0] + 5;
         int map2TP = gamePanel.tileManager.tilesetStart[1] + 1;
-
+        
         if (gamePanel.currentMap == 0 && tileNum == map1TP) {
             gamePanel.switchToMap(1, 16, 1, "down");
         }
