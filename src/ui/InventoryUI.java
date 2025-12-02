@@ -51,10 +51,19 @@ public class InventoryUI {
         if (item == null) return;
 
         item.use(player);
+
+        // remove item after use
         player.inventory[selectedRow][selectedCol] = null;
+
+        // sync action bar if top row changed
+        if (selectedRow == 0) {
+            player.syncHotbarFromInventory();
+        }
+
+        gp.ui.showMessage(item.name + " used!");
     }
 
-   public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2) {
 
         int invX = 0;
         int invY = 145;
@@ -74,25 +83,34 @@ public class InventoryUI {
         int slotSize = 64;
         int slotPadding = 10;
 
-
         int slotOffsetX = 76;  
         int slotOffsetY = 80;   
 
         int startX = invX + slotOffsetX;
         int startY = invY + slotOffsetY;
 
+        // Render slots
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
 
                 int x = startX + col * (slotSize + slotPadding);
                 int y = startY + row * (slotSize + slotPadding);
 
+                // slot bg
                 g2.setColor(new Color(60, 60, 60, 180));
                 g2.fillRoundRect(x, y, slotSize, slotSize, 10, 10);
 
+                // item sprite
+                Item slotItem = player.inventory[row][col];
+                if (slotItem != null && slotItem.sprite != null) {
+                    g2.drawImage(slotItem.sprite, x + 6, y + 6, slotSize - 12, slotSize - 12, null);
+                }
+
+                // border
                 g2.setColor(Color.WHITE);
                 g2.drawRoundRect(x, y, slotSize, slotSize, 10, 10);
 
+                // selected highlight
                 if (row == selectedRow && col == selectedCol) {
                     g2.setColor(new Color(255, 255, 0, 120));
                     g2.fillRoundRect(x, y, slotSize, slotSize, 10, 10);
@@ -100,5 +118,4 @@ public class InventoryUI {
             }
         }
     }
-
 }

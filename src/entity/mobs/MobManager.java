@@ -21,7 +21,6 @@ public class MobManager {
     public static final int MOB_WHITELADY = 1;
     public static final int MOB_SAWTRAP   = 2;
 
-    // Directory path
     private static final String MOB_MAP_DIR =
             "src" + File.separator +
             "assets" + File.separator +
@@ -32,8 +31,8 @@ public class MobManager {
 
         mobLayout = new int[TileManager.MAP_COUNT][gp.maxWorldCol][gp.maxWorldRow];
 
-        loadMobMaps();
-        spawnMobsForMap(gp.currentMap);   // initial map spawn
+        loadMobMaps();  // ✔ only loads layout files
+        // ❌ no spawning here anymore — prevents duplication
     }
 
     // ============================================================
@@ -102,11 +101,10 @@ public class MobManager {
 
         System.out.println("[MobManager] Respawning mobs for map " + mapIndex);
 
-        // Always clear previous map’s mobs
+        // Always clear current mobs before spawning
         gp.whiteLadies.clear();
         gp.sawTraps.clear();
 
-        // Spawn mobs listed in layout
         for (int col = 0; col < gp.maxWorldCol; col++) {
             for (int row = 0; row < gp.maxWorldRow; row++) {
 
@@ -133,20 +131,12 @@ public class MobManager {
     //                        UPDATE & DRAW
     // ============================================================
     public void update() {
-        for (WhiteLady wl : gp.whiteLadies) {
-            wl.update();
-        }
-        for (SawTrap st : gp.sawTraps) {
-            st.update();
-        }
+        for (WhiteLady wl : gp.whiteLadies) wl.update();
+        for (SawTrap st : gp.sawTraps) st.update();
     }
 
     public void draw(Graphics2D g2) {
-        for (WhiteLady wl : gp.whiteLadies) {
-            wl.draw(g2);
-        }
-        for (SawTrap st : gp.sawTraps) {
-            st.draw(g2);
-        }
+        for (WhiteLady wl : gp.whiteLadies) wl.draw(g2);
+        for (SawTrap st : gp.sawTraps) st.draw(g2);
     }
 }

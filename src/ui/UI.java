@@ -1,5 +1,7 @@
 package src.ui;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
 import src.core.GamePanel;
@@ -13,6 +15,11 @@ public class UI {
     private final HudUI hudUI;
     private final InventoryUI inventoryUI;
     private final SkillIconUI skillIconUI;
+
+    // ========== SIMPLE MESSAGE SYSTEM ==========
+    private String message = "";
+    private int messageTimer = 0;
+    private static final int MESSAGE_DURATION = 90; // ~1.5 sec
 
     public UI(GamePanel gp, Player player) {
         this.gp = gp;
@@ -35,16 +42,48 @@ public class UI {
         return skillIconUI;
     }
 
+    // =========================================================
+    //        PUBLIC MESSAGE API
+    // =========================================================
+    public void showMessage(String msg) {
+        this.message = msg;
+        this.messageTimer = MESSAGE_DURATION;
+    }
+
+    // =========================================================
+    //        INTERNAL MESSAGE DRAWING
+    // =========================================================
+    private void drawMessage(Graphics2D g2) {
+        if (messageTimer > 0) {
+
+            // Background box
+            g2.setColor(new Color(0, 0, 0, 150));
+            g2.fillRoundRect(20, 20, 260, 40, 10, 10);
+
+            // Text
+            g2.setColor(Color.WHITE);
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20f));
+            g2.drawString(message, 30, 47);
+
+            messageTimer--;
+        }
+    }
+
+    // =========================================================
+    //        MAIN DRAW FUNCTION
+    // =========================================================
     public void draw(Graphics2D g2) {
 
         if (gp.gameState == GamePanel.STATE_PLAY) {
-        hudUI.draw(g2);
-        skillIconUI.draw(g2);  // visible
+            hudUI.draw(g2);
+            skillIconUI.draw(g2);
         }
         else if (gp.gameState == GamePanel.STATE_INVENTORY) {
             hudUI.draw(g2);
-            inventoryUI.draw(g2);  // draw inventory OVER skills
-            // skillIconUI.draw(g2);  <-- REMOVE THIS so skills don't appear during inventory
+            inventoryUI.draw(g2);
         }
+
+        // Draw pickup messages for BOTH states
+        drawMessage(g2);
     }
 }

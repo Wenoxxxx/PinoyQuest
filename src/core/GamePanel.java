@@ -175,6 +175,9 @@ public class GamePanel extends JPanel {
         player.worldY = 10 * tileSize;
         player.direction = "down";
 
+        // initial mob spawn (moved here)
+        mobManager.spawnMobsForMap(currentMap);
+
         int screenW = getWidth() > 0 ? getWidth() : screenWidth;
         int screenH = getHeight() > 0 ? getHeight() : screenHeight;
         centerCameraOnPlayer(screenW, screenH);
@@ -184,6 +187,7 @@ public class GamePanel extends JPanel {
         canResume = true;
         gameState = STATE_PLAY;
     }
+
 
     public void resumeGame() {
         if (!canResume)
@@ -199,18 +203,12 @@ public class GamePanel extends JPanel {
     // ===================== UPDATE =====================
     public void update() {
 
-        if (gameState == STATE_MENU) {
-            return;
-        }
-
-        if (gameState == STATE_SETTINGS) {
-            return;
-        }
+        if (gameState == STATE_MENU) return;
+        if (gameState == STATE_SETTINGS) return;
 
         // GAMEPLAY
         player.update();
         objectManager.update();
-
         itemManager.update();
 
         if (mobManager != null)
@@ -219,6 +217,7 @@ public class GamePanel extends JPanel {
         for (WhiteLady wl : whiteLadies)
             wl.update();
 
+        // CAMERA LOGIC
         int playerWidth = tileSize * 2;
         int playerHeight = tileSize * 2;
 
@@ -243,6 +242,7 @@ public class GamePanel extends JPanel {
             cameraY += (targetCameraY - cameraY) * smoothing;
         }
     }
+
 
     // ===================== START GAME=====================
 

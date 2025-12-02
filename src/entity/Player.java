@@ -320,9 +320,10 @@ public class Player extends Entity {
 
         int tileNum = gamePanel.tileManager.getTileNum(playerCol, playerRow);
 
+        // TILE ID
         int map1TP = gamePanel.tileManager.tilesetStart[0] + 5;
         int map2TP = gamePanel.tileManager.tilesetStart[1] + 1;
-
+        
         if (gamePanel.currentMap == 0 && tileNum == map1TP) {
             gamePanel.switchToMap(1, 16, 1, "down");
         }
@@ -356,6 +357,64 @@ public class Player extends Entity {
             energyRegenCounter = 0;
         }
     }
+
+    // ========================= INVENTORY ========================= 
+    public boolean addToInventory(Item item) {
+        for (int r = 0; r < INVENTORY_ROWS; r++) {
+            for (int c = 0; c < INVENTORY_COLS; c++) {
+
+                if (inventory[r][c] == null) {
+                    inventory[r][c] = item;
+
+                    // if placed in row 0 → sync action bar
+                    if (r == 0) syncHotbarFromInventory();
+
+                    System.out.println("[Inventory] Added " + item.name + " at ["+r+","+c+"]");
+                    return true;
+                }
+            }
+        }
+
+        System.out.println("[Inventory] FULL — cannot add " + item.name);
+        return false;
+    }
+
+    public void syncHotbarFromInventory() {
+        for (int c = 0; c < 3; c++) {
+            hotbar[c] = inventory[0][c];
+        }
+        System.out.println("[Hotbar] Sync complete.");
+    }
+
+    public void useHotbarItem(int slot) {
+
+        System.out.println("[Hotbar] ENTER pressed on slot " + slot);
+
+        if (slot < 0 || slot >= 3) return;
+
+        Item item = hotbar[slot];
+        if (item == null) {
+            System.out.println("[Hotbar] Slot empty.");
+            return;
+        }
+
+        System.out.println("[Hotbar] Using item: " + item.name);
+
+        // apply effect
+        item.use(this);
+
+        // remove from both hotbar + inventory
+        hotbar[slot] = null;
+        inventory[0][slot] = null;
+
+        syncHotbarFromInventory();
+
+        // UI feedback
+        if (gamePanel != null && gamePanel.ui != null) {
+            gamePanel.ui.showMessage(item.name + " used!");
+        }
+    }
+
 
     // ========================= STATS =========================
     public int getHealth() { return health; }
