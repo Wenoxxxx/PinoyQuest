@@ -24,18 +24,17 @@ public class ItemManager {
                 gp.player.worldX + gp.player.solidArea.x,
                 gp.player.worldY + gp.player.solidArea.y,
                 gp.player.solidArea.width,
-                gp.player.solidArea.height
-        );
+                gp.player.solidArea.height);
 
         for (Item item : items) {
-            if (item == null || item.consumed) continue;
+            if (item == null || item.consumed)
+                continue;
 
             Rectangle itemBox = new Rectangle(
                     item.worldX,
                     item.worldY,
                     gp.tileSize * item.widthTiles,
-                    gp.tileSize * item.heightTiles
-            );
+                    gp.tileSize * item.heightTiles);
 
             if (playerHit.intersects(itemBox)) {
                 item.onPickup();
@@ -49,7 +48,8 @@ public class ItemManager {
     public void drawBehindPlayer(Graphics2D g2, int playerFeetRow) {
 
         for (Item item : items) {
-            if (item == null || item.sprite == null) continue;
+            if (item == null || item.sprite == null)
+                continue;
 
             int itemBottom = item.worldY + gp.tileSize * item.heightTiles;
             int itemRow = (itemBottom - 1) / gp.tileSize;
@@ -63,7 +63,8 @@ public class ItemManager {
     public void drawInFrontOfPlayer(Graphics2D g2, int playerFeetRow) {
 
         for (Item item : items) {
-            if (item == null || item.sprite == null) continue;
+            if (item == null || item.sprite == null)
+                continue;
 
             int itemBottom = item.worldY + gp.tileSize * item.heightTiles;
             int itemRow = (itemBottom - 1) / gp.tileSize;

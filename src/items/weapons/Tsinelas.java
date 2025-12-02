@@ -2,6 +2,7 @@ package src.items.weapons;
 
 import src.core.GamePanel;
 import src.items.Item;
+
 public class Tsinelas extends Item {
 
     public Tsinelas(GamePanel gp, int x, int y) {

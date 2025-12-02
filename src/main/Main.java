@@ -13,7 +13,7 @@ public class Main {
         // MAIN GAME FRAME
         JFrame mainFrame = new JFrame("Pinoy Quest");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setResizable(true);    // set false if you want strict fullscreen
+        mainFrame.setResizable(true); // set false if you want strict fullscreen
         mainFrame.setUndecorated(false); // set true if you want borderless
 
         // PUTS THE GAME SCREEN INSIDE THE WINDOW
@@ -25,8 +25,7 @@ public class Main {
         mainFrame.pack();
 
         // ICON IMAGE (load before game starts, optional order)
-        String iconPath =
-                "src" + File.separator + "assets"
+        String iconPath = "src" + File.separator + "assets"
                 + File.separator + "ui"
                 + File.separator + "gameIcon"
                 + File.separator + "icon.png";
@@ -64,7 +63,10 @@ public class Main {
         Thread indicator = new Thread(() -> {
             while (isRunning[0]) {
                 System.out.println("PINOYQUEST: RUNNING");
-                try { Thread.sleep(1000); } catch (Exception ignored) {}
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception ignored) {
+                }
             }
             System.out.println("PINOYQUEST: GAME ENDED");
         });
@@ -72,7 +74,10 @@ public class Main {
         // Add shutdown hook: runs when JFrame closes or Ctrl+C is pressed
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             isRunning[0] = false;
-            try { Thread.sleep(200); } catch (Exception ignored) {}
+            try {
+                Thread.sleep(200);
+            } catch (Exception ignored) {
+            }
             System.out.println("PINOYQUEST: GAME ENDED");
         }));
 
