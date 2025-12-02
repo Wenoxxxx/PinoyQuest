@@ -175,7 +175,7 @@ public class GamePanel extends JPanel {
         player.worldY = 10 * tileSize;
         player.direction = "down";
 
-        // ✔ initial mob spawn (moved here)
+        // initial mob spawn (moved here)
         mobManager.spawnMobsForMap(currentMap);
 
         int screenW = getWidth() > 0 ? getWidth() : screenWidth;

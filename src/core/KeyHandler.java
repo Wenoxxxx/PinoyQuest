@@ -98,12 +98,13 @@ public class KeyHandler implements KeyListener {
             return;
         }
 
-        // USE SELECTED INVENTORY ITEM (backup handling)
+        // USE HOTBAR ITEM while PLAYING
         if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
-            if (gp.gameState == GamePanel.STATE_INVENTORY && gp.ui != null) {
-                var invUI = gp.ui.getInventoryUI();
-                if (invUI != null) invUI.useSelectedItem();
+            // call player's hotbar use (make sure Player.useHotbarItem exists)
+            if (gp.player != null && gp.actionBarUI != null) {
+                gp.player.useHotbarItem(gp.actionBarUI.activeSlot);
             }
+            return;
         }
 
         // GO BACK TO MENU
@@ -136,9 +137,10 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_A) inv.moveCursorLeft();
             if (code == KeyEvent.VK_D) inv.moveCursorRight();
 
-            // USE ITEM (ENTER / SPACE)
+            // USE ITEM in INVENTORY (ENTER / SPACE)
             if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
                 inv.useSelectedItem();
+                return;
             }
         }
     }
