@@ -324,6 +324,7 @@ public class Player extends Entity {
         // TILE ID
         int map1TP = gamePanel.tileManager.tilesetStart[0] + 5;
         int map2TP = gamePanel.tileManager.tilesetStart[1] + 1;
+        int map3TP = gamePanel.tileManager.tilesetStart[1] + 4;
         
         if (gamePanel.currentMap == 0 && tileNum == map1TP) {
             gamePanel.switchToMap(1, 16, 1, "down");
@@ -331,6 +332,10 @@ public class Player extends Entity {
 
         if (gamePanel.currentMap == 1 && tileNum == map2TP) {
             gamePanel.switchToMap(0, 16, 18, "up");
+        }
+
+        if (gamePanel.currentMap == 1 && tileNum == map3TP) {
+            gamePanel.switchToMap(2, 2, 11, "down");
         }
     }
 

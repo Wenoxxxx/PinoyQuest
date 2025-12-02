@@ -229,16 +229,16 @@ public class TileManager {
             tileTypeCount++;
             localId++;
 
-            // // [Tile ID 4] GRASS (MAP 2)
-            // tile[tileTypeCount] = new Tile();
-            // File grass2File = new File(basePath2 + "tile0_Grass.png"); // can be same or different sprite
-            // if (grass2File.exists()) {
-            //     tile[tileTypeCount].image = ImageIO.read(grass2File);
-            // }
-            // tile[tileTypeCount].collision = false;
-            // System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = GRASS");
-            // tileTypeCount++;
-            // localId++;
+            // [Tile ID 1] TP (MAP 3)
+            tile[tileTypeCount] = new Tile();
+            File teleportFile3 = new File(basePath2 + "tile1_FloorTP.png");
+            if (teleportFile3.exists()) {    
+                tile[tileTypeCount].image = ImageIO.read(teleportFile3);
+            }
+            tile[tileTypeCount].collision = false; // walkable, used as teleport trigger
+            System.out.println("MAP3 TILE " + localId + " (global " + tileTypeCount + ") = TELEPORT");
+            tileTypeCount++;
+            localId++;
             
 
             // more MAP 2 tiles can be added here (paths, borders, etc.)
@@ -258,17 +258,16 @@ public class TileManager {
             tileTypeCount++;
             localId++;
 
-             // [Tile ID 1] TP (MAP 3)
-            // tile[tileTypeCount] = new Tile();
-            // File teleportFile2 = new File(basePath2 + "tile1_FloorTP.png");
-            // if (teleportFile2.exists()) {    
-            //     tile[tileTypeCount].image = ImageIO.read(teleportFile2);
-            // }
-            // tile[tileTypeCount].collision = false; // walkable, used as teleport trigger
-            // System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = TELEPORT");
-            // tileTypeCount++;
-            // localId++;
-
+            // [Tile ID 1] PATINTERO (MAP 2)
+            tile[tileTypeCount] = new Tile();
+            File patinteroFile1 = new File(basePath2 + "tile02_road1.png"); // can be same or different sprite
+            if (patinteroFile1.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(patinteroFile1);
+            }
+            tile[tileTypeCount].collision = false;
+            System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = PATINTERO");
+            tileTypeCount++;
+            localId++;
 
 
 
