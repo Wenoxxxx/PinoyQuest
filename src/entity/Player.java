@@ -11,6 +11,7 @@ import src.core.KeyHandler;
 
 import src.entity.skills.SkillManager;
 import src.items.Item;
+import src.items.weapons.WeaponItem; // detect weapons
 
 public class Player extends Entity {
 
@@ -20,7 +21,7 @@ public class Player extends Entity {
 
     private int baseSpeed;
     private int speedModifier;
-    protected int speed;   // <-- REQUIRED FIELD (you were missing this!)
+    protected int speed;
 
     private int maxHealth = 100;
     private int health = maxHealth;
@@ -41,16 +42,29 @@ public class Player extends Entity {
     public BufferedImage[] idleLeftFrames;
     public BufferedImage[] idleRightFrames;
 
+    // ATTACK ANIMATION ARRAYS (6 frames)
+    public BufferedImage[] attackUpFrames;
+    public BufferedImage[] attackDownFrames;
+    public BufferedImage[] attackLeftFrames;
+    public BufferedImage[] attackRightFrames;
+
     // ANIMATION CONTROL
     int frameIndex = 0;
     int frameCounter = 0;
     int animationSpeed = 8;
     int idleAnimationSpeed = 8;
     int idleUpAnimationSpeed = 24;
+    int attackAnimationSpeed = 4; // lower => faster
 
     boolean moving = false;
     boolean wasMoving = false;
+    boolean attacking = false;
+    int attackFrameIndex = 0;
+    int attackFrameCounter = 0;
     String lastDirection = "down";
+
+    // track last equipped so we only reload when changed
+    private Item lastEquippedWeapon = null;
 
     public int screenX;
     public int screenY;
@@ -66,15 +80,30 @@ public class Player extends Entity {
     public boolean hasMap2Key = false;
     public Item[] hotbar = new Item[3];
 
-
-
-
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
 
         setDefaultValues();
+
+        // initialize arrays and load base sprites
+        upFrames = new BufferedImage[6];
+        downFrames = new BufferedImage[6];
+        leftFrames = new BufferedImage[6];
+        rightFrames = new BufferedImage[6];
+
+        idleUpFrames = new BufferedImage[12];
+        idleDownFrames = new BufferedImage[12];
+        idleLeftFrames = new BufferedImage[12];
+        idleRightFrames = new BufferedImage[12];
+
+        attackUpFrames = new BufferedImage[6];
+        attackDownFrames = new BufferedImage[6];
+        attackLeftFrames = new BufferedImage[6];
+        attackRightFrames = new BufferedImage[6];
+
         loadPlayerImages();
+
         skillManager = new SkillManager(this);
     }
 
@@ -91,7 +120,7 @@ public class Player extends Entity {
 
         baseSpeed = 4;
         speedModifier = 0;
-        refreshSpeed();  
+        refreshSpeed();
         direction = "down";
 
         maxHealth = 100;
@@ -120,7 +149,7 @@ public class Player extends Entity {
         speedModifier += amount;
         refreshSpeed();
     }
-    
+
     // ========================= GETTERS =========================
     public GamePanel getGamePanel() {
         return gamePanel;
@@ -130,8 +159,6 @@ public class Player extends Entity {
         return direction;
     }
 
-
-
     // ========================= UPDATE =========================
     public void update() {
 
@@ -140,8 +167,6 @@ public class Player extends Entity {
             moving = false;
             return;
         }
-
-
 
         int dx = 0, dy = 0;
         moving = false;
@@ -216,6 +241,8 @@ public class Player extends Entity {
         if (!moved) moving = false;
 
         handleSkillInput();
+        handleAttackInput();      // <- must check attack input every update
+        checkWeaponChange();      // <- ensure sprites change when weapon changes
         updateAnimation();
         handleTeleport();
         skillManager.update();
@@ -225,6 +252,21 @@ public class Player extends Entity {
 
     // ========================= ANIMATION =========================
     private void updateAnimation() {
+
+        // Handle attack animation (highest priority)
+        if (attacking) {
+            attackFrameCounter++;
+            if (attackFrameCounter > attackAnimationSpeed) {
+                attackFrameCounter = 0;
+                attackFrameIndex++;
+                if (attackFrameIndex >= 6) {
+                    attacking = false;
+                    attackFrameIndex = 0;
+                }
+            }
+            // while attacking, do not progress movement/idle animations
+            return;
+        }
 
         if (moving != wasMoving) {
             frameIndex = 0;
@@ -277,40 +319,119 @@ public class Player extends Entity {
 
     public void loadPlayerImages() {
 
-        upFrames = new BufferedImage[6];
-        downFrames = new BufferedImage[6];
-        leftFrames = new BufferedImage[6];
-        rightFrames = new BufferedImage[6];
-
-        idleUpFrames = new BufferedImage[12];
-        idleDownFrames = new BufferedImage[12];
-        idleLeftFrames = new BufferedImage[12];
-        idleRightFrames = new BufferedImage[12];
-
         String basePath =
                 "src" + File.separator +
                 "assets" + File.separator +
                 "sprites" + File.separator +
                 "player" + File.separator;
 
+        // default movement sprites
         for (int i = 0; i < 6; i++) {
-            upFrames[i] = loadImageFromFile(basePath + "movement/up" + (i+1) + ".png");
-            downFrames[i] = loadImageFromFile(basePath + "movement/down" + (i+1) + ".png");
-            leftFrames[i] = loadImageFromFile(basePath + "movement/left" + (i+1) + ".png");
-            rightFrames[i] = loadImageFromFile(basePath + "movement/right" + (i+1) + ".png");
+            upFrames[i] = loadImageFromFile(basePath + "movement" + File.separator + "up" + (i+1) + ".png");
+            downFrames[i] = loadImageFromFile(basePath + "movement" + File.separator + "down" + (i+1) + ".png");
+            leftFrames[i] = loadImageFromFile(basePath + "movement" + File.separator + "left" + (i+1) + ".png");
+            rightFrames[i] = loadImageFromFile(basePath + "movement" + File.separator + "right" + (i+1) + ".png");
         }
 
+        // idle up: 4 frames then repeat last
         for (int i = 0; i < 4; i++) {
-            idleUpFrames[i] = loadImageFromFile(basePath + "idle/idleB" + (i+1) + ".png");
+            idleUpFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleB" + (i+1) + ".png");
         }
-
         BufferedImage lastUp = idleUpFrames[3] != null ? idleUpFrames[3] : idleUpFrames[0];
         for (int i = 4; i < 12; i++) idleUpFrames[i] = lastUp;
 
         for (int i = 0; i < 12; i++) {
-            idleDownFrames[i] = loadImageFromFile(basePath + "idle/idleF" + (i+1) + ".png");
-            idleLeftFrames[i] = loadImageFromFile(basePath + "idle/idleL" + (i+1) + ".png");
-            idleRightFrames[i] = loadImageFromFile(basePath + "idle/idleR" + (i+1) + ".png");
+            idleDownFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleF" + (i+1) + ".png");
+            idleLeftFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleL" + (i+1) + ".png");
+            idleRightFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleR" + (i+1) + ".png");
+        }
+
+        // Default: clear attack frames (they'll be loaded when weapon equipped)
+        for (int i = 0; i < 6; i++) {
+            attackUpFrames[i] = null;
+            attackDownFrames[i] = null;
+            attackLeftFrames[i] = null;
+            attackRightFrames[i] = null;
+        }
+
+        // If a weapon is already equipped at start, load its sprites
+        if (weapon != null) reloadSpritesBasedOnWeapon();
+    }
+
+    // Reload sprites based on equipped weapon (handles movement override and attack folders)
+    private void reloadSpritesBasedOnWeapon() {
+        String basePath =
+                "src" + File.separator +
+                "assets" + File.separator +
+                "sprites" + File.separator +
+                "player" + File.separator;
+
+        // Default movement folder
+        String movementFolder = "movement";
+        String attackFolder = null;
+
+        if (weapon != null) {
+            String weaponName = weapon.getClass().getSimpleName();
+
+            // Example: Hanger has its own movement/attack sets
+            if (weaponName.equals("Hanger")) {
+                movementFolder = "movementItemHanger";
+                attackFolder = "attackHanger";
+            } else if (weaponName.equals("Tsinelas")) {
+                movementFolder = "movementItemTsinelas";
+                attackFolder = "tsinelaseAttack";
+            } else {
+                // For other WeaponItem (generic), try folder by name
+                movementFolder = "movement"; // keep default
+                attackFolder = weaponName.toLowerCase() + "Attack"; // best effort
+            }
+        }
+
+        // Load movement sprites (if weapon provides specialized movement, it'll override)
+        for (int i = 0; i < 6; i++) {
+            upFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "up" + (i+1) + ".png");
+            downFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "down" + (i+1) + ".png");
+            leftFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "left" + (i+1) + ".png");
+            rightFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "right" + (i+1) + ".png");
+        }
+
+        // Load attack sprites if available
+        if (attackFolder != null) {
+            // Hanger -> directional attacks
+            if (weapon != null && weapon.getClass().getSimpleName().equals("Hanger")) {
+                for (int i = 0; i < 6; i++) {
+                    attackUpFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "up" + (i+1) + ".png");
+                    attackDownFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "down" + (i+1) + ".png");
+                    attackLeftFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "left" + (i+1) + ".png");
+                    attackRightFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "right" + (i+1) + ".png");
+                }
+            } else if (weapon != null && weapon.getClass().getSimpleName().equals("Tsinelas")) {
+                // Tsinelas only has front/down sprites (reuse for others)
+                for (int i = 0; i < 6; i++) {
+                    attackDownFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "Sword_Walk_Attack_front" + (i+1) + ".png");
+                    attackUpFrames[i] = attackDownFrames[i];
+                    attackLeftFrames[i] = attackDownFrames[i];
+                    attackRightFrames[i] = attackDownFrames[i];
+                }
+            } else {
+                // generic attempt: try front/down and replicate
+                for (int i = 0; i < 6; i++) {
+                    BufferedImage attempt = loadImageFromFile(basePath + attackFolder + File.separator + "front" + (i+1) + ".png");
+                    if (attempt == null) attempt = loadImageFromFile(basePath + attackFolder + File.separator + "down" + (i+1) + ".png");
+                    attackDownFrames[i] = attempt;
+                    attackUpFrames[i] = attempt;
+                    attackLeftFrames[i] = attempt;
+                    attackRightFrames[i] = attempt;
+                }
+            }
+        } else {
+            // No attack folder: clear attack frames
+            for (int i = 0; i < 6; i++) {
+                attackUpFrames[i] = null;
+                attackDownFrames[i] = null;
+                attackLeftFrames[i] = null;
+                attackRightFrames[i] = null;
+            }
         }
     }
 
@@ -325,7 +446,7 @@ public class Player extends Entity {
         int map1TP = gamePanel.tileManager.tilesetStart[0] + 5;
         int map2TP = gamePanel.tileManager.tilesetStart[1] + 1;
         int map3TP = gamePanel.tileManager.tilesetStart[1] + 4;
-        
+
         if (gamePanel.currentMap == 0 && tileNum == map1TP) {
             gamePanel.switchToMap(1, 16, 1, "down");
         }
@@ -348,41 +469,18 @@ public class Player extends Entity {
         }
     }
 
-
-    // ===== SHIELD / DAMAGE IMMUNITY BUFF =====
-    public boolean shieldActive = false;
-    private long shieldEndTime = 0;
-
-    public void enableShield(long durationMs) {
-        shieldActive = true;
-        shieldEndTime = System.currentTimeMillis() + durationMs;
-        System.out.println("[BUFF] Shield activated for " + durationMs + "ms!");
-    }
-
-    private void updateShield() {
-        if (shieldActive && System.currentTimeMillis() > shieldEndTime) {
-            shieldActive = false;
-            System.out.println("[BUFF] Shield expired.");
+    // ========================= ATTACK =========================
+    private void handleAttackInput() {
+        // replace consumeAttackTap with whatever KeyHandler uses for attack (assumes method exists)
+        if (keyHandler.consumeAttackTap() && !attacking && weapon != null) {
+            attacking = true;
+            attackFrameIndex = 0;
+            attackFrameCounter = 0;
+            moving = false;
         }
     }
 
-    // ========================= ENERGY =========================
-    private void regenerateEnergy() {
-        if (energy >= maxEnergy) {
-            energyRegenCounter = 0;
-            return;
-        }
-
-        int delay = channeling ? 10 : 25;
-
-        energyRegenCounter++;
-        if (energyRegenCounter >= delay) {
-            energy = Math.min(maxEnergy, energy + 1);
-            energyRegenCounter = 0;
-        }
-    }
-
-    // ========================= INVENTORY ========================= 
+    // ========================= INVENTORY / HOTBAR ========================= 
     public boolean addToInventory(Item item) {
         for (int r = 0; r < INVENTORY_ROWS; r++) {
             for (int c = 0; c < INVENTORY_COLS; c++) {
@@ -424,7 +522,18 @@ public class Player extends Entity {
 
         System.out.println("[Hotbar] Using item: " + item.name);
 
-        // Apply effect
+        // If it's a weapon -> equip it (do not consume)
+        if (item instanceof WeaponItem) {
+            this.weapon = item;
+            System.out.println("[Weapon] Equipped: " + item.name);
+            reloadSpritesBasedOnWeapon();
+            lastEquippedWeapon = weapon;
+
+            if (gamePanel.ui != null) gamePanel.ui.showMessage(item.name + " Equipped!");
+            return;
+        }
+
+        // Otherwise treat as a consumable/default use
         item.use(this);
 
         // Only remove if it's a consumable (potions, buffs)
@@ -441,7 +550,46 @@ public class Player extends Entity {
         }
     }
 
+    // Detect weapon change (additional safety)
+    private void checkWeaponChange() {
+        if (weapon != lastEquippedWeapon) {
+            reloadSpritesBasedOnWeapon();
+            lastEquippedWeapon = weapon;
+        }
+    }
 
+    // ===== SHIELD / DAMAGE IMMUNITY BUFF =====
+    public boolean shieldActive = false;
+    private long shieldEndTime = 0;
+
+    public void enableShield(long durationMs) {
+        shieldActive = true;
+        shieldEndTime = System.currentTimeMillis() + durationMs;
+        System.out.println("[BUFF] Shield activated for " + durationMs + "ms!");
+    }
+
+    private void updateShield() {
+        if (shieldActive && System.currentTimeMillis() > shieldEndTime) {
+            shieldActive = false;
+            System.out.println("[BUFF] Shield expired.");
+        }
+    }
+
+    // ========================= ENERGY =========================
+    private void regenerateEnergy() {
+        if (energy >= maxEnergy) {
+            energyRegenCounter = 0;
+            return;
+        }
+
+        int delay = channeling ? 10 : 25;
+
+        energyRegenCounter++;
+        if (energyRegenCounter >= delay) {
+            energy = Math.min(maxEnergy, energy + 1);
+            energyRegenCounter = 0;
+        }
+    }
 
     // ========================= STATS =========================
     public int getHealth() { return health; }
@@ -456,9 +604,9 @@ public class Player extends Entity {
         System.out.println("Player shield activated for " + durationTicks + " ticks!");
     }
 
-  public void damage(int amount) {
-        
-    if (shieldActive) {
+    public void damage(int amount) {
+
+        if (shieldActive) {
             System.out.println("[SHIELD] Damage blocked!");
             return;
         }
@@ -494,15 +642,26 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 
-        if (moving) {
+        // Priority: Attack > Moving > Idle
+        if (attacking && weapon != null && attackFrameIndex < 6 &&
+                attackUpFrames != null && attackDownFrames != null &&
+                attackLeftFrames != null && attackRightFrames != null) {
+
+            switch (direction) {
+                case "up":    image = (attackFrameIndex < attackUpFrames.length && attackUpFrames[attackFrameIndex] != null) ? attackUpFrames[attackFrameIndex] : null; break;
+                case "down":  image = (attackFrameIndex < attackDownFrames.length && attackDownFrames[attackFrameIndex] != null) ? attackDownFrames[attackFrameIndex] : null; break;
+                case "left":  image = (attackFrameIndex < attackLeftFrames.length && attackLeftFrames[attackFrameIndex] != null) ? attackLeftFrames[attackFrameIndex] : null; break;
+                case "right": image = (attackFrameIndex < attackRightFrames.length && attackRightFrames[attackFrameIndex] != null) ? attackRightFrames[attackFrameIndex] : null; break;
+            }
+
+        } else if (moving) {
             switch (direction) {
                 case "up":    image = upFrames[frameIndex]; break;
                 case "down":  image = downFrames[frameIndex]; break;
                 case "left":  image = leftFrames[frameIndex]; break;
                 case "right": image = rightFrames[frameIndex]; break;
             }
-        }
-        else {
+        } else {
             switch (direction) {
                 case "up":    image = idleUpFrames[frameIndex]; break;
                 case "down":  image = idleDownFrames[frameIndex]; break;
