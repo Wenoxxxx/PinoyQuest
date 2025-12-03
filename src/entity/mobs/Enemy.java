@@ -31,6 +31,8 @@ public abstract class Enemy {
     protected int maxHealth = 20;
     protected int health = maxHealth;
     protected boolean dead = false;
+    private long lastDamageTime = 0;
+    protected int damageCooldownMs = 400;
 
     // ===== PATROL SYSTEM =====
     protected boolean hasPatrol = false;
@@ -134,6 +136,10 @@ public abstract class Enemy {
     public void damage(int amount) {
         if (amount <= 0 || dead) return;
 
+        long now = System.currentTimeMillis();
+        if (now - lastDamageTime < damageCooldownMs) return;
+
+        lastDamageTime = now;
         health -= amount;
 
         if (health <= 0) {

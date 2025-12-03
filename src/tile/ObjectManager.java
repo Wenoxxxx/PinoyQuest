@@ -384,6 +384,12 @@ public class ObjectManager {
                     2, 1);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = WHEELBARROW1");
 
+
+
+
+
+
+
             // =============== MAP 2 OBJECT TYPES ===============
             objectSetStart[1] = objectTypeCount;
             localId = 0;
@@ -446,7 +452,7 @@ public class ObjectManager {
                     1, 13);
             System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TRAPBASE");
 
-
+                
             
 
         } catch (IOException e) {

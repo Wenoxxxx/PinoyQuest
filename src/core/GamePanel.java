@@ -14,12 +14,14 @@ import src.ui.MainMenuUI;
 
 // MOBS
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import src.entity.mobs.SawTrap;
 import src.entity.mobs.MobManager;
 
 // AI
 import src.entity.mobs.Map3EnemySpawner;
+import src.entity.projectiles.TsinelasProjectile;
 
 public class GamePanel extends JPanel {
 
@@ -76,6 +78,7 @@ public class GamePanel extends JPanel {
     // MOBS
     public List<WhiteLady> whiteLadies = new ArrayList<>();
     public List<SawTrap> sawTraps = new ArrayList<>();
+    public List<TsinelasProjectile> projectiles = new ArrayList<>();
     public MobManager mobManager;
 
     // UI
@@ -222,6 +225,8 @@ public class GamePanel extends JPanel {
         for (WhiteLady wl : whiteLadies)
             wl.update();
 
+        updateProjectiles();
+
         // -------------------------------
         // UPDATE WAVES IF IN MAP 3 (index 2)
         // -------------------------------
@@ -253,6 +258,50 @@ public class GamePanel extends JPanel {
             cameraX += (targetCameraX - cameraX) * smoothing;
             cameraY += (targetCameraY - cameraY) * smoothing;
         }
+    }
+
+    private void updateProjectiles() {
+        Iterator<TsinelasProjectile> iterator = projectiles.iterator();
+        while (iterator.hasNext()) {
+            TsinelasProjectile projectile = iterator.next();
+            projectile.update();
+            if (projectile.isExpired()) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public boolean applyPlayerAttack(Rectangle hitbox, int damage) {
+        if (hitbox == null || damage <= 0) return false;
+
+        boolean hitAny = false;
+
+        for (WhiteLady wl : whiteLadies) {
+            Rectangle mobBox = new Rectangle(
+                    wl.worldX + wl.solidArea.x,
+                    wl.worldY + wl.solidArea.y,
+                    wl.solidArea.width,
+                    wl.solidArea.height
+            );
+            if (hitbox.intersects(mobBox)) {
+                wl.takeDamage(damage);
+                // White Ladies should never be removed by player attacks
+                hitAny = true;
+            }
+        }
+
+        if (currentMap == 2 && map3Spawner != null) {
+            if (map3Spawner.applyPlayerAttack(hitbox, damage)) {
+                hitAny = true;
+            }
+        }
+
+        return hitAny;
+    }
+
+    public void spawnTsinelasProjectile(int startX, int startY, String direction) {
+        TsinelasProjectile projectile = new TsinelasProjectile(this, startX, startY, direction);
+        projectiles.add(projectile);
     }
 
     // ===================== START GAME =====================
@@ -303,7 +352,17 @@ public class GamePanel extends JPanel {
         // OBJECTS BEHIND PLAYER
         objectManager.drawBehindPlayer(g2, playerFeetRow);
 
-        // DRAW PLAYER
+        // REGULAR MOBS (WhiteLady / SawTrap) - Draw before player
+        mobManager.draw(g2);
+
+        // -------------------------------
+        // DRAW WAVES ONLY ON MAP 3 (index 2) - Draw before player
+        // -------------------------------
+        if (currentMap == 2) {
+            map3Spawner.draw(g2);
+        }
+
+        // DRAW PLAYER (on top of mobs)
         player.draw(g2);
 
         // OBJECTS IN FRONT OF PLAYER
@@ -312,14 +371,9 @@ public class GamePanel extends JPanel {
         // ITEMS IN FRONT
         itemManager.drawInFrontOfPlayer(g2, playerFeetRow);
 
-        // REGULAR MOBS (WhiteLady / SawTrap)
-        mobManager.draw(g2);
-
-        // -------------------------------
-        // DRAW WAVES ONLY ON MAP 3 (index 2)
-        // -------------------------------
-        if (currentMap == 2) {
-            map3Spawner.draw(g2);
+        // PROJECTILES
+        for (TsinelasProjectile projectile : projectiles) {
+            projectile.draw(g2);
         }
 
         // HUD/UI

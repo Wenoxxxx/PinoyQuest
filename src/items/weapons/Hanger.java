@@ -30,8 +30,10 @@ public class Hanger extends Item {
 
     @Override
     public void onPickup() {
-        gp.player.weapon = this;
         this.isConsumable = false;
         this.consumed = true;
+        // Auto-equip weapon when picked up and load movement animation
+        gp.player.equipWeaponItem(this);
+        System.out.println("[Hanger] Auto-equipped on pickup!");
     }
 }

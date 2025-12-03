@@ -11,7 +11,8 @@ import src.core.KeyHandler;
 
 import src.entity.skills.SkillManager;
 import src.items.Item;
-import src.items.weapons.WeaponItem; // detect weapons
+import src.items.weapons.Hanger;
+import src.items.weapons.Tsinelas;
 
 public class Player extends Entity {
 
@@ -61,10 +62,13 @@ public class Player extends Entity {
     boolean attacking = false;
     int attackFrameIndex = 0;
     int attackFrameCounter = 0;
+    private boolean attackHitApplied = false;
+    private long lastDamageTime = 0;
+    private static final int DAMAGE_COOLDOWN_MS = 750;
     String lastDirection = "down";
 
     // track last equipped so we only reload when changed
-    private Item lastEquippedWeapon = null;
+    public Item lastEquippedWeapon = null;
 
     public int screenX;
     public int screenY;
@@ -244,6 +248,7 @@ public class Player extends Entity {
         handleAttackInput();      // <- must check attack input every update
         checkWeaponChange();      // <- ensure sprites change when weapon changes
         updateAnimation();
+        applyAttackDamageIfNeeded();
         handleTeleport();
         skillManager.update();
         regenerateEnergy();
@@ -359,6 +364,38 @@ public class Player extends Entity {
     }
 
     // Reload sprites based on equipped weapon (handles movement override and attack folders)
+    public void reloadSpritesForWeapon() {
+        reloadSpritesBasedOnWeapon();
+    }
+
+    public void equipWeaponItem(Item item) {
+        if (item == null) return;
+
+        if (!(item instanceof Hanger) && !(item instanceof Tsinelas)) {
+            return;
+        }
+
+        System.out.println("[Player] Equipping weapon: " + item.getClass().getSimpleName());
+        weapon = item;
+        reloadSpritesForWeapon();
+        lastEquippedWeapon = weapon;
+
+        if (gamePanel.ui != null) {
+            gamePanel.ui.showMessage(item.name + " equipped!");
+        }
+    }
+
+    public void resetToDefaultAnimation() {
+        boolean wasEquipped = weapon != null;
+        weapon = null;
+        reloadSpritesForWeapon();
+        lastEquippedWeapon = null;
+
+        if (wasEquipped && gamePanel.ui != null) {
+            gamePanel.ui.showMessage("Default stance equipped");
+        }
+    }
+
     private void reloadSpritesBasedOnWeapon() {
         String basePath =
                 "src" + File.separator +
@@ -366,66 +403,72 @@ public class Player extends Entity {
                 "sprites" + File.separator +
                 "player" + File.separator;
 
-        // Default movement folder
+        // Default movement folder (no weapon)
         String movementFolder = "movement";
         String attackFolder = null;
 
         if (weapon != null) {
             String weaponName = weapon.getClass().getSimpleName();
+            System.out.println("[Player] Loading sprites for weapon: " + weaponName);
 
-            // Example: Hanger has its own movement/attack sets
             if (weaponName.equals("Hanger")) {
-                movementFolder = "movementItemHanger";
+                movementFolder = "movementHanger";
                 attackFolder = "attackHanger";
-            } else if (weaponName.equals("Tsinelas")) {
-                movementFolder = "movementItemTsinelas";
-                attackFolder = "tsinelaseAttack";
-            } else {
-                // For other WeaponItem (generic), try folder by name
-                movementFolder = "movement"; // keep default
-                attackFolder = weaponName.toLowerCase() + "Attack"; // best effort
+                System.out.println("[Player] Using movement folder: " + movementFolder);
             }
+            else if (weaponName.equals("Tsinelas")) {
+                movementFolder = "movementTsinelas";
+                attackFolder = "attackTsinelas";
+                System.out.println("[Player] Using movement folder: " + movementFolder);
+            }
+            else {
+                movementFolder = "movement";
+                attackFolder = weaponName.toLowerCase() + "Attack";
+                System.out.println("[Player] Unknown weapon, using default movement folder");
+            }
+        } else {
+            System.out.println("[Player] No weapon equipped, using default movement folder");
         }
 
-        // Load movement sprites (if weapon provides specialized movement, it'll override)
+        // Load movement sprites (with fallback)
         for (int i = 0; i < 6; i++) {
             upFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "up" + (i+1) + ".png");
             downFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "down" + (i+1) + ".png");
             leftFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "left" + (i+1) + ".png");
             rightFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "right" + (i+1) + ".png");
+
+            // Fallback to default movement if missing
+            if (upFrames[i] == null)
+                upFrames[i] = loadImageFromFile(basePath + "movement/up" + (i+1) + ".png");
+            if (downFrames[i] == null)
+                downFrames[i] = loadImageFromFile(basePath + "movement/down" + (i+1) + ".png");
+            if (leftFrames[i] == null)
+                leftFrames[i] = loadImageFromFile(basePath + "movement/left" + (i+1) + ".png");
+            if (rightFrames[i] == null)
+                rightFrames[i] = loadImageFromFile(basePath + "movement/right" + (i+1) + ".png");
         }
 
-        // Load attack sprites if available
+        // Load attacks
         if (attackFolder != null) {
-            // Hanger -> directional attacks
             if (weapon != null && weapon.getClass().getSimpleName().equals("Hanger")) {
                 for (int i = 0; i < 6; i++) {
-                    attackUpFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "up" + (i+1) + ".png");
-                    attackDownFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "down" + (i+1) + ".png");
-                    attackLeftFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "left" + (i+1) + ".png");
-                    attackRightFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "right" + (i+1) + ".png");
+                    attackUpFrames[i] = loadImageFromFile(basePath + attackFolder + "/up" + (i+1) + ".png");
+                    attackDownFrames[i] = loadImageFromFile(basePath + attackFolder + "/down" + (i+1) + ".png");
+                    attackLeftFrames[i] = loadImageFromFile(basePath + attackFolder + "/left" + (i+1) + ".png");
+                    attackRightFrames[i] = loadImageFromFile(basePath + attackFolder + "/right" + (i+1) + ".png");
                 }
-            } else if (weapon != null && weapon.getClass().getSimpleName().equals("Tsinelas")) {
-                // Tsinelas only has front/down sprites (reuse for others)
+            }
+            else if (weapon != null && weapon.getClass().getSimpleName().equals("Tsinelas")) {
                 for (int i = 0; i < 6; i++) {
-                    attackDownFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "Sword_Walk_Attack_front" + (i+1) + ".png");
+                    attackDownFrames[i] = loadImageFromFile(basePath + attackFolder + "/Sword_Walk_Attack_front" + (i+1) + ".png");
                     attackUpFrames[i] = attackDownFrames[i];
                     attackLeftFrames[i] = attackDownFrames[i];
                     attackRightFrames[i] = attackDownFrames[i];
                 }
-            } else {
-                // generic attempt: try front/down and replicate
-                for (int i = 0; i < 6; i++) {
-                    BufferedImage attempt = loadImageFromFile(basePath + attackFolder + File.separator + "front" + (i+1) + ".png");
-                    if (attempt == null) attempt = loadImageFromFile(basePath + attackFolder + File.separator + "down" + (i+1) + ".png");
-                    attackDownFrames[i] = attempt;
-                    attackUpFrames[i] = attempt;
-                    attackLeftFrames[i] = attempt;
-                    attackRightFrames[i] = attempt;
-                }
             }
-        } else {
-            // No attack folder: clear attack frames
+        }
+        else {
+            // clear if no attack sprites exist
             for (int i = 0; i < 6; i++) {
                 attackUpFrames[i] = null;
                 attackDownFrames[i] = null;
@@ -473,11 +516,72 @@ public class Player extends Entity {
     private void handleAttackInput() {
         // replace consumeAttackTap with whatever KeyHandler uses for attack (assumes method exists)
         if (keyHandler.consumeAttackTap() && !attacking && weapon != null) {
+            if (weapon instanceof Tsinelas) {
+                fireTsinelasProjectile();
+                return;
+            }
+
             attacking = true;
             attackFrameIndex = 0;
             attackFrameCounter = 0;
             moving = false;
+            attackHitApplied = false;
         }
+    }
+
+    private void applyAttackDamageIfNeeded() {
+        if (!attacking) return;
+        if (!(weapon instanceof Hanger)) return; // focus on Hanger first
+        if (attackHitApplied) return;
+
+        // Trigger damage when animation reaches swing frame
+        if (attackFrameIndex >= 2) {
+            Rectangle hitbox = buildHangerHitbox();
+            int damage = getCurrentWeaponDamage();
+            if (hitbox != null && damage > 0) {
+                gamePanel.applyPlayerAttack(hitbox, damage);
+                attackHitApplied = true;
+            }
+        }
+    }
+
+    private Rectangle buildHangerHitbox() {
+        int range = gamePanel.tileSize;
+        int baseX = worldX + solidArea.x;
+        int baseY = worldY + solidArea.y;
+        int width = solidArea.width;
+        int height = solidArea.height;
+
+        switch (direction) {
+            case "up":
+                return new Rectangle(baseX, baseY - range, width, range);
+            case "down":
+                return new Rectangle(baseX, baseY + height, width, range);
+            case "left":
+                return new Rectangle(baseX - range, baseY, range, height);
+            case "right":
+                return new Rectangle(baseX + width, baseY, range, height);
+            default:
+                return null;
+        }
+    }
+
+    private int getCurrentWeaponDamage() {
+        if (weapon instanceof Hanger) {
+            return 35;
+        }
+        if (weapon instanceof Tsinelas) {
+            return 20;
+        }
+        return 10;
+    }
+
+    private void fireTsinelasProjectile() {
+        int centerX = worldX + solidArea.x + solidArea.width / 2;
+        int centerY = worldY + solidArea.y + solidArea.height / 2;
+        int startX = centerX - gamePanel.tileSize / 2;
+        int startY = centerY - gamePanel.tileSize / 2;
+        gamePanel.spawnTsinelasProjectile(startX, startY, direction);
     }
 
     // ========================= INVENTORY / HOTBAR ========================= 
@@ -516,20 +620,16 @@ public class Player extends Entity {
 
         Item item = hotbar[slot];
         if (item == null) {
-            System.out.println("[Hotbar] Slot empty.");
+            System.out.println("[Hotbar] Slot empty. Resetting to default animation.");
+            resetToDefaultAnimation();
             return;
         }
 
         System.out.println("[Hotbar] Using item: " + item.name);
 
         // If it's a weapon -> equip it (do not consume)
-        if (item instanceof WeaponItem) {
-            this.weapon = item;
-            System.out.println("[Weapon] Equipped: " + item.name);
-            reloadSpritesBasedOnWeapon();
-            lastEquippedWeapon = weapon;
-
-            if (gamePanel.ui != null) gamePanel.ui.showMessage(item.name + " Equipped!");
+        if (item instanceof Hanger || item instanceof Tsinelas) {
+            equipWeaponItem(item);
             return;
         }
 
@@ -611,10 +711,14 @@ public class Player extends Entity {
             return;
         }
 
-        if (amount > 0) {
-            health = Math.max(0, health - amount);
-            System.out.println("Player hit! Health: " + health);
-        }
+        if (amount <= 0) return;
+
+        long now = System.currentTimeMillis();
+        if (now - lastDamageTime < DAMAGE_COOLDOWN_MS) return;
+
+        lastDamageTime = now;
+        health = Math.max(0, health - amount);
+        System.out.println("Player hit! Health: " + health);
     }
 
     public void takeDamage(int amount) { damage(amount); }

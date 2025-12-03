@@ -9,6 +9,8 @@ import javax.imageio.ImageIO;
 import src.core.GamePanel;
 import src.entity.Player;
 import src.items.Item;
+import src.items.weapons.Hanger;
+import src.items.weapons.Tsinelas;
 
 public class InventoryUI {
 
@@ -57,13 +59,24 @@ public class InventoryUI {
     public void useSelectedItem() {
 
         Item item = player.inventory[selectedRow][selectedCol];
-        if (item == null) return;
+        if (item == null) {
+            player.resetToDefaultAnimation();
+            return;
+        }
+
+        // Check if it's a weapon (Hanger or Tsinelas)
+        if (item instanceof Hanger || item instanceof Tsinelas) {
+            player.equipWeaponItem(item);
+            if (selectedRow == 0) player.syncHotbarFromInventory();
+            return;
+        }
 
         item.use(player);
-        player.inventory[selectedRow][selectedCol] = null;
 
-        if (selectedRow == 0)
-            player.syncHotbarFromInventory();
+        if (item.isConsumable) {
+            player.inventory[selectedRow][selectedCol] = null;
+            if (selectedRow == 0) player.syncHotbarFromInventory();
+        }
 
         gp.ui.showMessage(item.name + " used!");
     }
