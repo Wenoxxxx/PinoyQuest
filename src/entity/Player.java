@@ -719,6 +719,11 @@ public class Player extends Entity {
         lastDamageTime = now;
         health = Math.max(0, health - amount);
         System.out.println("Player hit! Health: " + health);
+
+        if (health <= 0) {
+            System.out.println("[Player] Game Over");
+            gamePanel.gameState = GamePanel.STATE_GAME_OVER;
+        }
     }
 
     public void takeDamage(int amount) { damage(amount); }

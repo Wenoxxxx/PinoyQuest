@@ -11,6 +11,7 @@ import src.tile.TileManager;
 import src.ui.UI;
 import src.ui.ActionBarUI;
 import src.ui.MainMenuUI;
+import src.ui.GameOverUI;
 
 // MOBS
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class GamePanel extends JPanel {
     public static final int STATE_PLAY = 1;
     public static final int STATE_SETTINGS = 2;
     public static final int STATE_INVENTORY = 3;
+    public static final int STATE_GAME_OVER = 4;
 
     public int gameState = STATE_MENU;
 
@@ -84,6 +86,7 @@ public class GamePanel extends JPanel {
     // UI
     public UI ui;
     public MainMenuUI mainMenuUI;
+    public GameOverUI gameOverUI;
     public boolean showInventory = false;
 
     // ITEM
@@ -122,6 +125,7 @@ public class GamePanel extends JPanel {
         // UI
         ui = new UI(this, player);
         mainMenuUI = new MainMenuUI(this);
+        gameOverUI = new GameOverUI(this);
         actionBarUI = new ActionBarUI(this, player);
 
         // AI WAVE SPAWNER
@@ -213,6 +217,7 @@ public class GamePanel extends JPanel {
 
         if (gameState == STATE_MENU) return;
         if (gameState == STATE_SETTINGS) return;
+        if (gameState == STATE_GAME_OVER) return;
 
         // GAMEPLAY
         player.update();
@@ -334,6 +339,8 @@ public class GamePanel extends JPanel {
             if (gameState == STATE_INVENTORY) {
                 ui.getInventoryUI().draw(g2);
             }
+        } else if (gameState == STATE_GAME_OVER) {
+            gameOverUI.draw(g2);
         }
 
         g2.dispose();

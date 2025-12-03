@@ -196,18 +196,18 @@ public class WhiteLady extends Entity {
         int screenX = worldX - gamePanel.cameraX;
         int screenY = worldY - gamePanel.cameraY;
 
-        // Debug sprite bounds (optional)
-        g2.setColor(new Color(255, 0, 255, 80));
-        g2.fillRect(screenX, screenY, renderWidth, renderHeight);
+        // // Debug sprite bounds (optional)
+        // g2.setColor(new Color(255, 0, 255, 80));
+        // g2.fillRect(screenX, screenY, renderWidth, renderHeight);
 
-        // Debug hitbox (optional)
-        g2.setColor(new Color(0, 255, 0, 120));
-        g2.fillRect(
-                screenX + solidArea.x,
-                screenY + solidArea.y,
-                solidArea.width,
-                solidArea.height
-        );
+        // // Debug hitbox (optional)
+        // g2.setColor(new Color(0, 255, 0, 120));
+        // g2.fillRect(
+        //         screenX + solidArea.x,
+        //         screenY + solidArea.y,
+        //         solidArea.width,
+        //         solidArea.height
+        // );
 
         if (!spritesLoaded) return;
         if (frames[frameIndex] == null) return;
