@@ -18,6 +18,9 @@ import java.util.List;
 import src.entity.mobs.SawTrap;
 import src.entity.mobs.MobManager;
 
+// AI
+import src.entity.mobs.Map3EnemySpawner;
+
 public class GamePanel extends JPanel {
 
     // SCREEN SETTINGS
@@ -39,6 +42,9 @@ public class GamePanel extends JPanel {
     public final int worldHeight = tileSize * maxWorldRow;
 
     public int currentMap = 0;
+
+    // AI
+    private Map3EnemySpawner map3Spawner;
 
     // SYSTEMS
     public TileManager tileManager;
@@ -62,7 +68,7 @@ public class GamePanel extends JPanel {
 
     public int gameState = STATE_MENU;
 
-    // MENU SELECTION (still needed)
+    // MENU
     public int menuSelectedIndex = 0;
     public final String[] menuOptions = { "Start", "Resume", "Settings", "Quit" };
     public boolean canResume = false;
@@ -110,10 +116,13 @@ public class GamePanel extends JPanel {
         mobManager = new MobManager(this);
         whiteLadies.clear();
 
-        // NEW UI SYSTEMS
+        // UI
         ui = new UI(this, player);
         mainMenuUI = new MainMenuUI(this);
         actionBarUI = new ActionBarUI(this, player);
+
+        // AI WAVE SPAWNER
+        map3Spawner = new Map3EnemySpawner(this);
     }
 
     private void centerCameraOnPlayer(int screenW, int screenH) {
@@ -125,15 +134,6 @@ public class GamePanel extends JPanel {
     }
 
     // ===================== MAP SWITCH =====================
-
-    public boolean isTileBlocked(int col, int row) {
-        return tileManager != null && tileManager.isBlocked(col, row);
-    }
-
-    public boolean isObjectBlocked(int nextWorldX, int nextWorldY, Rectangle entityArea) {
-        return objectManager != null && objectManager.isBlocked(nextWorldX, nextWorldY, entityArea);
-    }
-
     public void switchToMap(int newMapIndex, int playerTileCol, int playerTileRow, String facingDirection) {
 
         if (newMapIndex < 0 || newMapIndex >= TileManager.MAP_COUNT) {
@@ -153,8 +153,8 @@ public class GamePanel extends JPanel {
         player.worldY = playerTileRow * tileSize;
         player.direction = facingDirection;
 
-        int screenW = (getWidth() > 0 ? getWidth() : screenWidth);
-        int screenH = (getHeight() > 0 ? getHeight() : screenHeight);
+        int screenW = getWidth() > 0 ? getWidth() : screenWidth;
+        int screenH = getHeight() > 0 ? getHeight() : screenHeight;
 
         int playerWidth = tileSize * 2;
         int playerHeight = tileSize * 2;
@@ -165,6 +165,14 @@ public class GamePanel extends JPanel {
         cameraInitialized = true;
 
         System.out.println("[GamePanel] Switched to map " + newMapIndex);
+
+        // -------------------------------
+        // TRIGGER WAVES HERE (map index 2 = your map 3)
+        // -------------------------------
+        if (newMapIndex == 2) {
+            System.out.println("[AI] Starting Map 3 Waves...");
+            map3Spawner.startWaves(player);
+        }
     }
 
     // ===================== GAME STATE ACTIONS =====================
@@ -175,7 +183,6 @@ public class GamePanel extends JPanel {
         player.worldY = 10 * tileSize;
         player.direction = "down";
 
-        // initial mob spawn (moved here)
         mobManager.spawnMobsForMap(currentMap);
 
         int screenW = getWidth() > 0 ? getWidth() : screenWidth;
@@ -188,10 +195,8 @@ public class GamePanel extends JPanel {
         gameState = STATE_PLAY;
     }
 
-
     public void resumeGame() {
-        if (!canResume)
-            return;
+        if (!canResume) return;
         gameState = STATE_PLAY;
         cameraInitialized = false;
     }
@@ -199,7 +204,6 @@ public class GamePanel extends JPanel {
     public void openSettings() {
         gameState = STATE_SETTINGS;
     }
-    
 
     // ===================== UPDATE =====================
     public void update() {
@@ -217,6 +221,13 @@ public class GamePanel extends JPanel {
 
         for (WhiteLady wl : whiteLadies)
             wl.update();
+
+        // -------------------------------
+        // UPDATE WAVES IF IN MAP 3 (index 2)
+        // -------------------------------
+        if (currentMap == 2) {
+            map3Spawner.update(player);
+        }
 
         // CAMERA LOGIC
         int playerWidth = tileSize * 2;
@@ -244,11 +255,17 @@ public class GamePanel extends JPanel {
         }
     }
 
-
-    // ===================== START GAME=====================
-
+    // ===================== START GAME =====================
     public void startGame() {
         gameLoop.start();
+    }
+
+    public boolean isTileBlocked(int col, int row) {
+        return tileManager != null && tileManager.isBlocked(col, row);
+    }
+
+    public boolean isObjectBlocked(int nextWorldX, int nextWorldY, Rectangle entityArea) {
+        return objectManager != null && objectManager.isBlocked(nextWorldX, nextWorldY, entityArea);
     }
 
     // ===================== DRAW =====================
@@ -261,14 +278,13 @@ public class GamePanel extends JPanel {
             mainMenuUI.draw(g2);
         } else if (gameState == STATE_SETTINGS) {
             drawSettingsScreen(g2);
-        } else if (gameState == STATE_PLAY) {
-            drawGame(g2);
-        } else if (gameState == STATE_INVENTORY) {
-            // Draw the game FROZEN in the background
+        } else if (gameState == STATE_PLAY || gameState == STATE_INVENTORY) {
             drawGame(g2);
 
-            // Then draw the inventory popup on top
-            ui.getInventoryUI().draw(g2);
+            // Draw inventory if active
+            if (gameState == STATE_INVENTORY) {
+                ui.getInventoryUI().draw(g2);
+            }
         }
 
         g2.dispose();
@@ -282,32 +298,33 @@ public class GamePanel extends JPanel {
         int playerFeetRow = playerFeetY / tileSize;
 
         // ITEMS BEHIND PLAYER
-        if (itemManager != null)
-            itemManager.drawBehindPlayer(g2, playerFeetRow);
+        itemManager.drawBehindPlayer(g2, playerFeetRow);
 
         // OBJECTS BEHIND PLAYER
-        if (objectManager != null)
-            objectManager.drawBehindPlayer(g2, playerFeetRow);
+        objectManager.drawBehindPlayer(g2, playerFeetRow);
 
         // DRAW PLAYER
         player.draw(g2);
 
-        // OBJECTS IN FRONT
-        if (objectManager != null)
-            objectManager.drawInFrontOfPlayer(g2, playerFeetRow);
+        // OBJECTS IN FRONT OF PLAYER
+        objectManager.drawInFrontOfPlayer(g2, playerFeetRow);
 
         // ITEMS IN FRONT
-        if (itemManager != null)
-            itemManager.drawInFrontOfPlayer(g2, playerFeetRow);
+        itemManager.drawInFrontOfPlayer(g2, playerFeetRow);
 
-        // MOBS
-        if (mobManager != null)
-            mobManager.draw(g2);
+        // REGULAR MOBS (WhiteLady / SawTrap)
+        mobManager.draw(g2);
 
-        // UI
+        // -------------------------------
+        // DRAW WAVES ONLY ON MAP 3 (index 2)
+        // -------------------------------
+        if (currentMap == 2) {
+            map3Spawner.draw(g2);
+        }
+
+        // HUD/UI
         ui.draw(g2);
 
-        // Hotbar under HUD (only while playing)
         if (gameState == STATE_PLAY) {
             actionBarUI.draw(g2);
         }

@@ -41,27 +41,16 @@ public class Player extends Entity {
     public BufferedImage[] idleLeftFrames;
     public BufferedImage[] idleRightFrames;
 
-    // ATTACK ANIMATION ARRAYS (6 frames)
-    public BufferedImage[] attackUpFrames;
-    public BufferedImage[] attackDownFrames;
-    public BufferedImage[] attackLeftFrames;
-    public BufferedImage[] attackRightFrames;
-
     // ANIMATION CONTROL
     int frameIndex = 0;
     int frameCounter = 0;
     int animationSpeed = 8;
     int idleAnimationSpeed = 8;
     int idleUpAnimationSpeed = 24;
-    int attackAnimationSpeed = 4; // Faster attack animation
 
     boolean moving = false;
     boolean wasMoving = false;
-    boolean attacking = false;
-    int attackFrameIndex = 0;
-    int attackFrameCounter = 0;
     String lastDirection = "down";
-    private Item lastEquippedWeapon = null; // Track weapon changes
 
     public int screenX;
     public int screenY;
@@ -85,11 +74,6 @@ public class Player extends Entity {
         this.keyHandler = keyHandler;
 
         setDefaultValues();
-        // Initialize attack frames arrays to prevent null pointer
-        attackUpFrames = new BufferedImage[6];
-        attackDownFrames = new BufferedImage[6];
-        attackLeftFrames = new BufferedImage[6];
-        attackRightFrames = new BufferedImage[6];
         loadPlayerImages();
         skillManager = new SkillManager(this);
     }
@@ -232,8 +216,6 @@ public class Player extends Entity {
         if (!moved) moving = false;
 
         handleSkillInput();
-        handleAttackInput();
-        checkWeaponChange();
         updateAnimation();
         handleTeleport();
         skillManager.update();
@@ -243,19 +225,6 @@ public class Player extends Entity {
 
     // ========================= ANIMATION =========================
     private void updateAnimation() {
-        // Handle attack animation
-        if (attacking) {
-            attackFrameCounter++;
-            if (attackFrameCounter > attackAnimationSpeed) {
-                attackFrameCounter = 0;
-                attackFrameIndex++;
-                if (attackFrameIndex >= 6) {
-                    attacking = false;
-                    attackFrameIndex = 0;
-                }
-            }
-            return; // Don't update movement/idle during attack
-        }
 
         if (moving != wasMoving) {
             frameIndex = 0;
@@ -307,19 +276,7 @@ public class Player extends Entity {
     }
 
     public void loadPlayerImages() {
-        reloadSpritesBasedOnWeapon();
-    }
 
-    // Check if weapon changed and reload sprites
-    private void checkWeaponChange() {
-        if (weapon != lastEquippedWeapon) {
-            reloadSpritesBasedOnWeapon();
-            lastEquippedWeapon = weapon;
-        }
-    }
-
-    // Reload sprites based on equipped weapon
-    private void reloadSpritesBasedOnWeapon() {
         upFrames = new BufferedImage[6];
         downFrames = new BufferedImage[6];
         leftFrames = new BufferedImage[6];
@@ -330,74 +287,30 @@ public class Player extends Entity {
         idleLeftFrames = new BufferedImage[12];
         idleRightFrames = new BufferedImage[12];
 
-        attackUpFrames = new BufferedImage[6];
-        attackDownFrames = new BufferedImage[6];
-        attackLeftFrames = new BufferedImage[6];
-        attackRightFrames = new BufferedImage[6];
-
         String basePath =
                 "src" + File.separator +
                 "assets" + File.separator +
                 "sprites" + File.separator +
                 "player" + File.separator;
 
-        // Determine movement sprite folder based on weapon
-        String movementFolder = "movement";
-        String attackFolder = null;
-        
-        if (weapon != null) {
-            String weaponName = weapon.getClass().getSimpleName();
-            if (weaponName.equals("Hanger")) {
-                movementFolder = "movementItemHanger";
-                attackFolder = "attackHanger";
-            } else if (weaponName.equals("Tsinelas")) {
-                movementFolder = "movementItemTsinelas";
-                attackFolder = "tsinelaseAttack";
-            }
-        }
-
-        // Load movement sprites from the appropriate folder
         for (int i = 0; i < 6; i++) {
-            upFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "up" + (i+1) + ".png");
-            downFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "down" + (i+1) + ".png");
-            leftFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "left" + (i+1) + ".png");
-            rightFrames[i] = loadImageFromFile(basePath + movementFolder + File.separator + "right" + (i+1) + ".png");
+            upFrames[i] = loadImageFromFile(basePath + "movement/up" + (i+1) + ".png");
+            downFrames[i] = loadImageFromFile(basePath + "movement/down" + (i+1) + ".png");
+            leftFrames[i] = loadImageFromFile(basePath + "movement/left" + (i+1) + ".png");
+            rightFrames[i] = loadImageFromFile(basePath + "movement/right" + (i+1) + ".png");
         }
 
-        // Load idle sprites (always use default idle)
         for (int i = 0; i < 4; i++) {
-            idleUpFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleB" + (i+1) + ".png");
+            idleUpFrames[i] = loadImageFromFile(basePath + "idle/idleB" + (i+1) + ".png");
         }
 
         BufferedImage lastUp = idleUpFrames[3] != null ? idleUpFrames[3] : idleUpFrames[0];
         for (int i = 4; i < 12; i++) idleUpFrames[i] = lastUp;
 
         for (int i = 0; i < 12; i++) {
-            idleDownFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleF" + (i+1) + ".png");
-            idleLeftFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleL" + (i+1) + ".png");
-            idleRightFrames[i] = loadImageFromFile(basePath + "idle" + File.separator + "idleR" + (i+1) + ".png");
-        }
-
-        // Load attack sprites if weapon is equipped
-        if (attackFolder != null) {
-            if (weapon != null && weapon.getClass().getSimpleName().equals("Hanger")) {
-                // Hanger has full directional attack sprites
-                for (int i = 0; i < 6; i++) {
-                    attackUpFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "up" + (i+1) + ".png");
-                    attackDownFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "down" + (i+1) + ".png");
-                    attackLeftFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "left" + (i+1) + ".png");
-                    attackRightFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "right" + (i+1) + ".png");
-                }
-            } else if (weapon != null && weapon.getClass().getSimpleName().equals("Tsinelas")) {
-                // Tsinelas only has front/down attack sprites
-                for (int i = 0; i < 6; i++) {
-                    attackDownFrames[i] = loadImageFromFile(basePath + attackFolder + File.separator + "Sword_Walk_Attack_front" + (i+1) + ".png");
-                    // Use down frames for other directions if not available
-                    attackUpFrames[i] = attackDownFrames[i];
-                    attackLeftFrames[i] = attackDownFrames[i];
-                    attackRightFrames[i] = attackDownFrames[i];
-                }
-            }
+            idleDownFrames[i] = loadImageFromFile(basePath + "idle/idleF" + (i+1) + ".png");
+            idleLeftFrames[i] = loadImageFromFile(basePath + "idle/idleL" + (i+1) + ".png");
+            idleRightFrames[i] = loadImageFromFile(basePath + "idle/idleR" + (i+1) + ".png");
         }
     }
 
@@ -432,16 +345,6 @@ public class Player extends Entity {
             if (keyHandler.consumeSkillTap(slot)) {
                 skillManager.activateSlot(slot);
             }
-        }
-    }
-
-    // ========================= ATTACK =========================
-    private void handleAttackInput() {
-        if (keyHandler.consumeAttackTap() && !attacking && weapon != null) {
-            attacking = true;
-            attackFrameIndex = 0;
-            attackFrameCounter = 0;
-            moving = false; // Stop movement during attack
         }
     }
 
@@ -521,12 +424,14 @@ public class Player extends Entity {
 
         System.out.println("[Hotbar] Using item: " + item.name);
 
-        // apply effect
+        // Apply effect
         item.use(this);
 
-        // remove from both hotbar + inventory
-        hotbar[slot] = null;
-        inventory[0][slot] = null;
+        // Only remove if it's a consumable (potions, buffs)
+        if (item.isConsumable) {
+            hotbar[slot] = null;
+            inventory[0][slot] = null;
+        }
 
         syncHotbarFromInventory();
 
@@ -535,6 +440,7 @@ public class Player extends Entity {
             gamePanel.ui.showMessage(item.name + " used!");
         }
     }
+
 
 
     // ========================= STATS =========================
@@ -588,24 +494,15 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 
-        // Priority: Attack > Moving > Idle
-        if (attacking && weapon != null && attackFrameIndex < 6 && 
-            attackUpFrames != null && attackDownFrames != null && 
-            attackLeftFrames != null && attackRightFrames != null) {
-            switch (direction) {
-                case "up":    image = (attackFrameIndex < attackUpFrames.length && attackUpFrames[attackFrameIndex] != null) ? attackUpFrames[attackFrameIndex] : null; break;
-                case "down":  image = (attackFrameIndex < attackDownFrames.length && attackDownFrames[attackFrameIndex] != null) ? attackDownFrames[attackFrameIndex] : null; break;
-                case "left":  image = (attackFrameIndex < attackLeftFrames.length && attackLeftFrames[attackFrameIndex] != null) ? attackLeftFrames[attackFrameIndex] : null; break;
-                case "right": image = (attackFrameIndex < attackRightFrames.length && attackRightFrames[attackFrameIndex] != null) ? attackRightFrames[attackFrameIndex] : null; break;
-            }
-        } else if (moving) {
+        if (moving) {
             switch (direction) {
                 case "up":    image = upFrames[frameIndex]; break;
                 case "down":  image = downFrames[frameIndex]; break;
                 case "left":  image = leftFrames[frameIndex]; break;
                 case "right": image = rightFrames[frameIndex]; break;
             }
-        } else {
+        }
+        else {
             switch (direction) {
                 case "up":    image = idleUpFrames[frameIndex]; break;
                 case "down":  image = idleDownFrames[frameIndex]; break;

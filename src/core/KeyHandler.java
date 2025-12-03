@@ -16,8 +16,6 @@ public class KeyHandler implements KeyListener {
     };
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
-    private boolean attackPressed = false;
-    private boolean attackTapped = false;
     private final boolean[] skillPressed = new boolean[SKILL_SLOT_COUNT];
     private final boolean[] skillTapped = new boolean[SKILL_SLOT_COUNT];
 
@@ -107,26 +105,9 @@ public class KeyHandler implements KeyListener {
             return;
         }
 
-        if (code == KeyEvent.VK_ENTER) {
+        if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
             if (gp.player != null) {
                 gp.player.useHotbarItem(gp.actionBarUI.activeSlot);
-            }
-            return;
-        }
-
-        // Space key for attack (only if weapon is equipped) or hotbar item
-        if (code == KeyEvent.VK_SPACE) {
-            if (gp.player != null) {
-                if (gp.player.weapon != null) {
-                    // Attack with weapon
-                    if (!attackPressed) {
-                        attackTapped = true;
-                    }
-                    attackPressed = true;
-                } else {
-                    // Use hotbar item if no weapon
-                    gp.player.useHotbarItem(gp.actionBarUI.activeSlot);
-                }
             }
             return;
         }
@@ -189,7 +170,6 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_S) downPressed = false;
             if (code == KeyEvent.VK_A) leftPressed = false;
             if (code == KeyEvent.VK_D) rightPressed = false;
-            if (code == KeyEvent.VK_SPACE) attackPressed = false;
 
             int slot = getSkillSlotFromCode(code);
             if (slot != -1) skillPressed[slot] = false;
@@ -226,12 +206,4 @@ public class KeyHandler implements KeyListener {
         }
         return -1;
     }
-
-    // Attack input helper
-    public boolean consumeAttackTap() {
-        boolean tapped = attackTapped;
-        attackTapped = false;
-        return tapped;
-    }
 }
-

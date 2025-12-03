@@ -1,9 +1,10 @@
 package src.main;
 
+import src.core.GamePanel;
+
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import javax.swing.*;
-import src.core.GamePanel;
 
 public class Main {
 
