@@ -47,6 +47,7 @@ public class ItemManager {
     // REGISTER ITEM TYPES
     // ============================================================
     private void registerItemTypes() {
+        
         addType(new HealthRegenItem(gp, 0, 0));
         addType(new NoCooldownItem(gp, 0, 0));
         addType(new ShieldItem(gp, 0, 0));
