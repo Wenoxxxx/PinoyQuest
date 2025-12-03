@@ -5,12 +5,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-
 import src.core.GamePanel;
 import src.items.consumables.HealthRegenItem;
 import src.items.consumables.NoCooldownItem;
 import src.items.consumables.ShieldItem;
 import src.items.temporary.Map2Key;
+import src.items.weapons.Hanger;
 
 public class ItemManager {
 
@@ -46,6 +46,7 @@ public class ItemManager {
         addType(new NoCooldownItem(gp, 0, 0));
         addType(new ShieldItem(gp, 0, 0));
         addType(new Map2Key(gp, 0, 0));
+        addType(new Hanger(gp, 0, 0)); // ID 4
 
         System.out.println("Registered " + itemTypeCount + " item types.");
     }
