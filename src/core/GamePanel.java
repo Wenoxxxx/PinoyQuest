@@ -84,29 +84,42 @@ public class GamePanel extends JPanel {
     // ===================== CONSTRUCTOR =====================
     public GamePanel() {
 
+<<<<<<< Updated upstream
+=======
+        // PANEL SETTINGS
+>>>>>>> Stashed changes
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.setFocusable(true);
 
+<<<<<<< Updated upstream
         collision = new Collision(this);
         keyHandler = new KeyHandler(this);
         this.addKeyListener(keyHandler);
 
+=======
+        // KEY HANDLER
+        keyHandler = new KeyHandler(this);
+        this.addKeyListener(keyHandler);
+
+        // GAME LOOP
+>>>>>>> Stashed changes
         gameLoop = new GameLoop(this);
 
+        // SYSTEMS
         tileManager = new TileManager(this);
         objectManager = new ObjectManager(this);
-
         itemManager = new ItemManager(this);
+        collision = new Collision(this);
 
+        // PLAYER
         player = new Player(this, keyHandler);
-
-        currentMap = 0;
         player.worldX = 15 * tileSize;
         player.worldY = 10 * tileSize;
 
         centerCameraOnPlayer(screenWidth, screenHeight);
 
+        // MOBS
         mobManager = new MobManager(this);
         whiteLadies.clear();
 
@@ -114,6 +127,13 @@ public class GamePanel extends JPanel {
         ui = new UI(this, player);
         mainMenuUI = new MainMenuUI(this);
         actionBarUI = new ActionBarUI(this, player);
+<<<<<<< Updated upstream
+=======
+
+        // AI WAVE SPAWNER
+        map3Spawner = new Map3EnemySpawner(this);
+
+>>>>>>> Stashed changes
     }
 
     private void centerCameraOnPlayer(int screenW, int screenH) {
@@ -203,6 +223,7 @@ public class GamePanel extends JPanel {
 
     // ===================== UPDATE =====================
     public void update() {
+<<<<<<< Updated upstream
 
         if (gameState == STATE_MENU) return;
         if (gameState == STATE_SETTINGS) return;
@@ -217,31 +238,99 @@ public class GamePanel extends JPanel {
 
         for (WhiteLady wl : whiteLadies)
             wl.update();
+=======
+    try {
+        // Always update the UI for the current game state
+        if (gameState == STATE_GAME_OVER) {
+            System.out.println("[GamePanel] In GAME_OVER state, calling gameOverUI.update()");
+            try {
+                gameOverUI.update();
+            } catch (Exception e) {
+                System.err.println("[ERROR] Error in gameOverUI.update(): " + e.getMessage());
+                e.printStackTrace();
+                // Try to recover by going back to menu
+                gameState = STATE_MENU;
+                return;
+            }
+        }
+        
+        // Don't update game logic if in menu or game over
+        if (gameState == STATE_MENU || gameState == STATE_GAME_OVER) {
+            // Still update projectiles to allow any active animations to continue
+            try {
+                updateProjectiles();
+            } catch (Exception e) {
+                System.err.println("[ERROR] Error in updateProjectiles(): " + e.getMessage());
+                e.printStackTrace();
+            }
+            return;
+        }
 
-        // CAMERA LOGIC
-        int playerWidth = tileSize * 2;
-        int playerHeight = tileSize * 2;
+        // GAMEPLAY - Only update these when actually playing
+        try {
+            player.update();
+            objectManager.update();
+            itemManager.update();
 
-        int screenW = getWidth();
-        int screenH = getHeight();
+            if (mobManager != null) {
+                mobManager.update();
+            }
 
-        if (screenW <= 0)
-            screenW = screenWidth;
-        if (screenH <= 0)
-            screenH = screenHeight;
+            for (WhiteLady wl : whiteLadies) {
+                wl.update();
+            }
 
-        int targetCameraX = player.worldX - (screenW / 2) + (playerWidth / 2);
-        int targetCameraY = player.worldY - (screenH / 2) + (playerHeight / 2);
+            updateProjectiles();
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error in game update loop: " + e.getMessage());
+            e.printStackTrace();
+            // Try to recover by going to game over state
+            gameState = STATE_GAME_OVER;
+        }
 
+        // -------------------------------
+        // UPDATE WAVES IF IN MAP 3 (index 2)
+        // -------------------------------
+        if (currentMap == 2) {
+            map3Spawner.update(player);
+        }
+>>>>>>> Stashed changes
+
+    }
+
+    // CAMERA LOGIC
+    public void updateCamera() {
+
+        // Player center (world coordinates)
+        int playerCenterX = player.worldX + tileSize / 2;
+        int playerCenterY = player.worldY + tileSize / 2;
+
+        // Get screen size or fallback
+        int screenW = getWidth() > 0 ? getWidth() : screenWidth;
+        int screenH = getHeight() > 0 ? getHeight() : screenHeight;
+
+        // Compute target camera position
+        int targetCameraX = playerCenterX - (screenW / 2);
+        int targetCameraY = playerCenterY - (screenH / 2);
+
+        // Initial snap
         if (!cameraInitialized) {
             cameraX = targetCameraX;
             cameraY = targetCameraY;
             cameraInitialized = true;
         } else {
-            double smoothing = 0.15;
+            // Smooth follow
+            double smoothing = 0.08; // smoother, less floaty
             cameraX += (targetCameraX - cameraX) * smoothing;
             cameraY += (targetCameraY - cameraY) * smoothing;
         }
+
+        // --- Clamp camera inside world tile boundaries ---
+        int worldWidthPixels = maxWorldCol * tileSize;
+        int worldHeightPixels = maxWorldRow * tileSize;
+
+        cameraX = Math.max(0, Math.min(cameraX, worldWidthPixels - screenW));
+        cameraY = Math.max(0, Math.min(cameraY, worldHeightPixels - screenH));
     }
 
 
@@ -257,6 +346,7 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+<<<<<<< Updated upstream
         if (gameState == STATE_MENU) {
             mainMenuUI.draw(g2);
         } else if (gameState == STATE_SETTINGS) {
@@ -269,6 +359,40 @@ public class GamePanel extends JPanel {
 
             // Then draw the inventory popup on top
             ui.getInventoryUI().draw(g2);
+=======
+        try {
+            switch (gameState) {
+                case STATE_MENU:
+                    mainMenuUI.draw(g2);
+                    break;
+                case STATE_SETTINGS:
+                    // Settings screen removed, fall back to menu
+                    gameState = STATE_MENU;
+                    mainMenuUI.draw(g2);
+                    break;
+                case STATE_PLAY:
+                case STATE_INVENTORY:
+                    // Always draw the game world first
+                    drawGame(g2);
+
+                    // Draw inventory on top if active
+                    if (gameState == STATE_INVENTORY) {
+                        ui.getInventoryUI().draw(g2);
+                    }
+                    break;
+                case STATE_GAME_OVER:
+                    // Draw the last frame of the game before showing game over
+                    drawGame(g2);
+                    // Then draw the game over UI on top
+                    gameOverUI.draw(g2);
+                    break;
+            }
+        } catch (Exception e) {
+            System.err.println("Error in paintComponent: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            g2.dispose();
+>>>>>>> Stashed changes
         }
 
         g2.dispose();
