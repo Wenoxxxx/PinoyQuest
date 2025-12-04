@@ -3,7 +3,7 @@ package src.tile;
 import src.core.GamePanel;
 
 import javax.imageio.ImageIO;
-import java.awt.*;   // includes Rectangle and Graphics2D
+import java.awt.*; // includes Rectangle and Graphics2D
 import java.awt.image.BufferedImage;
 import java.io.*;
 
@@ -25,10 +25,9 @@ public class ObjectManager {
     public final int[] placedObjectCount;
 
     // Base directories
-    private static final String OBJECT_ROOT_DIR =
-            "src" + File.separator + "assets" + File.separator + "objects" + File.separator;
-    private static final String MAP_DIR =
-            "src" + File.separator + "assets" + File.separator + "maps" + File.separator;
+    private static final String OBJECT_ROOT_DIR = "src" + File.separator + "assets" + File.separator + "objects"
+            + File.separator;
+    private static final String MAP_DIR = "src" + File.separator + "assets" + File.separator + "maps" + File.separator;
 
     // Number of maps (match TileManager)
     private static final int MAP_COUNT = TileManager.MAP_COUNT;
@@ -36,7 +35,7 @@ public class ObjectManager {
     public ObjectManager(GamePanel gp) {
         this.gp = gp;
 
-        objectTypes = new GameObject[64];   // all object types across all maps
+        objectTypes = new GameObject[64]; // all object types across all maps
         objectSetStart = new int[MAP_COUNT];
 
         // For each map, allow up to width * height objects
@@ -62,8 +61,7 @@ public class ObjectManager {
             boolean collision,
             boolean overlapWithPlayer,
             int widthTiles,
-            int heightTiles
-    ) throws IOException {
+            int heightTiles) throws IOException {
 
         if (objectTypeCount >= objectTypes.length) {
             System.out.println("WARNING: objectTypes[] is full, cannot register: " + debugName);
@@ -92,22 +90,21 @@ public class ObjectManager {
             // Only bottom 30% collidable (front/base area)
             int baseTop = (int) (spriteH * 0.7);
             int baseHeight = spriteH - baseTop;
-            if (baseHeight < 1) baseHeight = 1;
+            if (baseHeight < 1)
+                baseHeight = 1;
 
             obj.solidArea = new Rectangle(
                     0,
                     baseTop,
                     spriteW,
-                    baseHeight
-            );
+                    baseHeight);
         } else {
             // Fallback if image missing
             obj.solidArea = new Rectangle(
                     0,
                     0,
                     gp.tileSize * widthTiles,
-                    gp.tileSize * heightTiles
-            );
+                    gp.tileSize * heightTiles);
         }
 
         objectTypes[objectTypeCount] = obj;
@@ -116,7 +113,8 @@ public class ObjectManager {
         objectTypeCount++;
     }
 
-    // Helper: register one ANIMATED object type from a horizontal sprite strip (still here if you need it)
+    // Helper: register one ANIMATED object type from a horizontal sprite strip
+    // (still here if you need it)
     private void addAnimatedObjectTypeFromStrip(
             String basePath,
             String fileName,
@@ -127,7 +125,7 @@ public class ObjectManager {
             int widthTiles,
             int heightTiles,
             int frameCount,
-            int frameSpeed   // ticks per frame
+            int frameSpeed // ticks per frame
     ) throws IOException {
 
         if (objectTypeCount >= objectTypes.length) {
@@ -163,8 +161,7 @@ public class ObjectManager {
                     i * frameW,
                     0,
                     frameW,
-                    frameH
-            );
+                    frameH);
         }
 
         // start with first frame
@@ -177,21 +174,20 @@ public class ObjectManager {
 
             int baseTop = (int) (spriteH * 0.7);
             int baseHeight = spriteH - baseTop;
-            if (baseHeight < 1) baseHeight = 1;
+            if (baseHeight < 1)
+                baseHeight = 1;
 
             obj.solidArea = new Rectangle(
                     0,
                     baseTop,
                     spriteW,
-                    baseHeight
-            );
+                    baseHeight);
         } else {
             obj.solidArea = new Rectangle(
                     0,
                     0,
                     gp.tileSize * widthTiles,
-                    gp.tileSize * heightTiles
-            );
+                    gp.tileSize * heightTiles);
         }
 
         objectTypes[objectTypeCount] = obj;
@@ -203,16 +199,16 @@ public class ObjectManager {
     // Helper for ANIMATED objects from multiple files: Tree1.png..Tree6.png
     private void addAnimatedObjectTypeFromFiles(
             String basePath,
-            String baseName,          // e.g. "Tree"
+            String baseName, // e.g. "Tree"
             String debugName,
             String objectName,
             boolean collision,
             boolean overlapWithPlayer,
             int widthTiles,
             int heightTiles,
-            int startIndex,           // e.g. 1 -> starts at Tree1.png
-            int frameCount,           // Tree1..Tree6 = 6
-            int frameSpeed            // ticks per frame
+            int startIndex, // e.g. 1 -> starts at Tree1.png
+            int frameCount, // Tree1..Tree6 = 6
+            int frameSpeed // ticks per frame
     ) throws IOException {
 
         if (objectTypeCount >= objectTypes.length) {
@@ -267,21 +263,20 @@ public class ObjectManager {
 
             int baseTop = (int) (spriteH * 0.7);
             int baseHeight = spriteH - baseTop;
-            if (baseHeight < 1) baseHeight = 1;
+            if (baseHeight < 1)
+                baseHeight = 1;
 
             obj.solidArea = new Rectangle(
                     0,
                     baseTop,
                     spriteW,
-                    baseHeight
-            );
+                    baseHeight);
         } else {
             obj.solidArea = new Rectangle(
                     0,
                     0,
                     gp.tileSize * widthTiles,
-                    gp.tileSize * heightTiles
-            );
+                    gp.tileSize * heightTiles);
         }
 
         objectTypes[objectTypeCount] = obj;
@@ -305,8 +300,8 @@ public class ObjectManager {
                     "house1.png",
                     "MAP1_HOUSE1",
                     "house",
-                    true,   // collision
-                    true,   // overlapWithPlayer (can walk behind)
+                    true, // collision
+                    true, // overlapWithPlayer (can walk behind)
                     6, 5);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = HOUSE1");
 
@@ -315,7 +310,7 @@ public class ObjectManager {
                     "MAP1_HOUSE2",
                     "house",
                     true,
-                    true,   // overlaps
+                    true, // overlaps
                     6, 5);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = HOUSE2");
 
@@ -325,7 +320,7 @@ public class ObjectManager {
                     "MAP1_TREE1",
                     "tree",
                     true,
-                    true,   // overlaps
+                    true, // overlaps
                     2, 2);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TREE1");
 
@@ -334,7 +329,7 @@ public class ObjectManager {
                     "MAP1_BENCH1",
                     "bench",
                     false,
-                    true,  // NO overlap (always drawn in front)
+                    true, // NO overlap (always drawn in front)
                     2, 2);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = BENCH1");
 
@@ -343,7 +338,7 @@ public class ObjectManager {
                     "MAP1_WELL1",
                     "well",
                     true,
-                    true,   // overlaps
+                    true, // overlaps
                     2, 2);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = WELL1");
 
@@ -352,7 +347,7 @@ public class ObjectManager {
                     "MAP1_BOXES1",
                     "boxes",
                     false,
-                    true,  // like "small rocks" → NO overlap
+                    true, // like "small rocks" → NO overlap
                     3, 3);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = BOXES1");
 
@@ -361,7 +356,7 @@ public class ObjectManager {
                     "MAP1_TENT1",
                     "tent",
                     true,
-                    true,   // big tent: overlap
+                    true, // big tent: overlap
                     3, 3);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TENT1");
 
@@ -370,7 +365,7 @@ public class ObjectManager {
                     "MAP1_TENT2",
                     "tent",
                     true,
-                    true,   // overlap
+                    true, // overlap
                     3, 2);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TENT2");
 
@@ -380,26 +375,26 @@ public class ObjectManager {
                     "MAP1_WHEELBARROW1",
                     "wheelbarrow",
                     true,
-                    true,  // example: overlap
+                    true, // example: overlap
                     2, 1);
             System.out.println("MAP1 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = WHEELBARROW1");
 
             // =============== MAP 2 OBJECT TYPES ===============
             objectSetStart[1] = objectTypeCount;
             localId = 0;
-            
+
             // SKULL
             addAnimatedObjectTypeFromFiles(
                     basePath2,
                     "Skull",
                     "MAP2_SKULL1",
                     "skull",
-                    true,          // collision
-                    true,          // overlapWithPlayer (can walk behind)
-                    2, 3,          // width/height in tiles (use what fits your asset)
-                    1,             // startIndex
-                    6,             // 6 frames
-                    15             // frameSpeed
+                    true, // collision
+                    true, // overlapWithPlayer (can walk behind)
+                    2, 3, // width/height in tiles (use what fits your asset)
+                    1, // startIndex
+                    6, // 6 frames
+                    15 // frameSpeed
             );
             System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = SKULL1");
 
@@ -409,11 +404,10 @@ public class ObjectManager {
                     "CRYSTAL1",
                     "crystal1",
                     true,
-                    true,   // big crystal: overlap
+                    true, // big crystal: overlap
                     4, 4);
             System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = CRYSTAL1");
 
-           
             // === INVISIBLE TILE FOR BORDER (MAP 2, local index 3) ===
             // No image, full-tile hitbox, collision = true
             GameObject invis = new GameObject();
@@ -429,25 +423,32 @@ public class ObjectManager {
                     0,
                     0,
                     gp.tileSize * invis.width,
-                    gp.tileSize * invis.height
-            );
+                    gp.tileSize * invis.height);
 
             objectTypes[objectTypeCount] = invis;
             System.out.println("MAP2 OBJ " + localId++ + " (global " + objectTypeCount + ") = INVIS");
             objectTypeCount++;
 
-             // Trap base map 2
+            // Trap base map 2
             addObjectType(basePath2,
                     "trapbase1.png",
                     "trapbase",
                     "trapbase",
                     false,
-                    false,   
+                    false,
                     1, 13);
             System.out.println("MAP2 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = TRAPBASE");
 
-
-            
+            objectSetStart[2] = objectTypeCount;
+            localId = 0;
+            addObjectType(basePath1,
+                    "cave_rock2.png",
+                    "MAP3_CAVE_ROCK1",
+                    "cave_rock",
+                    true,
+                    true, // overlap
+                    3, 2);
+            System.out.println("MAP3 OBJ " + localId++ + " (global " + (objectTypeCount - 1) + ") = MAP3_CAVE_ROCK1");
 
         } catch (IOException e) {
             System.out.println("ERROR: Cannot load object images.");
@@ -502,10 +503,12 @@ public class ObjectManager {
                     if (globalIndex >= 0 && globalIndex < objectTypeCount) {
 
                         GameObject baseType = objectTypes[globalIndex];
-                        if (baseType == null) continue;
+                        if (baseType == null)
+                            continue;
 
                         if (count >= maxPerMap) {
-                            System.out.println("WARNING: placedObjects[" + mapIndex + "] is full, skipping extra objects.");
+                            System.out.println(
+                                    "WARNING: placedObjects[" + mapIndex + "] is full, skipping extra objects.");
                             placedObjectCount[mapIndex] = count;
                             return;
                         }
@@ -532,8 +535,7 @@ public class ObjectManager {
                             obj.solidArea = new Rectangle(
                                     0, 0,
                                     gp.tileSize * obj.width,
-                                    gp.tileSize * obj.height
-                            );
+                                    gp.tileSize * obj.height);
                         }
 
                         // This cell’s world coords line up with the TILE grid
@@ -568,9 +570,12 @@ public class ObjectManager {
 
         for (int i = 0; i < count; i++) {
             GameObject obj = mapObjects[i];
-            if (obj == null) continue;
-            if (!obj.animated) continue;
-            if (obj.frames == null || obj.frames.length == 0) continue;
+            if (obj == null)
+                continue;
+            if (!obj.animated)
+                continue;
+            if (obj.frames == null || obj.frames.length == 0)
+                continue;
 
             obj.frameCounter++;
             if (obj.frameCounter >= obj.frameSpeed) {
@@ -594,7 +599,8 @@ public class ObjectManager {
 
         for (int i = 0; i < count; i++) {
             GameObject obj = mapObjects[i];
-            if (obj == null || obj.image == null) continue; // invisible ones are not drawn
+            if (obj == null || obj.image == null)
+                continue; // invisible ones are not drawn
 
             int worldX = obj.worldX;
             int worldY = obj.worldY;
@@ -602,11 +608,10 @@ public class ObjectManager {
             int screenX = worldX - gp.cameraX;
             int screenY = worldY - gp.cameraY;
 
-            boolean visible =
-                    screenX + gp.tileSize * obj.width > 0 &&
-                            screenX < screenW &&
-                            screenY + gp.tileSize * obj.height > 0 &&
-                            screenY < screenH;
+            boolean visible = screenX + gp.tileSize * obj.width > 0 &&
+                    screenX < screenW &&
+                    screenY + gp.tileSize * obj.height > 0 &&
+                    screenY < screenH;
 
             if (visible) {
                 g2.drawImage(
@@ -615,8 +620,7 @@ public class ObjectManager {
                         screenY,
                         gp.tileSize * obj.width,
                         gp.tileSize * obj.height,
-                        null
-                );
+                        null);
             }
         }
     }
@@ -624,15 +628,15 @@ public class ObjectManager {
     // Collision helper: used by GamePanel.isObjectBlocked → Collision.willCollide
     public boolean isBlocked(int nextWorldX, int nextWorldY, Rectangle entityArea) {
 
-        if (entityArea == null) return false;
+        if (entityArea == null)
+            return false;
 
         // Entity collision box at its next world position
         Rectangle entityBox = new Rectangle(
                 nextWorldX + entityArea.x,
                 nextWorldY + entityArea.y,
                 entityArea.width,
-                entityArea.height
-        );
+                entityArea.height);
 
         int mapIndex = gp.currentMap;
         int count = placedObjectCount[mapIndex];
@@ -640,9 +644,12 @@ public class ObjectManager {
 
         for (int i = 0; i < count; i++) {
             GameObject obj = mapObjects[i];
-            if (obj == null) continue;
-            if (!obj.collision) continue;                // only block if collision = true
-            if (obj.solidArea == null) continue;
+            if (obj == null)
+                continue;
+            if (!obj.collision)
+                continue; // only block if collision = true
+            if (obj.solidArea == null)
+                continue;
 
             Rectangle objBox;
 
@@ -699,7 +706,8 @@ public class ObjectManager {
 
         for (int i = 0; i < count; i++) {
             GameObject obj = mapObjects[i];
-            if (obj == null || obj.image == null) continue; // invisible not drawn
+            if (obj == null || obj.image == null)
+                continue; // invisible not drawn
 
             // Objects that do not overlap the player are always drawn in front
             if (!obj.overlapWithPlayer) {
@@ -712,13 +720,13 @@ public class ObjectManager {
             int screenX = worldX - gp.cameraX;
             int screenY = worldY - gp.cameraY;
 
-            boolean visible =
-                    screenX + gp.tileSize * obj.width > 0 &&
-                            screenX < screenW &&
-                            screenY + gp.tileSize * obj.height > 0 &&
-                            screenY < screenH;
+            boolean visible = screenX + gp.tileSize * obj.width > 0 &&
+                    screenX < screenW &&
+                    screenY + gp.tileSize * obj.height > 0 &&
+                    screenY < screenH;
 
-            if (!visible) continue;
+            if (!visible)
+                continue;
 
             // Bottom of sprite in world → base tile row
             int objBottomY = obj.worldY + gp.tileSize * obj.height;
@@ -732,8 +740,7 @@ public class ObjectManager {
                         screenY,
                         gp.tileSize * obj.width,
                         gp.tileSize * obj.height,
-                        null
-                );
+                        null);
             }
         }
     }
@@ -749,7 +756,8 @@ public class ObjectManager {
 
         for (int i = 0; i < count; i++) {
             GameObject obj = mapObjects[i];
-            if (obj == null || obj.image == null) continue; // invisible not drawn
+            if (obj == null || obj.image == null)
+                continue; // invisible not drawn
 
             int worldX = obj.worldX;
             int worldY = obj.worldY;
@@ -757,13 +765,13 @@ public class ObjectManager {
             int screenX = worldX - gp.cameraX;
             int screenY = worldY - gp.cameraY;
 
-            boolean visible =
-                    screenX + gp.tileSize * obj.width > 0 &&
-                            screenX < screenW &&
-                            screenY + gp.tileSize * obj.height > 0 &&
-                            screenY < screenH;
+            boolean visible = screenX + gp.tileSize * obj.width > 0 &&
+                    screenX < screenW &&
+                    screenY + gp.tileSize * obj.height > 0 &&
+                    screenY < screenH;
 
-            if (!visible) continue;
+            if (!visible)
+                continue;
 
             int objBottomY = obj.worldY + gp.tileSize * obj.height;
             int objBaseRow = (objBottomY - 1) / gp.tileSize;
@@ -777,8 +785,7 @@ public class ObjectManager {
                             screenY,
                             gp.tileSize * obj.width,
                             gp.tileSize * obj.height,
-                            null
-                    );
+                            null);
                 }
             } else {
                 // Non-overlap objects: always drawn in this "front" pass
@@ -788,8 +795,7 @@ public class ObjectManager {
                         screenY,
                         gp.tileSize * obj.width,
                         gp.tileSize * obj.height,
-                        null
-                );
+                        null);
             }
         }
     }

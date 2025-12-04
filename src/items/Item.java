@@ -26,16 +26,19 @@ public abstract class Item {
     public int widthTiles = 1;
     public int heightTiles = 1;
 
-    // New: custom draw adjustments
-    public int drawOffsetX = -10;   // pixel offset inside tile
-    public int drawOffsetY = -10;   // pixel offset inside tile
-    public float drawScale = 1.0f; // 1.0 = full tile size
+    // Custom draw adjustments
+    public int drawOffsetX = -10;
+    public int drawOffsetY = -10;
+    public float drawScale = 1.0f;
 
     // Pickup hitbox
     public int pickupWidth = 0;
     public int pickupHeight = 0;
     public int pickupOffsetX = 0;
     public int pickupOffsetY = 0;
+
+    // Whether item is consumed on use
+    public boolean isConsumable = true; // default: potions, buffs, etc.
 
     public Item(GamePanel gp, int x, int y, String name, String description) {
         this.gp = gp;
@@ -45,22 +48,28 @@ public abstract class Item {
         this.description = description;
     }
 
-    // Clone items from template
+    // ================================
+    //         COPY TEMPLATE
+    // ================================
     public Item copy(GamePanel gp, int worldX, int worldY) {
         try {
             Item newItem = this.getClass()
                     .getDeclaredConstructor(GamePanel.class, int.class, int.class)
                     .newInstance(gp, worldX, worldY);
 
-            // Copy over customization
+            // Copy custom draw settings
             newItem.drawOffsetX = this.drawOffsetX;
             newItem.drawOffsetY = this.drawOffsetY;
             newItem.drawScale   = this.drawScale;
 
+            // Copy pickup box settings
             newItem.pickupWidth = this.pickupWidth;
             newItem.pickupHeight = this.pickupHeight;
             newItem.pickupOffsetX = this.pickupOffsetX;
             newItem.pickupOffsetY = this.pickupOffsetY;
+
+            // ⭐ MOST IMPORTANT FIX ⭐
+            newItem.isConsumable = this.isConsumable;
 
             return newItem;
 
@@ -73,38 +82,39 @@ public abstract class Item {
 
     public abstract void onPickup();
 
+    // ================================
+    //       USE ITEM (ENTER KEY)
+    // ================================
     public void use(Player player) {
+        if (isConsumable) {
+            consumed = true; // ONLY consumables disappear when used
+        }
         System.out.println("Using base item: " + name);
     }
 
     public boolean isBlocking() { return false; }
 
 
-    // ===========================================================
-    // CUSTOMIZABLE DRAW SYSTEM
-    // ===========================================================
+    // ================================
+    //            DRAWING
+    // ================================
     public void draw(Graphics2D g2) {
         if (sprite == null) return;
 
         int tile = gp.tileSize;
 
-        // world  screen
         int screenX = worldX - gp.cameraX;
         int screenY = worldY - gp.cameraY;
 
-        // base size
         int baseW = tile * widthTiles;
         int baseH = tile * heightTiles;
 
-        // scale the item
         int drawW = (int)(baseW * drawScale);
         int drawH = (int)(baseH * drawScale);
 
-        // center inside tile
         int centerX = screenX + (tile - drawW) / 2;
         int centerY = screenY + (tile - drawH) / 2;
 
-        // apply custom offsets
         int finalX = centerX + drawOffsetX;
         int finalY = centerY + drawOffsetY;
 
@@ -112,9 +122,9 @@ public abstract class Item {
     }
 
 
-    // ===========================================================
-    // SAFER RESOURCE LOADER
-    // ===========================================================
+    // ================================
+    //       ALTERNATIVE SPRITE LOADER
+    // ================================
     protected BufferedImage loadSprite(String path) {
         try (InputStream is = getClass().getResourceAsStream(path)) {
             if (is == null) {

@@ -37,7 +37,7 @@ public class TileManager {
         mapTileNum = new int[MAP_COUNT][gp.maxWorldCol][gp.maxWorldRow];
 
         getTileImage(); // load tile images
-        loadMap();      // load map text files
+        loadMap(); // load map text files
     }
 
     // ========================================================
@@ -59,20 +59,21 @@ public class TileManager {
     private void loadMapFileByIndex(String fileName, int mapIndex) {
         try {
             String path = "src" + File.separator + "assets" + File.separator + "maps" + File.separator + fileName;
-            loadMapFile(fileName, mapIndex);  // your original logic already handles file paths internally
+            loadMapFile(fileName, mapIndex); // your original logic already handles file paths internally
         } catch (Exception e) {
             System.out.println("[TileManager] Failed to reload map " + mapIndex);
             e.printStackTrace();
         }
     }
 
-
     // ================== LOAD TILE IMAGES ==================
     // loads all tile sprites and assigns global IDs
     public void getTileImage() {
 
-        String basePath1 = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator + "map01" + File.separator;
-        String basePath2 = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator + "map02" + File.separator;
+        String basePath1 = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator + "map01"
+                + File.separator;
+        String basePath2 = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator + "map02"
+                + File.separator;
 
         try {
 
@@ -80,7 +81,7 @@ public class TileManager {
             // local IDs in map1.txt will start from tilesetStart[0]
             tilesetStart[0] = tileTypeCount;
             int localId = 0; // local ID for map 1 (0,1,2,...)
-            
+
             // [Tile ID 0] GRASS (MAP 1)
             tile[tileTypeCount] = new Tile();
             File grassFile = new File(basePath1 + "tile0_Grass.png");
@@ -179,7 +180,7 @@ public class TileManager {
             System.out.println("MAP1 TILE " + localId + " (global " + tileTypeCount + ") = FARM");
             tileTypeCount++;
             localId++;
-            
+
             // =============== MAP 2 TILES ===============
             // local IDs in map2.txt will start from tilesetStart[1]
             tilesetStart[1] = tileTypeCount;
@@ -199,7 +200,7 @@ public class TileManager {
             // [Tile ID 1] FloorTP (MAP 2)
             tile[tileTypeCount] = new Tile();
             File teleportFile2 = new File(basePath2 + "tile1_FloorTP.png");
-            if (teleportFile2.exists()) {    
+            if (teleportFile2.exists()) {
                 tile[tileTypeCount].image = ImageIO.read(teleportFile2);
             }
             tile[tileTypeCount].collision = false; // walkable, used as teleport trigger
@@ -232,22 +233,21 @@ public class TileManager {
             // [Tile ID 1] TP (MAP 3)
             tile[tileTypeCount] = new Tile();
             File teleportFile3 = new File(basePath2 + "tile1_FloorTP.png");
-            if (teleportFile3.exists()) {    
+            if (teleportFile3.exists()) {
                 tile[tileTypeCount].image = ImageIO.read(teleportFile3);
             }
             tile[tileTypeCount].collision = false; // walkable, used as teleport trigger
             System.out.println("MAP3 TILE " + localId + " (global " + tileTypeCount + ") = TELEPORT");
             tileTypeCount++;
             localId++;
-            
 
             // more MAP 2 tiles can be added here (paths, borders, etc.)
 
             // =============== MAP 3 TILES ===============
             tilesetStart[2] = tileTypeCount;
-            localId = 0; 
+            localId = 0;
 
-             // [Tile ID 0] Floor (MAP 3)
+            // [Tile ID 1] FLOOR2 (MAP 3)
             tile[tileTypeCount] = new Tile();
             File flooorFile2 = new File(basePath2 + "tile0_Floor.png"); // can be same or different sprite
             if (flooorFile2.exists()) {
@@ -269,8 +269,15 @@ public class TileManager {
             tileTypeCount++;
             localId++;
 
-
-
+            tile[tileTypeCount] = new Tile();
+            File waterFile = new File(basePath2 + "waterpuddle1.png"); // can be same or different sprite
+            if (waterFile.exists()) {
+                tile[tileTypeCount].image = ImageIO.read(waterFile);
+            }
+            tile[tileTypeCount].collision = false;
+            System.out.println("MAP2 TILE " + localId + " (global " + tileTypeCount + ") = FLOOR2");
+            tileTypeCount++;
+            localId++;
 
         } catch (IOException e) {
             System.err.println("Error loading tile images: " + e.getMessage());
@@ -289,7 +296,7 @@ public class TileManager {
         loadMapFile("map2.txt", 1);
 
         // map index 2 can use map3.txt if needed:
-        // loadMapFile("map3.txt", 2);
+        loadMapFile("map3.txt", 2);
     }
 
     // reads one map file and fills mapTileNum[mapIndex]
@@ -313,8 +320,7 @@ public class TileManager {
             }
 
             BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new java.io.FileInputStream(mapFile))
-            );
+                    new InputStreamReader(new java.io.FileInputStream(mapFile)));
 
             String line;
             int row = 0;
@@ -323,8 +329,8 @@ public class TileManager {
                 // split by whitespace (spaces or tabs)
                 String[] numbers = line.trim().split("\\s+");
                 for (int col = 0; col < numbers.length && col < gp.maxWorldCol; col++) {
-                    int localId = Integer.parseInt(numbers[col]);   // 0,1,2,... from map file
-                    int globalId = tilesetOffset + localId;         // convert to global ID
+                    int localId = Integer.parseInt(numbers[col]); // 0,1,2,... from map file
+                    int globalId = tilesetOffset + localId; // convert to global ID
                     mapTileNum[mapIndex][col][row] = globalId;
                 }
                 row++;
@@ -369,8 +375,10 @@ public class TileManager {
         int tileNum = mapTileNum[gp.currentMap][col][row];
 
         // invalid tile index → not blocking
-        if (tileNum < 0 || tileNum >= tile.length) return false;
-        if (tile[tileNum] == null) return false;
+        if (tileNum < 0 || tileNum >= tile.length)
+            return false;
+        if (tile[tileNum] == null)
+            return false;
 
         // use collision flag set in getTileImage()
         return tile[tileNum].collision;
@@ -400,8 +408,7 @@ public class TileManager {
                 int screenW = gp.getWidth() > 0 ? gp.getWidth() : gp.screenWidth;
                 int screenH = gp.getHeight() > 0 ? gp.getHeight() : gp.screenHeight;
 
-                boolean visible =
-                        screenX + gp.tileSize > 0 &&
+                boolean visible = screenX + gp.tileSize > 0 &&
                         screenX < screenW &&
                         screenY + gp.tileSize > 0 &&
                         screenY < screenH;

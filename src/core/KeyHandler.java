@@ -8,7 +8,7 @@ public class KeyHandler implements KeyListener {
     private boolean rightShiftHeld = false;
 
     public static final int SKILL_SLOT_COUNT = 3;
-    private static final String[] SKILL_KEY_LABELS = {"J", "K", "L"};
+    private static final String[] SKILL_KEY_LABELS = { "J", "K", "L" };
     private static final int[] SKILL_KEY_CODES = {
             KeyEvent.VK_J,
             KeyEvent.VK_K,
@@ -16,10 +16,14 @@ public class KeyHandler implements KeyListener {
     };
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
-    private boolean attackPressed = false;
-    private boolean attackTapped = false;
+
+    // Skill Buttons
     private final boolean[] skillPressed = new boolean[SKILL_SLOT_COUNT];
     private final boolean[] skillTapped = new boolean[SKILL_SLOT_COUNT];
+
+    // ===== ATTACK INPUT =====
+    private boolean attackPressed = false;
+    private boolean attackTapped = false;
 
     private final GamePanel gp;
 
@@ -28,7 +32,8 @@ public class KeyHandler implements KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -49,14 +54,11 @@ public class KeyHandler implements KeyListener {
 
         if (gp.gameState == GamePanel.STATE_MENU) {
             handleMenuInput(code);
-        }
-        else if (gp.gameState == GamePanel.STATE_PLAY) {
+        } else if (gp.gameState == GamePanel.STATE_PLAY) {
             handlePlayInput(code);
-        }
-        else if (gp.gameState == GamePanel.STATE_SETTINGS) {
+        } else if (gp.gameState == GamePanel.STATE_SETTINGS) {
             handleSettingsInput(code);
-        }
-        else if (gp.gameState == GamePanel.STATE_INVENTORY) {
+        } else if (gp.gameState == GamePanel.STATE_INVENTORY) {
             handleInventoryInput(code);
         }
     }
@@ -67,46 +69,71 @@ public class KeyHandler implements KeyListener {
             gp.menuSelectedIndex--;
             if (gp.menuSelectedIndex < 0)
                 gp.menuSelectedIndex = gp.menuOptions.length - 1;
-        }
-        else if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+        } else if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
             gp.menuSelectedIndex++;
             if (gp.menuSelectedIndex >= gp.menuOptions.length)
                 gp.menuSelectedIndex = 0;
-        }
-        else if (code == KeyEvent.VK_ENTER) {
+        } else if (code == KeyEvent.VK_ENTER) {
             int i = gp.menuSelectedIndex;
 
-            if (i == 0) gp.startNewGame();
-            else if (i == 1 && gp.canResume) gp.resumeGame();
-            else if (i == 2) gp.openSettings();
-            else if (i == 3) System.exit(0);
+            if (i == 0)
+                gp.startNewGame();
+            else if (i == 1 && gp.canResume)
+                gp.resumeGame();
+            else if (i == 2)
+                System.exit(0);
         }
     }
+
+    // Game over navigation taps
+    private boolean gameOverUpTap = false;
+    private boolean gameOverDownTap = false;
+    private boolean gameOverEnterTap = false;
+
+    // Pressed flags for game over to avoid repeated taps
+    private boolean gameOverUpPressed = false;
+    private boolean gameOverDownPressed = false;
+    private boolean gameOverEnterPressed = false;
 
     // ===================== PLAY =====================
     private void handlePlayInput(int code) {
 
-        if (code == KeyEvent.VK_W) upPressed = true;
-        if (code == KeyEvent.VK_S) downPressed = true;
-        if (code == KeyEvent.VK_A) leftPressed = true;
-        if (code == KeyEvent.VK_D) rightPressed = true;
+        // Movement
+        if (code == KeyEvent.VK_W)
+            upPressed = true;
+        if (code == KeyEvent.VK_S)
+            downPressed = true;
+        if (code == KeyEvent.VK_A)
+            leftPressed = true;
+        if (code == KeyEvent.VK_D)
+            rightPressed = true;
 
+        // Skills (J K L)
         int slot = getSkillSlotFromCode(code);
         if (slot >= 0 && slot < SKILL_SLOT_COUNT) {
-            if (!skillPressed[slot]) skillTapped[slot] = true;
+            if (!skillPressed[slot])
+                skillTapped[slot] = true;
             skillPressed[slot] = true;
         }
 
-        if (code == KeyEvent.VK_1) gp.actionBarUI.activeSlot = 0;
-        if (code == KeyEvent.VK_2) gp.actionBarUI.activeSlot = 1;
-        if (code == KeyEvent.VK_3) gp.actionBarUI.activeSlot = 2;
+        // Action bar hotkeys
+        if (code == KeyEvent.VK_1)
+            gp.actionBarUI.activeSlot = 0;
+        if (code == KeyEvent.VK_2)
+            gp.actionBarUI.activeSlot = 1;
+        if (code == KeyEvent.VK_3)
+            gp.actionBarUI.activeSlot = 2;
 
+        // Open inventory
         if (code == KeyEvent.VK_I) {
             gp.gameState = GamePanel.STATE_INVENTORY;
             upPressed = downPressed = leftPressed = rightPressed = false;
             return;
         }
 
+        // =====================
+        // ENTER = USE HOTBAR ITEM (Equip / Consumable)
+        // =====================
         if (code == KeyEvent.VK_ENTER) {
             if (gp.player != null) {
                 gp.player.useHotbarItem(gp.actionBarUI.activeSlot);
@@ -114,23 +141,24 @@ public class KeyHandler implements KeyListener {
             return;
         }
 
-        // Space key for attack (only if weapon is equipped) or hotbar item
+        // =====================
+        // SPACE = ATTACK (if weapon)
+        // =====================
         if (code == KeyEvent.VK_SPACE) {
-            if (gp.player != null) {
-                if (gp.player.weapon != null) {
-                    // Attack with weapon
-                    if (!attackPressed) {
-                        attackTapped = true;
-                    }
-                    attackPressed = true;
-                } else {
-                    // Use hotbar item if no weapon
-                    gp.player.useHotbarItem(gp.actionBarUI.activeSlot);
-                }
+            if (gp.player != null && gp.player.weapon != null) {
+
+                if (!attackPressed)
+                    attackTapped = true;
+                attackPressed = true;
+
+            } else {
+                // If no weapon → treat SPACE as item use
+                gp.player.useHotbarItem(gp.actionBarUI.activeSlot);
             }
             return;
         }
 
+        // Escape → Menu
         if (code == KeyEvent.VK_ESCAPE) {
             gp.canResume = true;
             gp.gameState = GamePanel.STATE_MENU;
@@ -146,9 +174,10 @@ public class KeyHandler implements KeyListener {
         }
 
         var inv = gp.ui.getInventoryUI();
-        if (inv == null) return;
+        if (inv == null)
+            return;
 
-       // Movement inside inventory
+        // Movement inside inventory
         if (code == KeyEvent.VK_W) {
             inv.moveCursorUp();
             return;
@@ -166,7 +195,7 @@ public class KeyHandler implements KeyListener {
             return;
         }
 
-
+        // ENTER or SPACE = use item
         if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
             inv.useSelectedItem();
         }
@@ -185,19 +214,26 @@ public class KeyHandler implements KeyListener {
         int code = e.getKeyCode();
 
         if (gp.gameState == GamePanel.STATE_PLAY) {
-            if (code == KeyEvent.VK_W) upPressed = false;
-            if (code == KeyEvent.VK_S) downPressed = false;
-            if (code == KeyEvent.VK_A) leftPressed = false;
-            if (code == KeyEvent.VK_D) rightPressed = false;
-            if (code == KeyEvent.VK_SPACE) attackPressed = false;
+
+            if (code == KeyEvent.VK_W)
+                upPressed = false;
+            if (code == KeyEvent.VK_S)
+                downPressed = false;
+            if (code == KeyEvent.VK_A)
+                leftPressed = false;
+            if (code == KeyEvent.VK_D)
+                rightPressed = false;
 
             int slot = getSkillSlotFromCode(code);
-            if (slot != -1) skillPressed[slot] = false;
+            if (slot != -1)
+                skillPressed[slot] = false;
+
+            // Attack released
+            if (code == KeyEvent.VK_SPACE)
+                attackPressed = false;
         }
 
-        // ================================
-        // SHIFT → PERFORM SWAP
-        // ================================
+        // Shift release → end item swap
         if (gp.gameState == GamePanel.STATE_INVENTORY &&
                 code == KeyEvent.VK_SHIFT &&
                 rightShiftHeld) {
@@ -205,33 +241,70 @@ public class KeyHandler implements KeyListener {
             rightShiftHeld = false;
             gp.ui.getInventoryUI().finishHoldSwap();
         }
+
+        // Release game-over navigation keys
+        if (gp.gameState == GamePanel.STATE_GAME_OVER) {
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP)
+                gameOverUpPressed = false;
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN)
+                gameOverDownPressed = false;
+            if (code == KeyEvent.VK_ENTER)
+                gameOverEnterPressed = false;
+        }
     }
 
-    // SKILL HELPERS
+    // ===================== SKILLS =====================
     public boolean consumeSkillTap(int slot) {
-        if (slot < 0 || slot >= SKILL_SLOT_COUNT) return false;
+        if (slot < 0 || slot >= SKILL_SLOT_COUNT)
+            return false;
         boolean tapped = skillTapped[slot];
         skillTapped[slot] = false;
         return tapped;
     }
 
-    public String getSkillKeyLabel(int slot) {
-        if (slot < 0 || slot >= SKILL_SLOT_COUNT) return "-";
-        return SKILL_KEY_LABELS[slot];
-    }
-
-    private int getSkillSlotFromCode(int code) {
-        for (int i = 0; i < SKILL_KEY_CODES.length; i++) {
-            if (SKILL_KEY_CODES[i] == code) return i;
-        }
-        return -1;
-    }
-
-    // Attack input helper
+    // ===================== ATTACK SYSTEM =====================
     public boolean consumeAttackTap() {
         boolean tapped = attackTapped;
         attackTapped = false;
         return tapped;
     }
-}
 
+    // ===================== GAME OVER NAVIGATION CONSUMERS =====================
+    public boolean consumeGameOverUpTap() {
+        boolean t = gameOverUpTap;
+        gameOverUpTap = false;
+        return t;
+    }
+
+    public boolean consumeGameOverDownTap() {
+        boolean t = gameOverDownTap;
+        gameOverDownTap = false;
+        return t;
+    }
+
+    public boolean consumeGameOverEnterTap() {
+        boolean t = gameOverEnterTap;
+        gameOverEnterTap = false;
+        return t;
+    }
+
+    // Helper to clear movement flags
+    public void resetMovementKeys() {
+        upPressed = downPressed = leftPressed = rightPressed = false;
+    }
+
+    // Helpers
+    public String getSkillKeyLabel(int slot) {
+        if (slot < 0 || slot >= SKILL_SLOT_COUNT)
+            return "-";
+        return SKILL_KEY_LABELS[slot];
+    }
+
+    private int getSkillSlotFromCode(int code) {
+        for (int i = 0; i < SKILL_KEY_CODES.length; i++) {
+            if (SKILL_KEY_CODES[i] == code)
+                return i;
+        }
+        return -1;
+    }
+}

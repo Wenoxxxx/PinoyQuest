@@ -12,7 +12,7 @@ public class MainMenuUI {
     private final GamePanel gp;
 
     private BufferedImage menuBackground;
-    private BufferedImage[] buttonSprites = new BufferedImage[4];
+    private BufferedImage[] buttonSprites = new BufferedImage[3];
 
     public MainMenuUI(GamePanel gp) {
         this.gp = gp;
@@ -26,8 +26,8 @@ public class MainMenuUI {
 
             buttonSprites[0] = ImageIO.read(new File("src/assets/ui/mainMenu/btn1.png")); // Start
             buttonSprites[1] = ImageIO.read(new File("src/assets/ui/mainMenu/btn2.png")); // Resume
-            buttonSprites[2] = ImageIO.read(new File("src/assets/ui/mainMenu/btn3.png")); // Settings
-            buttonSprites[3] = ImageIO.read(new File("src/assets/ui/mainMenu/btn4.png")); // Quit
+            buttonSprites[2] = ImageIO.read(new File("src/assets/ui/mainMenu/btn4.png")); // Quit (reusing btn4 as third
+                                                                                          // sprite)
 
         } catch (Exception e) {
             System.out.println("[MainMenuUI] Failed loading menu sprites!");

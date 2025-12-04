@@ -197,14 +197,14 @@ public class SawTrap extends Entity {
         int screenX = worldX - gamePanel.cameraX;
         int screenY = worldY - gamePanel.cameraY;
 
-        // Optional: debug hitbox (matches solidArea, not sprite)
-        g2.setColor(new Color(255, 0, 0, 80));
-        g2.fillRect(
-                screenX + solidArea.x,
-                screenY + solidArea.y,
-                solidArea.width,
-                solidArea.height
-        );
+        // // Optional: debug hitbox (matches solidArea, not sprite)
+        // g2.setColor(new Color(255, 0, 0, 80));
+        // g2.fillRect(
+        //         screenX + solidArea.x,
+        //         screenY + solidArea.y,
+        //         solidArea.width,
+        //         solidArea.height
+        // );
 
         if (spritesLoaded) {
             g2.drawImage(frames[frameIndex], screenX, screenY, renderWidth, renderHeight, null);
