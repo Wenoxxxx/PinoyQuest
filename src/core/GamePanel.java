@@ -9,6 +9,7 @@ import src.items.ItemManager;
 import src.tile.ObjectManager;
 import src.tile.TileManager;
 import src.ui.UI;
+import src.ui.VictoryUI;
 import src.ui.ActionBarUI;
 import src.ui.MainMenuUI;
 import src.ui.GameOverUI;
@@ -69,6 +70,8 @@ public class GamePanel extends JPanel {
     public static final int STATE_SETTINGS = 2;
     public static final int STATE_INVENTORY = 3;
     public static final int STATE_GAME_OVER = 4;
+    public static final int STATE_VICTORY = 5;
+
 
     public int gameState = STATE_MENU;
 
@@ -88,6 +91,8 @@ public class GamePanel extends JPanel {
     public MainMenuUI mainMenuUI;
     public GameOverUI gameOverUI;
     public boolean showInventory = false;
+    public VictoryUI victoryUI;
+
 
     // ITEM
     public ItemManager itemManager;
@@ -133,6 +138,8 @@ public class GamePanel extends JPanel {
 
         // AI WAVE SPAWNER
         map3Spawner = new Map3EnemySpawner(this);
+        victoryUI = new VictoryUI(this);
+
     }
 
     private void centerCameraOnPlayer(int screenW, int screenH) {
@@ -234,6 +241,22 @@ public class GamePanel extends JPanel {
         player.update();
         objectManager.update();
         itemManager.update();
+        if (gameState == STATE_GAME_OVER) {
+
+            if (keyHandler.consumeGameOverUpTap()) {
+                ui.getGameOverUI().moveUp();
+            }
+
+            if (keyHandler.consumeGameOverDownTap()) {
+                ui.getGameOverUI().moveDown();
+            }
+
+            if (keyHandler.consumeGameOverEnterTap()) {
+                ui.getGameOverUI().select();
+            }
+        }
+
+
 
         if (mobManager != null)
             mobManager.update();
@@ -355,6 +378,10 @@ public class GamePanel extends JPanel {
         } else if (gameState == STATE_GAME_OVER) {
             gameOverUI.draw(g2);
         }
+        else if (gameState == STATE_VICTORY) {
+            victoryUI.draw(g2);
+        }
+
 
         g2.dispose();
     }

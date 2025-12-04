@@ -16,10 +16,13 @@ public class UI {
     private final InventoryUI inventoryUI;
     private final SkillIconUI skillIconUI;
 
+    // === NEW: GAME OVER UI ===
+    private final GameOverUI gameOverUI;
+
     // ========== SIMPLE MESSAGE SYSTEM ==========
     private String message = "";
     private int messageTimer = 0;
-    private static final int MESSAGE_DURATION = 90; // ~1.5 sec
+    private static final int MESSAGE_DURATION = 90;
 
     public UI(GamePanel gp, Player player) {
         this.gp = gp;
@@ -28,22 +31,21 @@ public class UI {
         this.hudUI = new HudUI(gp, player);
         this.inventoryUI = new InventoryUI(gp, player);
         this.skillIconUI = new SkillIconUI(gp, player);
+
+        // NEW
+        this.gameOverUI = new GameOverUI(gp);
     }
 
-    public InventoryUI getInventoryUI() {
-        return inventoryUI;
-    }
+    // ======= UI GETTERS =======
+    public InventoryUI getInventoryUI() { return inventoryUI; }
+    public HudUI getHudUI() { return hudUI; }
+    public SkillIconUI getSkillIconUI() { return skillIconUI; }
 
-    public HudUI getHudUI() {
-        return hudUI;
-    }
-
-    public SkillIconUI getSkillIconUI() {
-        return skillIconUI;
-    }
+    // NEW: GameOverUI Getter
+    public GameOverUI getGameOverUI() { return gameOverUI; }
 
     // =========================================================
-    //        PUBLIC MESSAGE API
+    //                  PUBLIC MESSAGE API
     // =========================================================
     public void showMessage(String msg) {
         this.message = msg;
@@ -51,29 +53,24 @@ public class UI {
     }
 
     // =========================================================
-    //        INTERNAL MESSAGE DRAWING
+    //                  MESSAGE DRAWER
     // =========================================================
     private void drawMessage(Graphics2D g2) {
         if (messageTimer > 0) {
 
-            // ===== MESSAGE FONT LIKE SKILLS =====
             g2.setFont(g2.getFont().deriveFont(Font.BOLD, 10f));
 
-            // Text width for centering
             int textWidth = g2.getFontMetrics().stringWidth(message);
 
-            // ======= CUSTOM POSITIONING =======
             int screenW = gp.getWidth();
             int screenH = gp.getHeight();
 
-            // Position above action bar and skills
-            int barHeight = 120;             // height area of skills + action bar
-            int offsetY = -58;               // manual tweak  move higher/lower
+            int barHeight = 120;
+            int offsetY = -58;
 
             int msgX = (screenW / 2) - (textWidth / 2);
             int msgY = screenH - barHeight + offsetY;
 
-            // Background padding
             int pad = 10;
             int boxW = textWidth + pad * 2;
             int boxH = 28;
@@ -81,11 +78,9 @@ public class UI {
             int boxX = msgX - pad;
             int boxY = msgY - 18;
 
-            // ===== BACKGROUND =====
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRoundRect(boxX, boxY, boxW, boxH, 10, 10);
 
-            // ===== TEXT =====
             g2.setColor(Color.WHITE);
             g2.drawString(message, msgX, msgY);
 
@@ -93,22 +88,30 @@ public class UI {
         }
     }
 
-
     // =========================================================
-    //        MAIN DRAW FUNCTION
+    //                  MAIN DRAW FUNCTION
     // =========================================================
     public void draw(Graphics2D g2) {
 
+        // === GAME OVER SCREEN ===
+        if (gp.gameState == GamePanel.STATE_GAME_OVER) {
+            gameOverUI.draw(g2);
+            return; // Skip HUD / Inventory / Skills
+        }
+
+        // === PLAYING ===
         if (gp.gameState == GamePanel.STATE_PLAY) {
             hudUI.draw(g2);
             skillIconUI.draw(g2);
         }
+
+        // === INVENTORY ===
         else if (gp.gameState == GamePanel.STATE_INVENTORY) {
             hudUI.draw(g2);
             inventoryUI.draw(g2);
         }
 
-        // Draw pickup messages for BOTH states
+        // Draw message system
         drawMessage(g2);
     }
 }

@@ -54,7 +54,7 @@ public class BossEnemy extends Enemy {
         float avgScale = (scaleX + scaleY) / 2.0f;
         this.attackRange = (int)(42 * avgScale);
 
-        this.maxHealth = 300;
+        this.maxHealth = 1;
         this.health = maxHealth;
 
         this.speed = 2;
@@ -306,7 +306,14 @@ public class BossEnemy extends Enemy {
     public void update() {
         if (!dead) {
             updateAttackAnimation();
-            super.update(); // Call parent update for AI
+            super.update();
+
+            // === NEW: Trigger Victory Screen ===
+            if (dead) {
+                System.out.println("[BOSS] Defeated! Triggering Victory Screen...");
+                gp.gameState = GamePanel.STATE_VICTORY;
+            }
         }
     }
+
 }

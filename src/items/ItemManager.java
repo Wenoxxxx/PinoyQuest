@@ -51,7 +51,7 @@ public class ItemManager {
         addType(new HealthRegenItem(gp, 0, 0));
         addType(new NoCooldownItem(gp, 0, 0));
         addType(new ShieldItem(gp, 0, 0));
-        addType(new Map2Key(gp, 0, 0));
+        // addType(new Map2Key(gp, 0, 0));
 
         // WEAPONS
         addType(new Hanger(gp, 0, 0));

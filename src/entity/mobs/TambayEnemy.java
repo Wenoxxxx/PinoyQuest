@@ -20,7 +20,7 @@ public class TambayEnemy extends Enemy {
     public TambayEnemy(GamePanel gp, int worldX, int worldY, Player player) {
         super(gp, worldX, worldY, player);
 
-        this.maxHealth = 100;
+        this.maxHealth = 1;
         this.health = maxHealth;
 
         this.speed = 2;

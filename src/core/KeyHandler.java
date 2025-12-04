@@ -55,12 +55,15 @@ public class KeyHandler implements KeyListener {
         if (gp.gameState == GamePanel.STATE_MENU) {
             handleMenuInput(code);
         } else if (gp.gameState == GamePanel.STATE_PLAY) {
-            handlePlayInput(code);
-        } else if (gp.gameState == GamePanel.STATE_SETTINGS) {
-            handleSettingsInput(code);
+            handlePlayInput(code);;
         } else if (gp.gameState == GamePanel.STATE_INVENTORY) {
             handleInventoryInput(code);
         }
+
+        else if (gp.gameState == GamePanel.STATE_GAME_OVER) {
+            handleGameOverInput(code);
+        }
+
     }
 
     // ===================== MENU =====================
@@ -201,12 +204,6 @@ public class KeyHandler implements KeyListener {
         }
     }
 
-    // ===================== SETTINGS =====================
-    private void handleSettingsInput(int code) {
-        if (code == KeyEvent.VK_ESCAPE) {
-            gp.gameState = GamePanel.STATE_MENU;
-        }
-    }
 
     @Override
     public void keyReleased(KeyEvent e) {
@@ -307,4 +304,30 @@ public class KeyHandler implements KeyListener {
         }
         return -1;
     }
+
+    // ===================== GAME OVER =====================
+    private void handleGameOverInput(int code) {
+
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            if (!gameOverUpPressed) {
+                gameOverUpTap = true;
+                gameOverUpPressed = true;
+            }
+        }
+
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+            if (!gameOverDownPressed) {
+                gameOverDownTap = true;
+                gameOverDownPressed = true;
+            }
+        }
+
+        if (code == KeyEvent.VK_ENTER) {
+            if (!gameOverEnterPressed) {
+                gameOverEnterTap = true;
+                gameOverEnterPressed = true;
+            }
+        }
+    }
+
 }

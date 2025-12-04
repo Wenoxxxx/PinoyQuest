@@ -20,13 +20,13 @@ public class DogEnemy extends Enemy {
     public DogEnemy(GamePanel gp, int worldX, int worldY, Player player) {
         super(gp, worldX, worldY, player);
 
-        this.maxHealth = 100;
+        this.maxHealth = 1;
         this.health = maxHealth;
 
         this.speed = 3;
         this.visionRange = 9999;
 
-        // Scale up to 2x2 tiles (96x96 pixels)
+        // Scale up [2x2 tiles (96x96 pixels)
         this.width = gp.tileSize * 2;
         this.height = gp.tileSize * 2;
         this.attackRange = (int)(28 * 2.0f); // Scale attack range proportionally
@@ -140,3 +140,4 @@ public class DogEnemy extends Enemy {
     }
 }
 
+                
