@@ -20,7 +20,7 @@ public class TambayEnemy extends Enemy {
     public TambayEnemy(GamePanel gp, int worldX, int worldY, Player player) {
         super(gp, worldX, worldY, player);
 
-        this.maxHealth = 100;
+        this.maxHealth = 10;
         this.health = maxHealth;
 
         this.speed = 2;
@@ -29,7 +29,7 @@ public class TambayEnemy extends Enemy {
         // Scale up to 2x2 tiles (96x96 pixels)
         this.width = gp.tileSize * 2;
         this.height = gp.tileSize * 2;
-        this.attackRange = (int)(32 * 2.0f); // Scale attack range proportionally
+        this.attackRange = (int) (32 * 2.0f); // Scale attack range proportionally
 
         this.hitbox = new Rectangle(0, 0, width, height);
 
@@ -37,11 +37,11 @@ public class TambayEnemy extends Enemy {
     }
 
     private void loadWalkSprites() {
-        String basePath = "src" + File.separator + 
-                         "assets" + File.separator + 
-                         "sprites" + File.separator + 
-                         "mob" + File.separator + 
-                         "tambay" + File.separator;
+        String basePath = "src" + File.separator +
+                "assets" + File.separator +
+                "sprites" + File.separator +
+                "mob" + File.separator +
+                "tambay" + File.separator;
 
         System.out.println("\n======== TambayEnemy FRAME LOADING ========");
         System.out.println("Base path: " + basePath);
@@ -68,8 +68,8 @@ public class TambayEnemy extends Enemy {
                     walkLeft[i] = null;
                 }
 
-                System.out.println("Frame " + (i + 1) + 
-                        " | R=" + (walkRight[i] != null) + 
+                System.out.println("Frame " + (i + 1) +
+                        " | R=" + (walkRight[i] != null) +
                         " | L=" + (walkLeft[i] != null));
             } catch (IOException e) {
                 System.out.println("Failed to load frame " + (i + 1) + ": " + e.getMessage());
@@ -90,13 +90,15 @@ public class TambayEnemy extends Enemy {
 
     @Override
     public void moveTowards(Player p) {
-        if (dead) return;
+        if (dead)
+            return;
 
         int dx = p.worldX - worldX;
         int dy = p.worldY - worldY;
         double dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist == 0) return;
+        if (dist == 0)
+            return;
 
         double nx = dx / dist;
         double ny = dy / dist;
@@ -109,13 +111,14 @@ public class TambayEnemy extends Enemy {
         if (animCounter >= 5) {
             animCounter = 0;
             animIndex++;
-            if (animIndex >= 9) animIndex = 0;
+            if (animIndex >= 9)
+                animIndex = 0;
         }
     }
 
     @Override
     public void draw(Graphics2D g2) {
-        
+
         int screenX = worldX - gp.cameraX;
         int screenY = worldY - gp.cameraY;
 
@@ -123,9 +126,9 @@ public class TambayEnemy extends Enemy {
 
         // Choose facing direction
         if (player.worldX < worldX) {
-            frame = walkLeft[animIndex];   // Face left
+            frame = walkLeft[animIndex]; // Face left
         } else {
-            frame = walkRight[animIndex];  // Face right
+            frame = walkRight[animIndex]; // Face right
         }
 
         // Only draw if sprite loaded successfully
@@ -139,4 +142,3 @@ public class TambayEnemy extends Enemy {
         drawHealthBar(g2, screenX, screenY);
     }
 }
-

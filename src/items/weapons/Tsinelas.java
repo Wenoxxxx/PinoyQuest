@@ -8,7 +8,7 @@ import java.io.File;
 
 public class Tsinelas extends Item {
 
-    public int damage = 8;
+    public int damage = 50;
     public float attackSpeed = 2.0f;
 
     public Tsinelas(GamePanel gp, int x, int y) {
@@ -23,7 +23,7 @@ public class Tsinelas extends Item {
         this.widthTiles = 1;
         this.heightTiles = 1;
 
-        this.pickupWidth  = gp.tileSize;
+        this.pickupWidth = gp.tileSize;
         this.pickupHeight = gp.tileSize;
     }
 

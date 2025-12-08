@@ -60,6 +60,10 @@ public class KeyHandler implements KeyListener {
             handleSettingsInput(code);
         } else if (gp.gameState == GamePanel.STATE_INVENTORY) {
             handleInventoryInput(code);
+        } else if (gp.gameState == GamePanel.STATE_GAME_OVER) {
+            handleGameOverInput(code);
+        } else if (gp.gameState == GamePanel.STATE_VICTORY) {
+            handleVictoryInput(code);
         }
     }
 
@@ -94,6 +98,40 @@ public class KeyHandler implements KeyListener {
     private boolean gameOverUpPressed = false;
     private boolean gameOverDownPressed = false;
     private boolean gameOverEnterPressed = false;
+
+    // Pressed flag for victory to avoid repeated taps
+    private boolean victoryEnterPressed = false;
+
+    // ===================== GAME OVER =====================
+    private void handleGameOverInput(int code) {
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            if (!gameOverUpPressed) {
+                gp.gameOverUI.moveUp();
+                gameOverUpPressed = true;
+            }
+        } else if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+            if (!gameOverDownPressed) {
+                gp.gameOverUI.moveDown();
+                gameOverDownPressed = true;
+            }
+        } else if (code == KeyEvent.VK_ENTER) {
+            if (!gameOverEnterPressed) {
+                gp.gameOverUI.select();
+                gameOverEnterPressed = true;
+            }
+        }
+    }
+
+    // ===================== VICTORY =====================
+    private void handleVictoryInput(int code) {
+        // Only one button, so just Enter to select
+        if (code == KeyEvent.VK_ENTER) {
+            if (!victoryEnterPressed) {
+                gp.victoryUI.select();
+                victoryEnterPressed = true;
+            }
+        }
+    }
 
     // ===================== PLAY =====================
     private void handlePlayInput(int code) {
@@ -250,6 +288,12 @@ public class KeyHandler implements KeyListener {
                 gameOverDownPressed = false;
             if (code == KeyEvent.VK_ENTER)
                 gameOverEnterPressed = false;
+        }
+
+        // Release victory keys
+        if (gp.gameState == GamePanel.STATE_VICTORY) {
+            if (code == KeyEvent.VK_ENTER)
+                victoryEnterPressed = false;
         }
     }
 

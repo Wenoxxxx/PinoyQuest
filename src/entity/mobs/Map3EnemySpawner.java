@@ -1,13 +1,12 @@
 package src.entity.mobs;
 
-import src.core.GamePanel;
-import src.entity.Player;
-
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import src.core.GamePanel;
+import src.entity.Player;
 
 public class Map3EnemySpawner {
 
@@ -178,5 +177,27 @@ public class Map3EnemySpawner {
 
     private void showWaveMessage() {
         gp.ui.showMessage("WAVE " + currentWave);
+    }
+
+    // Check if all regular enemies are defeated
+    public boolean areAllEnemiesDefeated() {
+        // Remove dead enemies first
+        enemies.removeIf(e -> e.isDead());
+        // All enemies defeated if list is empty
+        return enemies.isEmpty();
+    }
+
+    // Check if boss is defeated (or was never spawned)
+    public boolean isBossDefeated() {
+        // If boss was never spawned, we're still in waves - not defeated yet
+        if (!bossSpawned) {
+            return false;
+        }
+        // Boss was spawned - check if it's dead
+        if (boss == null) {
+            return true; // Boss was removed (defeated)
+        }
+        // Boss exists - check if dead
+        return boss.isDead();
     }
 }

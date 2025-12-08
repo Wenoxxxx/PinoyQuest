@@ -1,28 +1,24 @@
 package src.core;
 
-import javax.swing.JPanel;
 import java.awt.*;
-
-import src.entity.Player;
-import src.entity.mobs.WhiteLady;
-import src.items.ItemManager;
-import src.tile.ObjectManager;
-import src.tile.TileManager;
-import src.ui.UI;
-import src.ui.ActionBarUI;
-import src.ui.MainMenuUI;
-import src.ui.GameOverUI;
-
-// MOBS
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import src.entity.mobs.SawTrap;
-import src.entity.mobs.MobManager;
-
-// AI
+import javax.swing.JPanel;
+import src.entity.Player;
 import src.entity.mobs.Map3EnemySpawner;
+import src.entity.mobs.MobManager;
+import src.entity.mobs.SawTrap;
+import src.entity.mobs.WhiteLady;
 import src.entity.projectiles.TsinelasProjectile;
+import src.items.ItemManager;
+import src.tile.ObjectManager;
+import src.tile.TileManager;
+import src.ui.ActionBarUI;
+import src.ui.GameOverUI;
+import src.ui.MainMenuUI;
+import src.ui.UI;
+import src.ui.VictoryUI;
 
 public class GamePanel extends JPanel {
 
@@ -69,6 +65,7 @@ public class GamePanel extends JPanel {
     public static final int STATE_SETTINGS = 2;
     public static final int STATE_INVENTORY = 3;
     public static final int STATE_GAME_OVER = 4;
+    public static final int STATE_VICTORY = 5;
 
     public int gameState = STATE_MENU;
 
@@ -87,6 +84,7 @@ public class GamePanel extends JPanel {
     public UI ui;
     public MainMenuUI mainMenuUI;
     public GameOverUI gameOverUI;
+    public VictoryUI victoryUI;
     public boolean showInventory = false;
 
     // ITEM
@@ -106,6 +104,18 @@ public class GamePanel extends JPanel {
         collision = new Collision(this);
         keyHandler = new KeyHandler(this);
         this.addKeyListener(keyHandler);
+
+        // Add mouse listener for clickable buttons (GameOverUI, VictoryUI)
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (gameState == STATE_GAME_OVER) {
+                    gameOverUI.handleMouseClick(e.getX(), e.getY());
+                } else if (gameState == STATE_VICTORY) {
+                    victoryUI.handleMouseClick(e.getX(), e.getY());
+                }
+            }
+        });
 
         gameLoop = new GameLoop(this);
 
@@ -129,6 +139,7 @@ public class GamePanel extends JPanel {
         ui = new UI(this, player);
         mainMenuUI = new MainMenuUI(this);
         gameOverUI = new GameOverUI(this);
+        victoryUI = new VictoryUI(this);
         actionBarUI = new ActionBarUI(this, player);
 
         // AI WAVE SPAWNER
@@ -229,6 +240,8 @@ public class GamePanel extends JPanel {
             return;
         if (gameState == STATE_GAME_OVER)
             return;
+        if (gameState == STATE_VICTORY)
+            return;
 
         // GAMEPLAY
         player.update();
@@ -246,8 +259,14 @@ public class GamePanel extends JPanel {
         // -------------------------------
         // UPDATE WAVES IF IN MAP 3 (index 2)
         // -------------------------------
-        if (currentMap == 2) {
+        if (currentMap == 2 && map3Spawner != null) {
             map3Spawner.update(player);
+
+            // Check victory condition: all enemies and boss defeated
+            // Only check if game is in play state to avoid checking during transitions
+            if (gameState == STATE_PLAY && checkVictoryCondition()) {
+                triggerVictory();
+            }
         }
 
         // CAMERA LOGIC
@@ -354,6 +373,8 @@ public class GamePanel extends JPanel {
             }
         } else if (gameState == STATE_GAME_OVER) {
             gameOverUI.draw(g2);
+        } else if (gameState == STATE_VICTORY) {
+            victoryUI.draw(g2);
         }
 
         g2.dispose();
@@ -378,7 +399,7 @@ public class GamePanel extends JPanel {
         // -------------------------------
         // DRAW WAVES ONLY ON MAP 3 (index 2) - Draw before player
         // -------------------------------
-        if (currentMap == 2) {
+        if (currentMap == 2 && map3Spawner != null) {
             map3Spawner.draw(g2);
         }
 
@@ -426,6 +447,28 @@ public class GamePanel extends JPanel {
 
     public void triggerGameOver() {
         gameState = STATE_GAME_OVER;
+    }
+
+    public void triggerVictory() {
+        gameState = STATE_VICTORY;
+        // Stop current music and play victory music
+        stopMusic();
+        playMusic(4); // victory.wav
+    }
+
+    private boolean checkVictoryCondition() {
+        // Only check victory on map 3 (index 2)
+        if (currentMap != 2 || map3Spawner == null) {
+            return false;
+        }
+
+        // Check if all enemies are defeated
+        boolean allEnemiesDefeated = map3Spawner.areAllEnemiesDefeated();
+        
+        // Check if boss is defeated (or was never spawned)
+        boolean bossDefeated = map3Spawner.isBossDefeated();
+
+        return allEnemiesDefeated && bossDefeated;
     }
 
     public void playMusic(int i) {
