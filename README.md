@@ -40,7 +40,7 @@ Expect a blend of humor, heart, and heritage wrapped in classic RPG-adventure me
    git clone https://github.com/<your_repo_here>/PinoyQuest.git
 2. Open project in your preferred Java IDE.
 
-3. Run the main game file.
+3. Run the main game file or run PinoyQuest.exe inside the project folder.
 
 4. Play and enjoy the Filipino nostalgia hit!
 
@@ -50,11 +50,11 @@ Expect a blend of humor, heart, and heritage wrapped in classic RPG-adventure me
 
 Driven by creativity, caffeine, and chaotic good energy.
 
-   * -Owen – Lead Programmer
-   * -Yuan – Systems & Logic Designer
-   * -Kristine – Document and Creatives
-   * -Regine – Document and Creatives
+   * Owen – Lead Programmer
+   * Yuan – Systems & Logic Designer
+   * Kristine – Document and Creatives
+   * Regine – Document and Creatives
 
 ## 🇵🇭 Salamat!
 
-Thank you for checking out PinoyQuest. Tara, laro na!
+Thank you for checking out PinoyQuest. Tara, laro na! Bomba na!
