@@ -20,7 +20,7 @@ public class DogEnemy extends Enemy {
     public DogEnemy(GamePanel gp, int worldX, int worldY, Player player) {
         super(gp, worldX, worldY, player);
 
-        this.maxHealth = 10;
+        this.maxHealth = 120;
         this.health = maxHealth;
 
         this.speed = 3;
@@ -37,7 +37,7 @@ public class DogEnemy extends Enemy {
     }
 
     private void loadWalkSprites() {
-        String basePath = "src" + File.separator +
+        String basePath =
                 "assets" + File.separator +
                 "sprites" + File.separator +
                 "mob" + File.separator +

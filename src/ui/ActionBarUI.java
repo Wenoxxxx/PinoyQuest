@@ -29,7 +29,7 @@ public class ActionBarUI {
         this.player = player;
 
         try {
-            barBackground = ImageIO.read(new File("src/assets/ui/actionbar/actionbar.png"));
+            barBackground = ImageIO.read(new File("assets/ui/actionbar/actionbar.png"));
         } catch (Exception e) {
             System.out.println("ERROR LOADING ACTION BAR BACKGROUND");
             e.printStackTrace();

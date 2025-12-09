@@ -58,7 +58,7 @@ public class TileManager {
     // Wrapper: uses your existing loadMapFile(String, int)
     private void loadMapFileByIndex(String fileName, int mapIndex) {
         try {
-            String path = "src" + File.separator + "assets" + File.separator + "maps" + File.separator + fileName;
+            String path = "assets" + File.separator + "maps" + File.separator + fileName;
             loadMapFile(fileName, mapIndex); // your original logic already handles file paths internally
         } catch (Exception e) {
             System.out.println("[TileManager] Failed to reload map " + mapIndex);
@@ -70,9 +70,9 @@ public class TileManager {
     // loads all tile sprites and assigns global IDs
     public void getTileImage() {
 
-        String basePath1 = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator + "map01"
+        String basePath1 = "assets" + File.separator + "tiles" + File.separator + "map01"
                 + File.separator;
-        String basePath2 = "src" + File.separator + "assets" + File.separator + "tiles" + File.separator + "map02"
+        String basePath2 = "assets" + File.separator + "tiles" + File.separator + "map02"
                 + File.separator;
 
         try {
@@ -303,7 +303,7 @@ public class TileManager {
     // map file uses local tile IDs (0,1,2,...) then converted to global IDs
     private void loadMapFile(String fileName, int mapIndex) {
         try {
-            String mapPath = "src" + File.separator + "assets" + File.separator + "maps" + File.separator + fileName;
+            String mapPath = "assets" + File.separator + "maps" + File.separator + fileName;
             File mapFile = new File(mapPath);
 
             int tilesetOffset = tilesetStart[mapIndex]; // start index for this map's tiles

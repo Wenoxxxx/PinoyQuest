@@ -68,7 +68,7 @@ public abstract class Item {
             newItem.pickupOffsetX = this.pickupOffsetX;
             newItem.pickupOffsetY = this.pickupOffsetY;
 
-            // ⭐ MOST IMPORTANT FIX ⭐
+            // IMPORTANT FIX 
             newItem.isConsumable = this.isConsumable;
 
             return newItem;

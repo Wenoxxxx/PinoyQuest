@@ -37,9 +37,9 @@ public class GameOverUI {
 
     private void loadSprites() {
         try {
-            popupBackground = ImageIO.read(new File("src/assets/ui/gameover/gameOverBg.png"));
-            buttonSprites[0] = ImageIO.read(new File("src/assets/ui/gameover/gameOverBtn.png"));
-            buttonSprites[1] = ImageIO.read(new File("src/assets/ui/gameover/gameOverQuitBtn.png"));
+            popupBackground = ImageIO.read(new File("assets/ui/gameover/gameOverBg.png"));
+            buttonSprites[0] = ImageIO.read(new File("assets/ui/gameover/gameOverBtn.png"));
+            buttonSprites[1] = ImageIO.read(new File("assets/ui/gameover/gameOverQuitBtn.png"));
 
             // Debug: check if buttons loaded
             if (buttonSprites[0] == null) {

@@ -10,7 +10,7 @@ import src.core.GamePanel;
 import src.items.consumables.HealthRegenItem;
 import src.items.consumables.NoCooldownItem;
 import src.items.consumables.ShieldItem;
-import src.items.temporary.Map2Key;
+
 
 // WEAPONS
 import src.items.weapons.Hanger;
@@ -29,7 +29,7 @@ public class ItemManager {
     private int itemTypeCount = 0;
 
     private static final String MAP_DIR =
-            "src" + File.separator + "assets" + File.separator + "maps" + File.separator;
+            "assets" + File.separator + "maps" + File.separator;
 
     public ItemManager(GamePanel gp) {
         this.gp = gp;
@@ -51,8 +51,7 @@ public class ItemManager {
         addType(new HealthRegenItem(gp, 0, 0));
         addType(new NoCooldownItem(gp, 0, 0));
         addType(new ShieldItem(gp, 0, 0));
-        addType(new Map2Key(gp, 0, 0));
-
+ 
         // WEAPONS
         addType(new Hanger(gp, 0, 0));
         addType(new Tsinelas(gp, 0, 0));

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar</jar>
+  <outfile>C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl></downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\assets\ui\gameIcon\icon.ico</icon>
+  <classPath>
+    <mainClass>main.Main</mainClass>
+    <cp>C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy</cp>
+  </classPath>
+  <jre>
+    <path>%JAVA_HOME%;%PATH%</path>
+    <requiresJdk>true</requiresJdk>
+    <requires64Bit>true</requires64Bit>
+    <minVersion>25</minVersion>
+    <maxVersion></maxVersion>
+  </jre>
+</launch4jConfig>

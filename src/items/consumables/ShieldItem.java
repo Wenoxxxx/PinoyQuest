@@ -16,7 +16,7 @@ public class ShieldItem extends Item {
 
         try {
             sprite = ImageIO.read(
-                    new File("src/assets/items/1sheild.png")
+                    new File("assets/items/1sheild.png")
             );
         } catch (Exception e) {
             System.out.println("ERROR: Failed loading Shield sprite");

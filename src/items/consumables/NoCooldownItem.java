@@ -18,7 +18,7 @@ public class NoCooldownItem extends Item {
         super(gp, x, y, "No Cooldown Potion", "Removes cooldown from all skills temporarily.");
 
         try {
-            sprite = ImageIO.read(new File("src/assets/items/1nocd.png"));
+            sprite = ImageIO.read(new File("assets/items/1nocd.png"));
         } catch (Exception e) {
             System.out.println("ERROR: Failed loading no cooldown sprite");
         }

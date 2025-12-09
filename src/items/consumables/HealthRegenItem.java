@@ -14,7 +14,7 @@ public class HealthRegenItem extends Item {
 
         // Load sprite (32x32)
         try {
-            sprite = ImageIO.read(new File("src/assets/items/1healthregen.png"));
+            sprite = ImageIO.read(new File("assets/items/1healthregen.png"));
         } catch (Exception e) {
             System.out.println("ERROR: Failed loading HealthRegen sprite");
         }

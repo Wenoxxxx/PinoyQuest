@@ -86,7 +86,7 @@ public class SawTrap extends Entity {
             // Load all frame files saw1.png, saw2.png, saw3.png...
             int count = 0;
             while (true) {
-                File f = new File("src/assets/sprites/mob/trap/saw" + (count + 1) + ".png");
+                File f = new File("assets/sprites/mob/trap/saw" + (count + 1) + ".png");
                 if (!f.exists()) break;
                 count++;
             }
@@ -98,7 +98,7 @@ public class SawTrap extends Entity {
 
             frames = new BufferedImage[count];
             for (int i = 0; i < count; i++) {
-                frames[i] = ImageIO.read(new File("src/assets/sprites/mob/trap/saw" + (i + 1) + ".png"));
+                frames[i] = ImageIO.read(new File("assets/sprites/mob/trap/saw" + (i + 1) + ".png"));
             }
 
             spritesLoaded = true;

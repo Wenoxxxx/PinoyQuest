@@ -83,7 +83,7 @@ public class SkillIconUI {
         this.skillManager = player.getSkillManager();
 
         try {
-            skillPanel = ImageIO.read(new File("src/assets/ui/skill/skillbg.png"));
+            skillPanel = ImageIO.read(new File("assets/ui/skill/skillbg.png"));
         } catch (Exception e) {
             System.out.println("ERROR LOADING skillbg.png");
             e.printStackTrace();

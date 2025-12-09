@@ -31,13 +31,13 @@ public class VictoryUI {
     private void loadSprites() {
         try {
             // Try to load victory background if it exists
-            File bgFile = new File("src/assets/ui/victory/victoryBg.png");
+            File bgFile = new File("assets/ui/victory/victoryBg.png");
             if (bgFile.exists()) {
                 popupBackground = ImageIO.read(bgFile);
             }
 
             // Load quit menu button (same as game over)
-            quitButtonSprite = ImageIO.read(new File("src/assets/ui/gameover/gameOverQuitBtn.png"));
+            quitButtonSprite = ImageIO.read(new File("assets/ui/gameover/gameOverQuitBtn.png"));
         } catch (Exception e) {
             System.out.println("[VictoryUI] Failed to load assets!");
             e.printStackTrace();

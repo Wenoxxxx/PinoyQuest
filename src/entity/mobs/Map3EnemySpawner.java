@@ -30,8 +30,8 @@ public class Map3EnemySpawner {
     private final long[] WAVE_TIMERS = {
             5,
             5_000,   // Wave 1
-            5_000,   // Wave 2///////////////////////////////////////////////////////////
-            5_000    // Wave 3
+            10_000,   // Wave 2///////////////////////////////////////////////////////////
+            20_000    // Wave 3
     };
 
     private Random rand = new Random();

@@ -20,7 +20,7 @@ public class TambayEnemy extends Enemy {
     public TambayEnemy(GamePanel gp, int worldX, int worldY, Player player) {
         super(gp, worldX, worldY, player);
 
-        this.maxHealth = 10;
+        this.maxHealth = 150;
         this.health = maxHealth;
 
         this.speed = 2;
@@ -37,7 +37,7 @@ public class TambayEnemy extends Enemy {
     }
 
     private void loadWalkSprites() {
-        String basePath = "src" + File.separator +
+        String basePath =
                 "assets" + File.separator +
                 "sprites" + File.separator +
                 "mob" + File.separator +

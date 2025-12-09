@@ -14,7 +14,7 @@ public class TsinelasProjectile extends Entity {
     private final GamePanel gp;
     private final String direction;
     private final int speed = 12;
-    private final int damage = 20;
+    private final int damage = 23;
     private int lifetime = 45; // frames
     private boolean expired = false;
     private BufferedImage sprite;
@@ -31,7 +31,7 @@ public class TsinelasProjectile extends Entity {
 
     private void loadSprite() {
         try {
-            sprite = ImageIO.read(new File("src/assets/items/weapons/tsinelas.png"));
+            sprite = ImageIO.read(new File("assets/items/weapons/tsinelas.png"));
         } catch (Exception e) {
             System.out.println("[Projectile] Failed to load tsinelas sprite.");
         }

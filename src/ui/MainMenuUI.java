@@ -22,11 +22,11 @@ public class MainMenuUI {
     // ========================== LOAD ASSETS ==========================
     private void loadMenuSprites() {
         try {
-            menuBackground = ImageIO.read(new File("src/assets/ui/mainMenu/BG.png"));
+            menuBackground = ImageIO.read(new File("assets/ui/mainMenu/BG.png"));
 
-            buttonSprites[0] = ImageIO.read(new File("src/assets/ui/mainMenu/btn1.png")); // Start
-            buttonSprites[1] = ImageIO.read(new File("src/assets/ui/mainMenu/btn2.png")); // Resume
-            buttonSprites[2] = ImageIO.read(new File("src/assets/ui/mainMenu/btn4.png")); // Quit (reusing btn4 as third
+            buttonSprites[0] = ImageIO.read(new File("assets/ui/mainMenu/btn1.png")); // Start
+            buttonSprites[1] = ImageIO.read(new File("assets/ui/mainMenu/btn2.png")); // Resume
+            buttonSprites[2] = ImageIO.read(new File("assets/ui/mainMenu/btn4.png")); // Quit (reusing btn4 as third
                                                                                           // sprite)
 
         } catch (Exception e) {

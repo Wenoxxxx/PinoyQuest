@@ -38,7 +38,7 @@ public class WhiteLady extends Entity {
     private final int renderHeight;
 
     private static final String BASE_DIR =
-            "src" + File.separator +
+           
             "assets" + File.separator +
             "sprites" + File.separator +
             "mob" + File.separator +

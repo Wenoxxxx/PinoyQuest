@@ -22,7 +22,7 @@ public class MobManager {
     public static final int MOB_SAWTRAP   = 2;
 
     private static final String MOB_MAP_DIR =
-            "src" + File.separator +
+            
             "assets" + File.separator +
             "maps" + File.separator;
 
@@ -31,8 +31,8 @@ public class MobManager {
 
         mobLayout = new int[TileManager.MAP_COUNT][gp.maxWorldCol][gp.maxWorldRow];
 
-        loadMobMaps();  // ✔ only loads layout files
-        // ❌ no spawning here anymore — prevents duplication
+        loadMobMaps();  // only loads layout files
+        // no spawning here anymore — prevents duplication
     }
 
     // ============================================================

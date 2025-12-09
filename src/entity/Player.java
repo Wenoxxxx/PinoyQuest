@@ -343,7 +343,7 @@ public class Player extends Entity {
 
     public void loadPlayerImages() {
 
-        String basePath = "src" + File.separator +
+        String basePath =
                 "assets" + File.separator +
                 "sprites" + File.separator +
                 "player" + File.separator;
@@ -414,12 +414,12 @@ public class Player extends Entity {
         lastEquippedWeapon = null;
 
         if (wasEquipped && gamePanel.ui != null) {
-            gamePanel.ui.showMessage("Default stance equipped");
+            gamePanel.ui.showMessage("Default stance");
         }
     }
 
     private void reloadSpritesBasedOnWeapon() {
-        String basePath = "src" + File.separator +
+        String basePath =
                 "assets" + File.separator +
                 "sprites" + File.separator +
                 "player" + File.separator;

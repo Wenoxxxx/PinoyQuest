@@ -1,4 +1,4 @@
-package src.main;
+package main;
 
 import src.core.GamePanel;
 
@@ -25,7 +25,8 @@ public class Main {
         mainFrame.pack();
 
         // ICON IMAGE (load before game starts, optional order)
-        String iconPath = "src" + File.separator + "assets"
+        String iconPath = 
+                "assets"
                 + File.separator + "ui"
                 + File.separator + "gameIcon"
                 + File.separator + "icon.png";

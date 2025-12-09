@@ -25,9 +25,12 @@ public class ObjectManager {
     public final int[] placedObjectCount;
 
     // Base directories
-    private static final String OBJECT_ROOT_DIR = "src" + File.separator + "assets" + File.separator + "objects"
-            + File.separator;
-    private static final String MAP_DIR = "src" + File.separator + "assets" + File.separator + "maps" + File.separator;
+    private static final String OBJECT_ROOT_DIR = 
+            "assets" + File.separator 
+            + "objects" + File.separator;
+    private static final String MAP_DIR = 
+            "assets" + File.separator + 
+            "maps" + File.separator;
 
     // Number of maps (match TileManager)
     private static final int MAP_COUNT = TileManager.MAP_COUNT;

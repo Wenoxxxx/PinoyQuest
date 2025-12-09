@@ -1,0 +1,230 @@
+
+
+Version:	3.50
+CmdLine:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	1.025.000
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+JRE paths:	;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+Check launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javac.exe (OK)
+Version string: 1.025.000_001 / 64-Bit (OK)
+Main class:	Main.java
+Add classpath:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar
+Launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe;C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar" Main.java
+Args length:	172/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	1.025.000
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+JRE paths:	;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+Check launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javac.exe (OK)
+Version string: 1.025.000_001 / 64-Bit (OK)
+Main class:	Main.java
+Add classpath:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar
+Launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe;C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar" Main.java
+Args length:	172/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	1.025.000
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+JRE paths:	;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+Check launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javac.exe (OK)
+Version string: 1.025.000_001 / 64-Bit (OK)
+Main class:	Main.java
+Add classpath:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar
+Launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe;C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar" Main.java
+Args length:	172/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	1.025.000
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+JRE paths:	;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+Check launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javac.exe (OK)
+Version string: 1.025.000_001 / 64-Bit (OK)
+Main class:	Main.java
+Add classpath:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar
+Launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe;C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar" Main.java
+Args length:	172/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	1.025.000
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+JRE paths:	;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+Check launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javac.exe (OK)
+Version string: 1.025.000_001 / 64-Bit (OK)
+Main class:	Main.java
+Add classpath:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar
+Launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe;C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar" Main.java
+Args length:	172/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	1.025.000
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+JRE paths:	;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+Check launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javac.exe (OK)
+Version string: 1.025.000_001 / 64-Bit (OK)
+Main class:	Main.java
+Add classpath:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar
+Launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe;C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar" Main.java
+Args length:	172/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	1.025.000
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+JRE paths:	;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+Check launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javac.exe (OK)
+Version string: 1.025.000_001 / 64-Bit (OK)
+Main class:	Main.java
+Add classpath:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar
+Launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe;C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar" Main.java
+Args length:	172/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	1.025.000
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+JRE paths:	;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+Check launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javac.exe (OK)
+Version string: 1.025.000_001 / 64-Bit (OK)
+Main class:	Main.java
+Add classpath:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar
+Launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe;C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar" Main.java
+Args length:	172/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	1.025.000
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+JRE paths:	;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+Check launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javac.exe (OK)
+Version string: 1.025.000_001 / 64-Bit (OK)
+Main class:	Main.java
+Add classpath:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar
+Launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe;C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar" Main.java
+Args length:	172/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	1.025.000
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+JRE paths:	;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\oweno\AppData\Local\Programs\Python\Python313;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\oweno\bin;c:\Users\oweno\AppData\Local\Programs\cursor\resources\app\codeBin;C:\Users\oweno\AppData\Local\Programs\Python\Launcher\;C:\Users\oweno\AppData\Local\Microsoft\WindowsApps;C:\Users\oweno\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\oweno\AppData\Roaming\npm;C:\Users\oweno\AppData\Roaming\Composer\vendor\bin;C:\Users\oweno\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\oweno\AppData\Local\GitHubDesktop\bin;C:\ninja;C:\msys64\ucrt64\bin;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin
+Check launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javac.exe (OK)
+Version string: 1.025.000_001 / 64-Bit (OK)
+Main class:	Main.java
+Add classpath:	C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar
+Launcher:	C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.exe;C:\Users\oweno\Documents\1VSCode\JavaGameDev\PinoyQuestCopy\PinoyQuest.jar" Main.java
+Args length:	172/32768 chars
+Exit code:	0

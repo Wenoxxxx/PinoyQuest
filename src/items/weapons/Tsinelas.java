@@ -15,7 +15,7 @@ public class Tsinelas extends Item {
         super(gp, x, y, "Tsinelas", "Classic ranged weapon.");
 
         try {
-            sprite = ImageIO.read(new File("src/assets/items/weapons/tsinelas.png"));
+            sprite = ImageIO.read(new File("assets/items/weapons/tsinelas.png"));
         } catch (Exception e) {
             System.out.println("ERROR: Failed loading Tsinelas sprite");
         }

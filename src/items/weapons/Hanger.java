@@ -15,7 +15,7 @@ public class Hanger extends Item {
         super(gp, x, y, "Hanger", "Melee weapon.");
 
         try {
-            sprite = ImageIO.read(new File("src/assets/items/weapons/hanger.png"));
+            sprite = ImageIO.read(new File("assets/items/weapons/hanger.png"));
         } catch (Exception e) {
             System.out.println("ERROR: Failed loading Hanger sprite");
         }

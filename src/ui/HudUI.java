@@ -38,7 +38,7 @@ public class HudUI {
 
         // Load HUD sprite
         try {
-            hudPanel = ImageIO.read(new File("src/assets/ui/hud/hud_panel.png"));
+            hudPanel = ImageIO.read(new File("assets/ui/hud/hud_panel.png"));
         } catch (Exception e) {
             System.out.println("ERROR LOADING HUD PANEL!");
             e.printStackTrace();

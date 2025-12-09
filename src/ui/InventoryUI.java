@@ -42,7 +42,7 @@ public class InventoryUI {
 
         try {
             inventoryPanel = ImageIO.read(
-                new File("src/assets/ui/inventory/inventory_panel.png")
+                new File("assets/ui/inventory/inventory_panel.png")
             );
         } catch (Exception e) {
             System.out.println("ERROR loading inventory panel!");
